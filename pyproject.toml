@@ -1,0 +1,85 @@
+[project]
+name = "sphinx-luals"
+authors = [{name = "Tamika Nomara", email = "taminomara@gmail.com"}]
+description = "Automatic documentation generation via LuaLS"
+dynamic = ["version"]
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.12"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Typing :: Typed",
+]
+dependencies = [
+    "sphinx>=8.0",
+    "sphinxcontrib-luadomain~=1.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest-cov~=6.0.0",
+    "sphinx-luals[test,lint,doc]",
+]
+lint = [
+    "black~=23.7",
+    "isort~=5.12",
+    "pre-commit~=3.8.0",
+]
+test = [
+    "pyright~=1.1",
+    "pytest~=7.4",
+    "sybil~=6.1",
+]
+doc = [
+    "furo~=2024.8",
+    "sybil~=6.1",
+]
+
+[project.urls]
+Documentation = "https://taminomara.github.io/sphinx-luals/"
+Issues = "https://github.com/taminomara/sphinx-luals/issues"
+Source = "https://github.com/taminomara/sphinx-luals/"
+
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel>=0.40"]
+
+[tool.setuptools_scm]
+write_to = "sphinx_luals/_version.py"
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = ["--strict-markers", "-p no:doctest"]
+testpaths = ["examples", "test", "sphinx_luals", "docs"]
+
+[tool.pyright]
+include = ["sphinx_luals", "examples"]
+exclude = ["**/__pycache__"]
+typeCheckingMode = "strict"
+pythonVersion = "3.12"
+pythonPlatform = "All"
+
+# deprecateTypingAliases = true
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportUnusedFunction = "none"
+reportPrivateUsage = "none"
+reportMissingParameterType = "none"
+reportUnknownParameterType = "none"
+reportUnknownVariableType = "none"
+reportUnknownMemberType = "none"
+reportUnknownArgumentType = "none"
+reportUnknownLambdaType = "none"
+reportUnnecessaryIsInstance = "none"
+reportConstantRedefinition = "none"
+reportRedeclaration = "none"
+
+[tool.black]
+extend-exclude = '^/docs'
+
+[tool.isort]
+profile = "black"
+extend_skip_glob = ["docs/*"]
+skip_gitignore = true
