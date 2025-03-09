@@ -18,12 +18,13 @@ from bs4 import BeautifulSoup
 def test_regression(app, src, file_regression):
     app.build()
 
-    path = app.outdir / src
+    path = pathlib.Path(app.outdir) / src
 
-    soup = BeautifulSoup(path.read_text(), "html.parser")
+    soup = BeautifulSoup(path.read_text("utf8"), "html.parser")
     content = soup.select("div.body")[0]
     file_regression.check(
         content.prettify(),
         basename=pathlib.Path(src).stem,
         extension=".html",
+        encoding="utf8",
     )
