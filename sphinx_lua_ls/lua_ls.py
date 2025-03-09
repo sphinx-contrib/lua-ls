@@ -387,12 +387,15 @@ def _check_version(
 ) -> _t.Tuple[bool, _t.Optional[str]]:
     version_tuple = tuple(int(c) for c in version.split("."))
     try:
-        system_version_text_b = subprocess.check_output([lua_ls_path, "--version"])
+        args = [lua_ls_path, "--version"]
+        _logger.debug("running lua-language-server with args %r", args, type="lua-ls")
+        system_version_text_b = subprocess.check_output(args)
         system_version_text = system_version_text_b.decode().strip()
         if match := re.search(r"(\d+\.\d+\.\d+)", system_version_text):
             system_version = match.group(1)
             system_version_tuple = tuple(int(c) for c in system_version.split("."))
             if system_version_tuple >= version_tuple:
+                _logger.debug("got version %s", system_version_tuple, type="lua-ls")
                 return True, system_version
             else:
                 _logger.debug(
@@ -510,12 +513,16 @@ def _install(
 
     cache_path.mkdir(parents=True, exist_ok=True)
 
-    lua_ls_path = cache_path / "bin/lua-language-server"
-    if lua_ls_path.exists():
-        can_use_cached_lua_ls, _ = _check_version(version, lua_ls_path)
+    if platform == "win32":
+        bin_path = cache_path / "bin/lua-language-server.exe"
+    else:
+        bin_path = cache_path / "bin/lua-language-server"
+    if bin_path.exists():
+        bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
+        can_use_cached_lua_ls, _ = _check_version(version, bin_path)
         if can_use_cached_lua_ls:
             _logger.debug("using cached lua-language-server", type="lua-ls")
-            return lua_ls_path, path
+            return bin_path, path
 
     # Download binary release.
 
@@ -523,7 +530,7 @@ def _install(
 
     _install_lua_ls(api, timeout, retry, cache_path, reporter, release_name, platform)
 
-    can_use_cached_lua_ls, _ = _check_version(version, lua_ls_path)
+    can_use_cached_lua_ls, _ = _check_version(version, bin_path)
     if not can_use_cached_lua_ls:
         _logger.warning(
             "downloaded latest lua-language-server is outdated; "
@@ -531,7 +538,7 @@ def _install(
             type="lua-ls",
         )
 
-    return lua_ls_path, path
+    return bin_path, path
 
 
 def _install_lua_ls(
