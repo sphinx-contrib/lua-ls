@@ -49,7 +49,7 @@ def _handle_signature_errors(handler):
         try:
             return handler(self, sig, signode)
         except ValueError as e:
-            logger.warn(
+            logger.warning(
                 "incorrect %s signature %r: %s",
                 self.objtype,
                 sig,
@@ -1069,7 +1069,7 @@ class LuaDomain(Domain):
         if match := self._find_obj(modname, classname, target, typ):
             name, (docname, objtype) = match
             if typ not in ("any", "obj") and typ not in objtype:
-                logger.warn(
+                logger.warning(
                     "reference :lua:%s:`%s` resolved to an object of unexpected type %r",
                     typ,
                     target,
