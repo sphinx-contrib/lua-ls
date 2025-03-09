@@ -42,6 +42,7 @@ jobs:
         with:
           name: lua_ls_release
           path: ~/lua_ls_release
+          include-hidden-files: true
           retention-days: 3
 
   # Runs main tests for the package.
@@ -178,6 +179,7 @@ jobs:
         with:
           name: html_output
           path: docs/build/html
+          include-hidden-files: true
 
   # Publishes documentation preview and posts a comment to the initiating PR.
   #
