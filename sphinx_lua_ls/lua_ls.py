@@ -335,7 +335,7 @@ def resolve(
     _logger.debug("using lua_ls cache path: %s", cache_path, type="lua-ls")
 
     if retry is None:
-        retry = urllib3.Retry(10, backoff_factor=0.1)
+        retry = urllib3.Retry(10, backoff_factor=0.1, status_forcelist=frozenset([403]))
 
     reporter.start()
     try:
@@ -533,7 +533,10 @@ def _install_lua_ls(
 
             shutil.unpack_archive(tmp_file, cache_path)
 
-            bin_path = cache_path / "bin/lua-language-server"
+            if sys.platform == "win32":
+                bin_path = cache_path / "bin/lua-language-server"
+            else:
+                bin_path = cache_path / "bin/lua-language-server.exe"
             bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
         except Exception as e:
             raise LuaLsError(f"lua-language-server install failed: {e}")
