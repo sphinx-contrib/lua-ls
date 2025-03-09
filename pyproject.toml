@@ -65,10 +65,10 @@ write_to = "sphinx_lua_ls/_version.py"
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = ["--strict-markers", "-p no:doctest"]
-testpaths = ["examples", "test", "sphinx_lua_ls", "docs"]
+testpaths = ["test", "sphinx_lua_ls", "docs"]
 
 [tool.pyright]
-include = ["sphinx_lua_ls", "examples"]
+include = ["sphinx_lua_ls"]
 exclude = ["**/__pycache__"]
 typeCheckingMode = "strict"
 pythonVersion = "3.12"

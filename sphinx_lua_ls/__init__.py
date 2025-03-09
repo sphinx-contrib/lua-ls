@@ -7,6 +7,7 @@ import sphinx.config
 import sphinx.environment
 import sphinx.errors
 import sphinx.ext.intersphinx
+from sphinx.errors import ConfigError
 from sphinx.util.display import progress_message
 
 import sphinx_lua_ls.autodoc
@@ -21,17 +22,17 @@ def check_options(
 ):
     lua_version = config["lua_ls_lua_version"]
     if not isinstance(lua_version, str):
-        raise sphinx.config.ConfigError(
+        raise ConfigError(
             f"expected lua_ls_lua_version to be a str, got {type(lua_version)} instead"
         )
     if not re.match(r"\d+(\.\d+)*", lua_version):
-        raise sphinx.config.ConfigError(f"incorrect lua_ls_lua_version: {lua_version}")
+        raise ConfigError(f"incorrect lua_ls_lua_version: {lua_version}")
 
     project_root = config["lua_ls_project_root"]
     if project_root is None:
         project_root = ""
     if not isinstance(lua_version, (str, pathlib.Path)):
-        raise sphinx.config.ConfigError(
+        raise ConfigError(
             f"expected lua_ls_project_root to be a str, got {type(project_root)} instead"
         )
     try:
@@ -39,18 +40,18 @@ def check_options(
             app.srcdir, project_root
         ).resolve()
     except ValueError as e:
-        raise sphinx.config.ConfigError(f"incorrect lua_ls_project_root: {e}") from None
+        raise ConfigError(f"incorrect lua_ls_project_root: {e}") from None
 
     project_directories = config["lua_ls_project_directories"]
     if project_directories is None:
         project_directories = config["lua_ls_project_directories"] = []
     if not isinstance(project_directories, list):
-        raise sphinx.config.ConfigError(
+        raise ConfigError(
             f"expected lua_ls_project_directories to be a list, got {type(project_directories)} instead"
         )
     for i, project_directory in enumerate(project_directories):
         if not isinstance(project_directory, (str, pathlib.Path)):
-            raise sphinx.config.ConfigError(
+            raise ConfigError(
                 f"expected lua_ls_project_directories[{i}] to be a list, got {type(project_directory)} instead"
             )
         try:
@@ -58,20 +59,20 @@ def check_options(
                 project_root, project_directory
             ).resolve()
         except ValueError as e:
-            raise sphinx.config.ConfigError(
+            raise ConfigError(
                 f"incorrect lua_ls_project_directories[{i}]: {e}"
             ) from None
 
     auto_install = config["lua_ls_auto_install"]
     if not isinstance(auto_install, bool):
-        raise sphinx.config.ConfigError(
+        raise ConfigError(
             f"expected lua_ls_auto_install to be a bool, got {type(auto_install)} instead"
         )
 
     auto_install_location = config["lua_ls_auto_install_location"]
     if auto_install_location is not None:
         if not isinstance(auto_install_location, (str, pathlib.Path)):
-            raise sphinx.config.ConfigError(
+            raise ConfigError(
                 f"expected lua_ls_auto_install_location to be a str, got {type(auto_install_location)} instead"
             )
         try:
@@ -79,39 +80,35 @@ def check_options(
                 auto_install_location
             ).resolve()
         except ValueError as e:
-            raise sphinx.config.ConfigError(
-                f"incorrect lua_ls_auto_install_location: {e}"
-            ) from None
+            raise ConfigError(f"incorrect lua_ls_auto_install_location: {e}") from None
 
     min_version = config["lua_ls_min_version"]
     if not isinstance(min_version, str):
-        raise sphinx.config.ConfigError(
+        raise ConfigError(
             f"expected lua_ls_min_version to be a str, got {type(min_version)} instead"
         )
     if not re.match(r"\d+(\.\d+)*", min_version):
-        raise sphinx.config.ConfigError(f"incorrect lua_ls_min_version: {min_version}")
+        raise ConfigError(f"incorrect lua_ls_min_version: {min_version}")
 
     default_options = config["lua_ls_default_options"]
     if default_options is None:
         default_options = config["lua_ls_default_options"] = {}
     if not isinstance(default_options, dict):
-        raise sphinx.config.ConfigError(
+        raise ConfigError(
             f"expected lua_ls_default_options to be a dict, got {type(default_options)} instead"
         )
     for name, value in default_options.items():
         parser = sphinx_lua_ls.autodoc.AutoObjectDirective.option_spec.get(name, None)
         if parser is None:
-            raise sphinx.config.ConfigError(
-                f"unknown option in lua_ls_default_options: {name}"
-            )
+            raise ConfigError(f"unknown option in lua_ls_default_options: {name}")
         if value is not None and not isinstance(value, str):
-            raise sphinx.config.ConfigError(
+            raise ConfigError(
                 f"expected lua_ls_default_options[{name!r} to be a string, got {type(value)} instead"
             )
         try:
             default_options[name] = parser(value)
         except Exception as e:
-            raise sphinx.config.ConfigError(
+            raise ConfigError(
                 f"incorrect option {name} in lua_ls_default_options: {e}"
             ) from None
 
