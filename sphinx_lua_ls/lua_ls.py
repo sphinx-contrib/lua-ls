@@ -521,7 +521,7 @@ def _install(
 
     api = github.Github(retry=retry, timeout=timeout)
 
-    _install_lua_ls(api, timeout, retry, cache_path, reporter, release_name)
+    _install_lua_ls(api, timeout, retry, cache_path, reporter, release_name, platform)
 
     can_use_cached_lua_ls, _ = _check_version(version, lua_ls_path)
     if not can_use_cached_lua_ls:
@@ -541,6 +541,7 @@ def _install_lua_ls(
     cache_path: pathlib.Path,
     reporter: ProgressReporter,
     release_name: str,
+    platform: str,
 ):
     filter = lambda name: name.endswith(release_name)
 
@@ -565,7 +566,7 @@ def _install_lua_ls(
 
             shutil.unpack_archive(tmp_file, cache_path)
 
-            if sys.platform == "win32":
+            if platform == "win32":
                 bin_path = cache_path / "bin/lua-language-server.exe"
             else:
                 bin_path = cache_path / "bin/lua-language-server"
