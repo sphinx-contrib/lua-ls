@@ -165,7 +165,7 @@ jobs:
           path: lua_ls_release
       - name: Build docs
         env:
-          SPHINXOPTS: "-j auto"
+          SPHINXOPTS: "-j auto -vv"
           LUA_LS_CACHE_PATH: lua_ls_release/${{ matrix.os }}
         run: |
           cd docs
