@@ -532,10 +532,9 @@ def _install(
 
     can_use_cached_lua_ls, _ = _check_version(version, bin_path)
     if not can_use_cached_lua_ls:
-        _logger.warning(
+        raise LuaLsError(
             "downloaded latest lua-language-server is outdated; "
             "are you sure min_lua_ls_version is correct?",
-            type="lua-ls",
         )
 
     return bin_path, path
@@ -663,6 +662,11 @@ if __name__ == "__main__":
         parser.add_argument("platform")
         parser.add_argument("machine")
         parser.add_argument("path", type=pathlib.Path)
+
+        _logger.setLevel("DEBUG")
+        _logger.logger.addHandler(
+            logging.NewLineStreamHandler(logging.SafeEncodingWriter(sys.stderr))
+        )
 
         args = parser.parse_args()
 
