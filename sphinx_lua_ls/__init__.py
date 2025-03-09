@@ -36,9 +36,9 @@ def check_options(
             f"expected lua_ls_project_root to be a str, got {type(project_root)} instead"
         )
     try:
-        project_root = config["lua_ls_project_root"] = pathlib.Path(
-            app.srcdir, project_root
-        ).resolve()
+        project_root = config["lua_ls_project_root"] = (
+            pathlib.Path(app.srcdir, project_root).expanduser().resolve()
+        )
     except ValueError as e:
         raise ConfigError(f"incorrect lua_ls_project_root: {e}") from None
 
@@ -55,9 +55,9 @@ def check_options(
                 f"expected lua_ls_project_directories[{i}] to be a list, got {type(project_directory)} instead"
             )
         try:
-            project_directories[i] = pathlib.Path(
-                project_root, project_directory
-            ).resolve()
+            project_directories[i] = (
+                pathlib.Path(project_root, project_directory).expanduser().resolve()
+            )
         except ValueError as e:
             raise ConfigError(
                 f"incorrect lua_ls_project_directories[{i}]: {e}"
@@ -76,9 +76,9 @@ def check_options(
                 f"expected lua_ls_auto_install_location to be a str, got {type(auto_install_location)} instead"
             )
         try:
-            auto_install_location = config["auto_install_location"] = pathlib.Path(
-                auto_install_location
-            ).resolve()
+            auto_install_location = config["auto_install_location"] = (
+                pathlib.Path(auto_install_location).expanduser().resolve()
+            )
         except ValueError as e:
             raise ConfigError(f"incorrect lua_ls_auto_install_location: {e}") from None
 

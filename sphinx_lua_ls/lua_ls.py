@@ -331,7 +331,7 @@ def resolve(
         cache_path = default_cache_path()
     else:
         cache_path = pathlib.Path(cache_path)
-    cache_path = cache_path.resolve()
+    cache_path = cache_path.expanduser().resolve()
 
     _logger.debug("using lua_ls cache path: %s", cache_path, type="lua-ls")
 
@@ -448,7 +448,7 @@ def _check_and_install(
                 system_lua_ls_path,
                 type="lua-ls",
             )
-            return pathlib.Path(system_lua_ls_path).resolve(), path
+            return pathlib.Path(system_lua_ls_path).expanduser().resolve(), path
     else:
         _logger.debug("pre-installed lua-language-server not found", type="lua-ls")
 
