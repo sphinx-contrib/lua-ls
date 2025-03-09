@@ -8,15 +8,24 @@ license = {file = "LICENSE"}
 requires-python = ">=3.12"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
     "Intended Audience :: Developers",
+    "Framework :: Sphinx",
+    "Framework :: Sphinx :: Domain",
+    "Framework :: Sphinx :: Extension",
+    "Topic :: Software Development :: Documentation",
+    "Topic :: Documentation",
+    "Topic :: Documentation :: Sphinx",
     "Typing :: Typed",
 ]
 dependencies = [
     "sphinx>=8.0",
-    "sphinxcontrib-luadomain~=1.1",
+    "PyGithub~=1.59",
+    "requests~=2.31",
 ]
 
 [project.optional-dependencies]
@@ -33,10 +42,13 @@ test = [
     "pyright~=1.1",
     "pytest~=7.4",
     "sybil~=6.1",
+    "pytest-regressions~=2.7",
+    "beautifulsoup4~=4.13",
 ]
 doc = [
-    "furo~=2024.8",
     "sybil~=6.1",
+    "pydata-sphinx-theme>=0.15",
+    "sphinx_design>=0.6"
 ]
 
 [project.urls]

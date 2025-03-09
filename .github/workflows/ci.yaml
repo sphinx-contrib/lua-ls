@@ -1,0 +1,192 @@
+name: Test package
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - reopened
+      - synchronize
+      - closed
+
+jobs:
+  # Runs main tests for the package.
+  #
+  # Runs on all events except when closing a pull request.
+  test:
+    name: Test package
+    if: ${{ !(github.event_name == 'pull_request' && github.event.action == 'closed') }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+        python-version:
+          - "3.12"
+          - "3.13"
+        type:
+          - test
+        include:
+          - os: ubuntu-latest
+            python-version: "3.13"
+            type: code style
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Update pip
+        run: python -m pip install --upgrade pip
+      # Tests
+      - name: Install test dependencies
+        if: ${{ matrix.type == 'test' }}
+        run: python -m pip install '.[test]'
+      - name: Check types
+        if: ${{ matrix.type == 'test' }}
+        run: pyright
+      - name: Test package
+        if: ${{ matrix.type == 'test' }}
+        run: pytest -vv --showlocals --tb=short --color=yes --junit-xml=test-results.xml
+      # Lint
+      - name: Install lint dependencies
+        if: ${{ matrix.type == 'code style' }}
+        run: python -m pip install '.[lint]'
+      - name: Check code style
+        if: ${{ matrix.type == 'code style' }}
+        run: pre-commit run -a
+
+  # Builds and publishes python packages.
+  #
+  # Only runs on tag pushes.
+  publish_to_pypi:
+    name: Publish package to PyPi
+    needs:
+     - test
+    if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v3
+      - name: Set up python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Install build
+        run: |
+          pip install build
+      - name: Build project
+        run: |
+          python3 -m build .
+      - name: Publish to test pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.TEST_PYPI_PASSWORD }}
+          repository-url: https://test.pypi.org/legacy/
+      - name: Publish to pypi
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_PASSWORD }}
+
+  # Builds sphinx documentation.
+  #
+  # Runs on all events except when closing a pull request.
+  build_docs:
+    name: Build docs
+    needs:
+      - test
+    if: ${{ !(github.event_name == 'pull_request' && github.event.action == 'closed') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Set up python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --editable '.[doc]'
+      - uses: taminomara/sphinx-problem-matcher@main
+      - name: Build docs
+        env:
+          SPHINXOPTS: "-j auto"
+        run: |
+          cd docs
+          make html
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: html_output
+          path: docs/build/html
+
+  # Publishes documentation preview and posts a comment to the initiating PR.
+  #
+  # This job runs on all pull request actions. If also runs when a pull request is closed,
+  # in this case it deletes the preview.
+  #
+  # Since the default condition -- `success()` -- only runs if all dependencies succeeded,
+  # we use `!failure() && !cancelled()`, which also runs when any dependencies were skipped.
+  publish_docs_preview:
+    name: Publish docs preview to GitHub Pages
+    needs:
+      - build_docs
+    if: ${{ !failure() && !cancelled() && github.event_name == 'pull_request' }}
+    concurrency:
+      group: publish-docs-${{ github.ref }}
+      cancel-in-progress: true
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download artifact
+        if: ${{ needs.build_docs.result == 'success' }}  # only download docs if build wasn't skipped
+        uses: actions/download-artifact@v3
+        with:
+          name: html_output
+          path: docs/build/html
+      - name: Publish HTML
+        uses: rossjrw/pr-preview-action@v1
+        with:
+          source-dir: docs/build/html
+          umbrella-dir: pr-preview
+
+  # Builds and publishes production docs.
+  #
+  # Only runs on tag pushes.
+  publish_docs:
+    name: Publish docs to GitHub Pages
+    needs:
+      - build_docs
+    if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && !contains(github.event.ref, '.dev') }}
+    concurrency:
+      group: publish-docs-${{ github.ref }}
+      cancel-in-progress: true
+    permissions: write-all
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: html_output
+          path: docs/build/html
+      - name: Publish HTML
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: docs/build/html
+          target-folder: .
+          clean-exclude: pr-preview
+          single-commit: false
