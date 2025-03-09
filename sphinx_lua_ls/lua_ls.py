@@ -480,8 +480,9 @@ def _install(
     retry: urllib3.Retry,
     machine: str,
     platform: str,
-    system_lua_ls_path: str | None = None,
-    system_version: str | None = None,
+    system_lua_ls_path: str | None,
+    system_version: str | None,
+    verify: bool = False,
 ):
     # Check system compatibility.
 
@@ -530,12 +531,13 @@ def _install(
 
     _install_lua_ls(api, timeout, retry, cache_path, reporter, release_name, platform)
 
-    can_use_cached_lua_ls, _ = _check_version(version, bin_path)
-    if not can_use_cached_lua_ls:
-        raise LuaLsError(
-            "downloaded latest lua-language-server is outdated; "
-            "are you sure min_lua_ls_version is correct?",
-        )
+    if verify:
+        can_use_cached_lua_ls, _ = _check_version(version, bin_path)
+        if not can_use_cached_lua_ls:
+            raise LuaLsError(
+                "downloaded latest lua-language-server is outdated; "
+                "are you sure min_lua_ls_version is correct?",
+            )
 
     return bin_path, path
 
@@ -682,6 +684,7 @@ if __name__ == "__main__":
             args.platform,
             None,
             None,
+            False,
         )
 
     main()
