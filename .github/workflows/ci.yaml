@@ -29,7 +29,6 @@ jobs:
           - macos-latest
           - windows-latest
         python-version:
-          - "3.12"
           - "3.13"
         type:
           - test
@@ -37,6 +36,9 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.13"
             type: code style
+          - os: ubuntu-latest
+            python-version: "3.12"
+            type: test
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout source
