@@ -604,11 +604,9 @@ def _download_latest_release(
                     if size:
                         # note: this does not take content-encoding into account.
                         # our contents are not encoded, though, so this is fine.
+                        time = (datetime.datetime.now() - start).total_seconds()
                         downloaded += len(chunk)
-                        speed = (
-                            downloaded
-                            / (datetime.datetime.now() - start).total_seconds()
-                        )
+                        speed = downloaded / time if time else 0
                         reporter.progress(
                             f"downloading {name}", downloaded, size, speed
                         )
