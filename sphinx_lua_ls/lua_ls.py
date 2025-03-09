@@ -335,7 +335,7 @@ def resolve(
     _logger.debug("using lua_ls cache path: %s", cache_path, type="lua-ls")
 
     if retry is None:
-        retry = urllib3.Retry(10, backoff_factor=0.1, status_forcelist=frozenset([403]))
+        retry = urllib3.Retry(10, backoff_factor=0.5, status_forcelist=frozenset([403]))
 
     reporter.start()
     try:
