@@ -157,7 +157,7 @@ jobs:
       - name: Install package
         run: |
           python -m pip install --upgrade pip
-          python -m pip install --editable '.[doc]'
+          python -m pip install '.[doc]'
       - name: Download LuaLs
         uses: actions/download-artifact@v4
         with:
@@ -165,8 +165,8 @@ jobs:
           path: lua_ls_release
       - name: Build docs
         env:
-          SPHINXOPTS: "-j auto -vv"
-          LUA_LS_CACHE_PATH: lua_ls_release/${{ matrix.os }}
+          SPHINXOPTS: "-j auto"
+          LUA_LS_CACHE_PATH: lua_ls_release/ubuntu-latest
         run: |
           cd docs
           make html
