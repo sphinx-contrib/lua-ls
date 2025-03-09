@@ -32,16 +32,16 @@ jobs:
       - name: Install dependencies
         run: python -m pip install '.'
       - name: Download LuaLs for Linux
-        run: python sphinx_lua_ls/lua_ls.py linux x86_64 /lua_ls_release/ubuntu-latest
+        run: python sphinx_lua_ls/lua_ls.py linux x86_64 ~/lua_ls_release/ubuntu-latest
       - name: Download LuaLs for Windows
-        run: python sphinx_lua_ls/lua_ls.py win32 amd64 /lua_ls_release/windows-latest
+        run: python sphinx_lua_ls/lua_ls.py win32 amd64 ~/lua_ls_release/windows-latest
       - name: Download LuaLs for MacOs
-        run: python sphinx_lua_ls/lua_ls.py darwin x86_64 /lua_ls_release/macos-latest
+        run: python sphinx_lua_ls/lua_ls.py darwin x86_64 ~/lua_ls_release/macos-latest
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: lua_ls_release
-          path: /lua_ls_release
+          path: ~/lua_ls_release
           retention-days: 3
 
   # Runs main tests for the package.
@@ -87,7 +87,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: lua_ls_release
-          path: /lua_ls_release
+          path: ~/lua_ls_release
       - name: Check types
         if: ${{ matrix.type == 'test' }}
         run: pyright
@@ -95,7 +95,7 @@ jobs:
         if: ${{ matrix.type == 'test' }}
         run: pytest -vv --showlocals --tb=short --color=yes --junit-xml=test-results.xml
         env:
-          LUA_LS_CACHE_PATH: /lua_ls_release/${{ matrix.os }}
+          LUA_LS_CACHE_PATH: ~/lua_ls_release/${{ matrix.os }}
       # Lint
       - name: Install lint dependencies
         if: ${{ matrix.type == 'code style' }}
@@ -162,11 +162,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: lua_ls_release
-          path: /lua_ls_release
+          path: ~/lua_ls_release
       - name: Build docs
         env:
           SPHINXOPTS: "-j auto"
-          LUA_LS_CACHE_PATH: /lua_ls_release/ubuntu-latest
+          LUA_LS_CACHE_PATH: ~/lua_ls_release/ubuntu-latest
         run: |
           cd docs
           make html
