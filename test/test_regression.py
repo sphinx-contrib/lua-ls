@@ -4,7 +4,7 @@ import pytest
 from bs4 import BeautifulSoup
 
 
-@pytest.mark.sphinx("html", testroot="doc")
+@pytest.mark.sphinx("html", testroot="doc", verbosity=2)
 @pytest.mark.parametrize(
     "src",
     [
