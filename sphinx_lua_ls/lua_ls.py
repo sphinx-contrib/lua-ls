@@ -534,9 +534,9 @@ def _install_lua_ls(
             shutil.unpack_archive(tmp_file, cache_path)
 
             if sys.platform == "win32":
-                bin_path = cache_path / "bin/lua-language-server"
-            else:
                 bin_path = cache_path / "bin/lua-language-server.exe"
+            else:
+                bin_path = cache_path / "bin/lua-language-server"
             bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
         except Exception as e:
             raise LuaLsError(f"lua-language-server install failed: {e}")
