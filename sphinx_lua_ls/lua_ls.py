@@ -388,15 +388,13 @@ def _check_version(
 ) -> _t.Tuple[bool, _t.Optional[str]]:
     version_tuple = tuple(int(c) for c in version.split("."))
     try:
-        args = [lua_ls_path, "--version"]
-        _logger.debug("running lua-language-server with args %r", args, type="lua-ls")
-        system_version_text_b = subprocess.check_output(args)
+        _logger.debug("checking version of %a", lua_ls_path, type="lua-ls")
+        system_version_text_b = subprocess.check_output([lua_ls_path, "--version"])
         system_version_text = system_version_text_b.decode().strip()
         if match := re.search(r"(\d+\.\d+\.\d+)", system_version_text):
             system_version = match.group(1)
             system_version_tuple = tuple(int(c) for c in system_version.split("."))
             if system_version_tuple >= version_tuple:
-                _logger.debug("got version %s", system_version_tuple, type="lua-ls")
                 return True, system_version
             else:
                 _logger.debug(
@@ -539,6 +537,11 @@ def _install(
                 "downloaded latest lua-language-server is outdated; "
                 "are you sure min_lua_ls_version is correct?",
             )
+    elif not bin_path.exists():
+        raise LuaLsError(
+            f"downloaded latest lua-language-server is broken: "
+            f"can't find {bin_path}",
+        )
 
     return bin_path, path
 
