@@ -29,11 +29,11 @@ from sphinx.util.nodes import make_refnode
 
 T = TypeVar("T")
 
-MESSAGE_CATALOG_NAME = "sphinx-luals"
+MESSAGE_CATALOG_NAME = "sphinx-lua-ls"
 _ = get_translation(MESSAGE_CATALOG_NAME)
 
 
-logger = logging.getLogger("sphinx_luals")
+logger = logging.getLogger("sphinx_lua_ls")
 
 
 #: Regexp for parsing a single Lua identifier.
@@ -361,7 +361,7 @@ class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
     allow_nesting = False
 
     def run(self) -> list[nodes.Node]:
-        for name, option in self.env.config["luals_default_options"].items():
+        for name, option in self.env.config["lua_ls_default_options"].items():
             if name not in self.options:
                 self.options[name] = option
         return super().run()
@@ -777,7 +777,7 @@ class LuaModule(SphinxDirective):
     }
 
     def run(self) -> list[nodes.Node]:
-        for name, option in self.env.config["luals_default_options"].items():
+        for name, option in self.env.config["lua_ls_default_options"].items():
             if name not in self.options:
                 self.options[name] = option
 

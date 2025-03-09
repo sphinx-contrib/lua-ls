@@ -20,8 +20,8 @@ import sphinx.util.nodes
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
 
-import sphinx_luals.domain
-from sphinx_luals.doctree import Kind, Object, Visibility
+import sphinx_lua_ls.domain
+from sphinx_lua_ls.doctree import Kind, Object, Visibility
 
 
 class AutodocUtilsMixin(SphinxDirective):
@@ -87,7 +87,7 @@ class AutodocUtilsMixin(SphinxDirective):
         with self.save_context():
             nodes = list(
                 self._create_directive(
-                    name, sphinx_luals.domain.LuaModule, "lua:module", pass_through
+                    name, sphinx_lua_ls.domain.LuaModule, "lua:module", pass_through
                 ).run()
             )
 
@@ -249,7 +249,7 @@ class AutodocUtilsMixin(SphinxDirective):
 
     @property
     def objtree(self) -> Object:
-        return getattr(self.env, "luals_doc_root")
+        return getattr(self.env, "lua_ls_doc_root")
 
     @functools.cached_property
     def parent(self):
@@ -292,7 +292,7 @@ class AutodocUtilsMixin(SphinxDirective):
         if (
             parent
             and parent.kind == Kind.Class
-            and isinstance(parent, sphinx_luals.doctree.Class)
+            and isinstance(parent, sphinx_lua_ls.doctree.Class)
         ):
             for basename in parent.bases:
                 base = self.objtree.find(basename)
@@ -364,7 +364,7 @@ class AutodocUtilsMixin(SphinxDirective):
             yield name, child
 
 
-class AutodocObjectMixin(sphinx_luals.domain.LuaObject[Any], AutodocUtilsMixin):
+class AutodocObjectMixin(sphinx_lua_ls.domain.LuaObject[Any], AutodocUtilsMixin):
     def __init__(self, *args, root: Object):
         super().__init__(*args)
         self.root = root
@@ -398,16 +398,16 @@ class AutodocObjectMixin(sphinx_luals.domain.LuaObject[Any], AutodocUtilsMixin):
                 content_node += self.render(child, name)
 
 
-class LuaFunction(sphinx_luals.domain.LuaFunction, AutodocObjectMixin):
+class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
     @functools.cached_property
     def is_method(self):
-        assert isinstance(self.root, sphinx_luals.doctree.Function)
+        assert isinstance(self.root, sphinx_lua_ls.doctree.Function)
 
         return self.parent and self.parent.kind == Kind.Class
 
     @functools.cached_property
     def is_staticmethod(self):
-        assert isinstance(self.root, sphinx_luals.doctree.Function)
+        assert isinstance(self.root, sphinx_lua_ls.doctree.Function)
 
         return (
             self.parent
@@ -429,7 +429,7 @@ class LuaFunction(sphinx_luals.domain.LuaFunction, AutodocObjectMixin):
         assert value == "function"
 
     def parse_signature(self, sig):
-        assert isinstance(self.root, sphinx_luals.doctree.Function)
+        assert isinstance(self.root, sphinx_lua_ls.doctree.Function)
         return (
             self.arguments[0],
             (
@@ -439,7 +439,7 @@ class LuaFunction(sphinx_luals.domain.LuaFunction, AutodocObjectMixin):
         )
 
     def transform_content(self, content_node: sphinx.addnodes.desc_content) -> None:
-        assert isinstance(self.root, sphinx_luals.doctree.Function)
+        assert isinstance(self.root, sphinx_lua_ls.doctree.Function)
 
         if self.root.docstring:
             self.render_docs(
@@ -460,7 +460,7 @@ class LuaFunction(sphinx_luals.domain.LuaFunction, AutodocObjectMixin):
         for i, param in enumerate(self.root.params):
             if param.docstring and not (i == 0 and param.name == "self"):
                 # if param.type:
-                #     objtree: Object = getattr(self.env, "luals_doc_root")
+                #     objtree: Object = getattr(self.env, "lua_ls_doc_root")
                 #     obj = objtree.find(param.type)
                 #     if obj and obj.docstring == param.docstring:
                 #         continue
@@ -492,7 +492,7 @@ class LuaFunction(sphinx_luals.domain.LuaFunction, AutodocObjectMixin):
         for i, param in enumerate(self.root.returns):
             if param.docstring:
                 # if param.type:
-                #     objtree: Object = getattr(self.env, "luals_doc_root")
+                #     objtree: Object = getattr(self.env, "lua_ls_doc_root")
                 #     obj = objtree.find(param.type)
                 #     if obj and obj.docstring == param.docstring:
                 #         continue
@@ -528,24 +528,24 @@ class LuaFunction(sphinx_luals.domain.LuaFunction, AutodocObjectMixin):
                 content_node += self.render(child, name)
 
 
-class LuaData(sphinx_luals.domain.LuaData, AutodocObjectMixin):
+class LuaData(sphinx_lua_ls.domain.LuaData, AutodocObjectMixin):
     def parse_signature(self, sig):
-        assert isinstance(self.root, sphinx_luals.doctree.Data)
+        assert isinstance(self.root, sphinx_lua_ls.doctree.Data)
         return self.arguments[0], self.root.type
 
 
-class LuaAlias(sphinx_luals.domain.LuaAlias, AutodocObjectMixin):
+class LuaAlias(sphinx_lua_ls.domain.LuaAlias, AutodocObjectMixin):
     def parse_signature(self, sig):
-        assert isinstance(self.root, sphinx_luals.doctree.Alias)
+        assert isinstance(self.root, sphinx_lua_ls.doctree.Alias)
         return self.arguments[0], self.root.type
 
 
-class LuaClass(sphinx_luals.domain.LuaClass, AutodocObjectMixin):
+class LuaClass(sphinx_lua_ls.domain.LuaClass, AutodocObjectMixin):
     def parse_signature(self, sig):
         if self.root.kind == Kind.Class:
             bases = (
                 self.root.bases
-                if isinstance(self.root, sphinx_luals.doctree.Class)
+                if isinstance(self.root, sphinx_lua_ls.doctree.Class)
                 else []
             )
             return self.arguments[0], bases
@@ -556,7 +556,7 @@ class LuaClass(sphinx_luals.domain.LuaClass, AutodocObjectMixin):
         if self.root.kind == Kind.Class:
             return super().get_signature_prefix(signature)
         else:
-            return sphinx_luals.domain.LuaObject.get_signature_prefix(self, signature)
+            return sphinx_lua_ls.domain.LuaObject.get_signature_prefix(self, signature)
 
 
 def _parse_members(value: str):
@@ -596,7 +596,7 @@ class AutoObjectDirective(AutodocUtilsMixin):
     has_content = True
 
     def run(self):
-        for name, option in self.env.config["luals_default_options"].items():
+        for name, option in self.env.config["lua_ls_default_options"].items():
             if name not in self.options:
                 self.options[name] = option
 
@@ -605,7 +605,7 @@ class AutoObjectDirective(AutodocUtilsMixin):
         if not name:
             raise self.error(f"got an empty object name")
 
-        found = self.get_root(name, getattr(self.env, "luals_doc_root"))
+        found = self.get_root(name, getattr(self.env, "lua_ls_doc_root"))
         if not found:
             raise self.error(f"unknown lua object {name}")
 

@@ -5,7 +5,7 @@ Sphinx-LuaLS features domain for `Lua`_ and automatic documentation generator
 based on `Lua Language Server`_.
 
 .. _Lua: https://lua.org
-.. _Lua Language Server: https://luals.github.io/
+.. _Lua Language Server: https://lua_ls.github.io/
 
 See an example output: `logging`.
 
@@ -108,11 +108,11 @@ You'll need a Python installation and a Sphinx project to start with Sphinx-LuaL
 .. _PyEnv: https://github.com/pyenv/pyenv
 .. _installation: https://github.com/pyenv/pyenv#installation
 
-Install ``sphinx-luals`` using Pip:
+Install ``sphinx-lua-ls`` using Pip:
 
 .. code-block:: console
 
-   $ pip install sphinx-luals
+   $ pip install sphinx-lua-ls
 
 Add it to the ``extensions`` list in your ``conf.py``,
 and specify the location of your Lua project:
@@ -120,12 +120,12 @@ and specify the location of your Lua project:
 .. code-block:: python
 
    extensions = [
-       "sphinx_luals",
+       "sphinx_lua_ls",
    ]
 
    # Path to the folder containing the `.luarc.json` file,
    # relative to the directory with `conf.py`.
-   luals_project_root = "../"
+   lua_ls_project_root = "../"
 
 Quickstart
 ----------
@@ -569,35 +569,35 @@ Autodoc directive
 Settings
 --------
 
-.. py:data:: luals_project_root: str
+.. py:data:: lua_ls_project_root: str
 
    Path to a directory with ``.luarc.json`` file, relative to the location
    of ``conf.py``. Lua Language Server will be launched from here.
 
-.. py:data:: luals_project_directories: list[str]
+.. py:data:: lua_ls_project_directories: list[str]
 
    By default, Lua Language Server documents all files
-   from :py:data:`luals_project_root`. You can change that by providing
+   from :py:data:`lua_ls_project_root`. You can change that by providing
    a list or directories that should be documented. Autodoc will launch
    Lua Language Server using each of these directories as a target. The path
-   is relative to :py:data:`luals_project_root`.
+   is relative to :py:data:`lua_ls_project_root`.
 
-.. py:data:: luals_auto_install: bool
+.. py:data:: lua_ls_auto_install: bool
 
    Controls whether autodoc should try downloading Lua Language Server from github
    if it isn't installed already. This setting is enabled by default.
 
-.. py:data:: luals_auto_install_location: str
+.. py:data:: lua_ls_auto_install_location: str
 
    Controls where the Lua Language Server will be installed. By default,
    autodoc uses a folder in the temporary directory provided by the os.
-   For unix, it is ``/tmp/python_luals_cache``.
+   For unix, it is ``/tmp/python_lua_ls_cache``.
 
-.. py:data:: luals_min_version: str
+.. py:data:: lua_ls_min_version: str
 
    Controls the minimal version of Lua Language Server used.
 
-.. py:data:: luals_default_options: dict[str, str]
+.. py:data:: lua_ls_default_options: dict[str, str]
 
    Default values for directive options. You can override member ordering
    or enable documentation for undocumented or private members from here.
@@ -605,7 +605,7 @@ Settings
 
    .. code-block:: python
 
-      luals_default_options = {
+      lua_ls_default_options = {
          # Enable documentation for object's members.
          # Empty string means documenting all members with non-empty description.
          "members": "",
@@ -614,7 +614,7 @@ Settings
          # And so on...
       }
 
-.. py:data:: luals_lua_version: str
+.. py:data:: lua_ls_lua_version: str
 
    Controls which documentation version is used when linking
    to standard library functions. Does not otherwise affect parsing or generation.

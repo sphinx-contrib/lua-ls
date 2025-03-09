@@ -1,6 +1,6 @@
 import pytest
 
-import sphinx_luals.domain
+import sphinx_lua_ls.domain
 
 
 @pytest.mark.parametrize(
@@ -20,7 +20,7 @@ import sphinx_luals.domain
     ],
 )
 def test_separate_paren_prefix(sig, expected):
-    assert sphinx_luals.domain._separate_paren_prefix(sig) == expected
+    assert sphinx_lua_ls.domain._separate_paren_prefix(sig) == expected
 
 
 @pytest.mark.parametrize(
@@ -40,7 +40,7 @@ def test_separate_paren_prefix(sig, expected):
     ],
 )
 def test_separate_sig(sig, expected):
-    assert sphinx_luals.domain._separate_sig(sig) == expected
+    assert sphinx_lua_ls.domain._separate_sig(sig) == expected
 
 
 @pytest.mark.parametrize(
@@ -94,4 +94,4 @@ def test_separate_sig(sig, expected):
     ],
 )
 def test_parse_types(sig, expected):
-    assert sphinx_luals.domain._parse_types(sig) == expected
+    assert sphinx_lua_ls.domain._parse_types(sig) == expected

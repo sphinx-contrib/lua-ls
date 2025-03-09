@@ -2,4 +2,4 @@ project = ""
 copyright = ""
 author = ""
 
-extensions = ["sphinx_luals"]
+extensions = ["sphinx_lua_ls"]

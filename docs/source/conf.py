@@ -1,11 +1,11 @@
 import datetime
 
-import sphinx_luals
+import sphinx_lua_ls
 
 project = 'Sphinx-LuaLS'
 copyright = f"{datetime.date.today().year}, Tamika Nomara"
 author = 'Tamika Nomara'
-release = version = sphinx_luals.__version__
+release = version = sphinx_lua_ls.__version__
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
@@ -13,7 +13,7 @@ release = version = sphinx_luals.__version__
 extensions = [
     "sphinx.ext.githubpages",
     "sphinx_design",
-    "sphinx_luals",
+    "sphinx_lua_ls",
 ]
 
 templates_path = ['_templates']
@@ -22,7 +22,7 @@ exclude_patterns = []
 primary_domain = "lua"
 default_role = "lua:obj"
 
-luals_project_root = "../example"
+lua_ls_project_root = "../example"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -34,7 +34,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/taminomara/sphinx-luals",
+            "url": "https://github.com/taminomara/sphinx-lua-ls",
             "icon": "fa-brands fa-square-github",
             "type": "fontawesome",
         }
@@ -42,7 +42,7 @@ html_theme_options = {
 }
 html_context = {
     "github_user": "taminomara",
-    "github_repo": "sphinx-luals",
+    "github_repo": "sphinx-lua-ls",
     "github_version": "main",
     "doc_path": "docs/source",
 }

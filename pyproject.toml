@@ -1,5 +1,5 @@
 [project]
-name = "sphinx-luals"
+name = "sphinx-lua-ls"
 authors = [{name = "Tamika Nomara", email = "taminomara@gmail.com"}]
 description = "Automatic documentation generation via LuaLS"
 dynamic = ["version"]
@@ -31,7 +31,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "pytest-cov~=6.0.0",
-    "sphinx-luals[test,lint,doc]",
+    "sphinx-lua-ls[test,lint,doc]",
 ]
 lint = [
     "black~=23.7",
@@ -52,23 +52,23 @@ doc = [
 ]
 
 [project.urls]
-Documentation = "https://taminomara.github.io/sphinx-luals/"
-Issues = "https://github.com/taminomara/sphinx-luals/issues"
-Source = "https://github.com/taminomara/sphinx-luals/"
+Documentation = "https://taminomara.github.io/sphinx-lua-ls/"
+Issues = "https://github.com/taminomara/sphinx-lua-ls/issues"
+Source = "https://github.com/taminomara/sphinx-lua-ls/"
 
 [build-system]
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel>=0.40"]
 
 [tool.setuptools_scm]
-write_to = "sphinx_luals/_version.py"
+write_to = "sphinx_lua_ls/_version.py"
 
 [tool.pytest.ini_options]
 minversion = "7.0"
 addopts = ["--strict-markers", "-p no:doctest"]
-testpaths = ["examples", "test", "sphinx_luals", "docs"]
+testpaths = ["examples", "test", "sphinx_lua_ls", "docs"]
 
 [tool.pyright]
-include = ["sphinx_luals", "examples"]
+include = ["sphinx_lua_ls", "examples"]
 exclude = ["**/__pycache__"]
 typeCheckingMode = "strict"
 pythonVersion = "3.12"
