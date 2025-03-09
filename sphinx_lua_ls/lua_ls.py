@@ -335,7 +335,7 @@ def resolve(
     _logger.debug("using lua_ls cache path: %s", cache_path, type="lua-ls")
 
     if retry is None:
-        retry = urllib3.Retry(10, backoff_factor=0.5, status_forcelist=frozenset([403]))
+        retry = urllib3.Retry(10, backoff_factor=0.1)
 
     reporter.start()
     try:
@@ -362,7 +362,10 @@ def default_cache_path() -> pathlib.Path:
 
     """
 
-    return pathlib.Path(tempfile.gettempdir()) / "python_lua_ls_cache"
+    if path := os.environ.get("LUA_LS_CACHE_PATH", None):
+        return pathlib.Path(path)
+    else:
+        return pathlib.Path(tempfile.gettempdir()) / "python_lua_ls_cache"
 
 
 def _get_path(env: dict[str, str] | None) -> str:
@@ -445,6 +448,38 @@ def _check_and_install(
     else:
         _logger.debug("pre-installed lua-language-server not found", type="lua-ls")
 
+    machine = platform.machine().lower()
+    if "arm" in machine:
+        machine = "arm"
+
+    return _install(
+        version,
+        cache_path,
+        path,
+        install,
+        reporter,
+        timeout,
+        retry,
+        machine,
+        sys.platform,
+        system_lua_ls_path,
+        system_version,
+    )
+
+
+def _install(
+    version: str,
+    cache_path: pathlib.Path,
+    path: str,
+    install: bool,
+    reporter: ProgressReporter,
+    timeout: int,
+    retry: urllib3.Retry,
+    machine: str,
+    platform: str,
+    system_lua_ls_path: str | None = None,
+    system_version: str | None = None,
+):
     # Check system compatibility.
 
     release_names = {
@@ -455,10 +490,7 @@ def _check_and_install(
         ("win32", "amd64"): "-win32-x64.zip",
     }
 
-    machine = platform.machine().lower()
-    if "arm" in machine:
-        machine = "arm"
-    release_name = release_names.get((sys.platform, machine), None)
+    release_name = release_names.get((platform, machine), None)
     if not install or not release_name:
         if system_lua_ls_path:
             raise LuaLsError(
@@ -612,3 +644,32 @@ def _download_latest_release(
                         )
 
     return dest / basename
+
+
+if __name__ == "__main__":
+
+    def main():
+        import argparse
+
+        parser = argparse.ArgumentParser()
+        parser.add_argument("platform")
+        parser.add_argument("machine")
+        parser.add_argument("path", type=pathlib.Path)
+
+        args = parser.parse_args()
+
+        _install(
+            "3.0.0",
+            args.path,
+            _get_path(None),
+            True,
+            DefaultProgressReporter(),
+            15,
+            urllib3.Retry(10, backoff_factor=0.1),
+            args.machine,
+            args.platform,
+            None,
+            None,
+        )
+
+    main()

@@ -15,11 +15,42 @@ on:
       - closed
 
 jobs:
+  # Download LuaLs for all platforms all at once, to reduce total number of downloads.
+  prepare:
+    name: Download LuaLs
+    if: ${{ !(github.event_name == 'pull_request' && github.event.action == 'closed') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Update pip
+        run: python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: python -m pip install '.'
+      - name: Download LuaLs for Linux
+        run: python sphinx_lua_ls/lua_ls.py linux x86_64 lua_ls_release/ubuntu-latest
+      - name: Download LuaLs for Windows
+        run: python sphinx_lua_ls/lua_ls.py win32 amd64 lua_ls_release/macos-latest
+      - name: Download LuaLs for MacOs
+        run: python sphinx_lua_ls/lua_ls.py darwin x86_64  lua_ls_release/windows-latest
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: lua_ls_release
+          path: lua_ls_release
+          retention-days: 3
+
   # Runs main tests for the package.
   #
   # Runs on all events except when closing a pull request.
   test:
     name: Test package
+    needs:
+      - prepare
     if: ${{ !(github.event_name == 'pull_request' && github.event.action == 'closed') }}
     strategy:
       fail-fast: false
@@ -29,6 +60,7 @@ jobs:
           - macos-latest
           - windows-latest
         python-version:
+          - "3.12"
           - "3.13"
         type:
           - test
@@ -36,9 +68,6 @@ jobs:
           - os: ubuntu-latest
             python-version: "3.13"
             type: code style
-          - os: ubuntu-latest
-            python-version: "3.12"
-            type: test
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout source
@@ -53,12 +82,20 @@ jobs:
       - name: Install test dependencies
         if: ${{ matrix.type == 'test' }}
         run: python -m pip install '.[test]'
+      - name: Download LuaLs
+        if: ${{ matrix.type == 'test' }}
+        uses: actions/download-artifact@v4
+        with:
+          name: lua_ls_release
+          path: lua_ls_release
       - name: Check types
         if: ${{ matrix.type == 'test' }}
         run: pyright
       - name: Test package
         if: ${{ matrix.type == 'test' }}
         run: pytest -vv --showlocals --tb=short --color=yes --junit-xml=test-results.xml
+        env:
+          LUA_LS_CACHE_PATH: lua_ls_release/${{ matrix.os }}
       # Lint
       - name: Install lint dependencies
         if: ${{ matrix.type == 'code style' }}
@@ -73,7 +110,7 @@ jobs:
   publish_to_pypi:
     name: Publish package to PyPi
     needs:
-     - test
+      - test
     if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
     runs-on: ubuntu-latest
     environment:
@@ -121,10 +158,15 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           python -m pip install --editable '.[doc]'
-      - uses: taminomara/sphinx-problem-matcher@main
+      - name: Download LuaLs
+        uses: actions/download-artifact@v4
+        with:
+          name: lua_ls_release
+          path: lua_ls_release
       - name: Build docs
         env:
           SPHINXOPTS: "-j auto"
+          LUA_LS_CACHE_PATH: lua_ls_release/${{ matrix.os }}
         run: |
           cd docs
           make html
