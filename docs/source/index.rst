@@ -539,6 +539,8 @@ Autodoc directive
       they are skipped even if :rst:dir:`members` is passed.
 
    .. rst:directive:option:: private-members
+                             protected-members
+                             package-members
 
       Include non-public members to the object's description.
 
@@ -582,6 +584,39 @@ Autodoc directive
          Currently, Lua Language Server does not export position information
          for enums (``@enum``). If ordering by source, enums will be placed
          at the end of the documentation.
+
+
+Controlling generation from code comments
+-----------------------------------------
+
+When using :rst:dir:`lua:autoobject` in recursive mode, it is sometimes necessary
+to override its options for some objects. To do this, you can include specially
+formatted comments to your documentation.
+
+To override any :rst:dir:`lua:autoobject` setting for a particular object,
+use ``!doc`` comments. For example, here we enable :rst:dir:`lua:autoobject:special-members`
+and exclude ``__tostring`` for class ``Foo``:
+
+.. code-block:: lua
+
+   --- Some class documentation...
+   ---
+   --- !doc special-members
+   --- !doc exclude-members: __tostring
+   --- @class Foo
+
+You can also specify which type of object is being documented by using
+a ``!doctype`` comment. For example, here we use ``!doctype const`` to indicate
+that a certain variable should be documented as :rst:dir:`lua:const`:
+
+.. code-block:: lua
+
+   --- Some const documentation...
+   ---
+   --- !doctype const
+   --- @type string
+   foo = "bar!"
+
 
 Settings
 --------

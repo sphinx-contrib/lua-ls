@@ -66,3 +66,5 @@ Absolute ref from outside: :lua:obj:`refModule.refTarget`.
 Ref: :lua:obj:`refProcessing.data`, :lua:obj:`refProcessing.function`,
 :lua:obj:`refProcessing.method`, :lua:obj:`refProcessing.classmethod`,
 :lua:obj:`refProcessing.staticmethod`.
+
+Ref with explicit title: :lua:obj:`title <refProcessing.classmethod>`.

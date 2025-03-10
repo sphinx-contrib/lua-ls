@@ -75,3 +75,9 @@ autodoc.simpleAlias.data = 1
 --- | 2
 --- | 3
 autodoc.aliasEnum = {}
+
+--- This is a data that is documented as const.
+---
+--- !doctype const
+--- @type any
+autodoc.dataToConst = nil

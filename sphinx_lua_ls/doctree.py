@@ -10,6 +10,7 @@ import enum
 import functools
 import pathlib
 import re
+import textwrap
 import typing as _t
 from dataclasses import dataclass
 
@@ -50,8 +51,108 @@ class Visibility(enum.Enum):
     Package = "package"
 
 
+class _ParseDocstringMixin:
+    docstring: str | None
+
+    @functools.cached_property
+    def parsed_docstring(self) -> str | None:
+        self._parse_docstring()
+        return self._parsed_docstring
+
+    @functools.cached_property
+    def parsed_options(self) -> dict[str, str]:
+        self._parse_docstring()
+        return self._parsed_options
+
+    @functools.cached_property
+    def parsed_doctype(self) -> str | None:
+        self._parse_docstring()
+        return self._parsed_doctype
+
+    def _parse_docstring(self):
+        if not self.docstring:
+            self._parsed_docstring = None
+            self._parsed_options = {}
+            self._parsed_doctype = None
+            return
+
+        docs = self.docstring
+        docs = re.sub(r"^\@\*\w+\*.*$", "", docs, flags=re.MULTILINE)
+        docs = re.sub(r"^```lua\n.*?\n```", "", docs, flags=re.MULTILINE | re.DOTALL)
+        self._parse_options(docs)
+        docs = re.sub(r"^\s*\!doc(?:type)?\s+(?:.*)$", "", docs, flags=re.MULTILINE)
+        see_sections = list(re.finditer(r"^See:\n", docs, flags=re.MULTILINE))
+        if see_sections:
+            match = see_sections[-1]
+            see_section = docs[match.span()[1] :]
+            docs = docs[: match.span()[0]]
+        else:
+            see_section = ""
+
+        see_lines = []
+        rejected_see_lines = []
+        for see_line in see_section.splitlines():
+            if match := re.match(
+                r"""
+                ^[ ][ ]\*[ ]
+                (?:
+                    ~(?P<rejected_type>.+?)~ (?P<rejected_doc>.*)
+                    |
+                    \[(?P<type>.+?)\]\(.*?\) (?P<doc>.*)
+                )
+                $
+                """,
+                see_line,
+                flags=re.VERBOSE,
+            ):
+                typ = match.group("type") or match.group("rejected_type")
+                doc = match.group("doc") or match.group("rejected_doc") or ""
+                if doc:
+                    doc = ": " + doc
+                see_lines.append(f":lua:obj:`{typ}`{doc}")
+            else:
+                rejected_see_lines.append(see_line)
+
+        if rejected_see_lines:
+            docs += "\n\nSee:\n" + "\n".join(rejected_see_lines)
+
+        docs = textwrap.dedent(docs)
+
+        if len(see_lines) > 1:
+            see_lines = ["", "See:", ""] + [
+                nl for l in see_lines for nl in (f"- {l}", "")
+            ]
+        else:
+            see_lines = [""] + [f"See: {l}" for l in see_lines]
+
+        if see_lines:
+            docs += "\n".join(see_lines)
+
+        self._parsed_docstring = docs
+
+    def _parse_options(self, docs: str):
+        options: dict[str, str] = {}
+        doctype: str | None = None
+
+        for match in re.finditer(
+            r"^\s*\!doc(?P<type>type)?\s+(?P<value>.*)$", docs, flags=re.MULTILINE
+        ):
+            if match.group("type"):
+                doctype = match.group("value").strip()
+            else:
+                value = match.group("value").strip()
+                if ":" in value:
+                    name, arg = value.split(":", maxsplit=1)
+                else:
+                    name, arg = value, ""
+                options[name.strip()] = arg.strip()
+
+        self._parsed_options = options
+        self._parsed_doctype = doctype
+
+
 @dataclass
-class Param:
+class Param(_ParseDocstringMixin):
     """
     Function parameter or return value.
 
@@ -71,7 +172,7 @@ class Param:
 
 
 @dataclass(kw_only=True, repr=False)
-class Object:
+class Object(_ParseDocstringMixin):
     """
     A documented lua object.
 
@@ -403,9 +504,11 @@ class Parser:
                 res.docstring = ns.get("desc")
                 for base in ns.get("extends", []):
                     if "view" in base:
-                        res.bases.append(base["view"])
+                        typ = self._normalize_type(base.get("view", None) or "unknown")
+                        res.bases.append(typ)
             case "doc.alias":
-                res = Alias(type=ns.get("view", "unknown"))
+                typ = self._normalize_type(ns.get("view", None) or "unknown")
+                res = Alias(type=typ)
                 _process_alias_doc(res, ns.get("desc"))
             case _:
                 return self._parse_field(ns)
@@ -433,7 +536,7 @@ class Parser:
                         name = "..."
                     if not isinstance(name, str):
                         name = None
-                    typ = param.get("view")
+                    typ = self._normalize_type(param.get("view", None) or "unknown")
                     res.params.append(Param(name, typ, param.get("desc")))
                 for param in extends.get("returns", []):
                     name = param.get("name")
@@ -441,11 +544,12 @@ class Parser:
                         name = "..."
                     if not isinstance(name, str):
                         name = None
-                    typ = param.get("view")
+                    typ = self._normalize_type(param.get("view", None) or "unknown")
                     res.returns.append(Param(name, typ, param.get("desc")))
                 res.implicit_self = implicit_self
             case _:
-                res = Data(type=extends.get("view", "unknown"))
+                typ = self._normalize_type(ns.get("view", None) or "unknown")
+                res = Data(type=typ)
 
         res.is_deprecated = bool(ns.get("deprecated", False))
         res.is_async = bool(ns.get("async", False))
@@ -461,6 +565,12 @@ class Parser:
             return pathlib.Path(re.sub(r"^.*://", "", path)).resolve()
         else:
             return None
+
+    def _normalize_type(self, typ: str) -> str:
+        if re.match(r"^\([\w.-]+\)\?$", typ):
+            return typ[1:-2] + "?"
+        else:
+            return typ
 
 
 def _process_alias_doc(node: Alias, doc: str | None):

@@ -965,7 +965,7 @@ class LuaDomain(Domain):
     object_types: dict[str, ObjType] = {
         "function": ObjType(_("function"), "func", "obj"),
         "data": ObjType(_("data"), "data", "obj"),
-        "const": ObjType(_("const"), "const", "obj"),
+        "const": ObjType(_("const"), "attr", "const", "obj"),
         "class": ObjType(_("class"), "class", "obj"),
         "alias": ObjType(_("alias"), "alias", "obj"),
         "method": ObjType(_("method"), "meth", "obj"),
@@ -1068,7 +1068,8 @@ class LuaDomain(Domain):
         classname = node.get("lua:class")
         if match := self._find_obj(modname, classname, target, typ):
             name, (docname, objtype) = match
-            if typ not in ("any", "obj") and typ not in objtype:
+            allowed_typs = self.object_types[objtype].roles
+            if typ != "any" and typ not in allowed_typs:
                 logger.warning(
                     "reference :lua:%s:`%s` resolved to an object of unexpected type %r",
                     typ,
