@@ -55,6 +55,7 @@ doc = [
 Documentation = "https://taminomara.github.io/sphinx-lua-ls/"
 Issues = "https://github.com/taminomara/sphinx-lua-ls/issues"
 Source = "https://github.com/taminomara/sphinx-lua-ls/"
+Changelog = "https://github.com/taminomara/sphinx-lua-ls/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel>=0.40"]
