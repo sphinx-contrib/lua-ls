@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Sphinx-LuaLS &#8212; Sphinx-LuaLS 1.0.0 documentation</title>
+    <title>Sphinx-LuaLS &#8212; Sphinx-LuaLS 1.1.0 documentation</title>
   
   
   
@@ -39,7 +39,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
-    <script src="_static/documentation_options.js?v=8d563738"></script>
+    <script src="_static/documentation_options.js?v=fc837d61"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/design-tabs.js?v=f930bc37"></script>
@@ -48,7 +48,7 @@
     <link rel="search" title="Search" href="search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="1.0.0" />
+  <meta name="docsearch:version" content="1.1.0" />
   </head>
   
   
@@ -110,7 +110,7 @@
   
   
   
-    <p class="title logo__title">Sphinx-LuaLS 1.0.0 documentation</p>
+    <p class="title logo__title">Sphinx-LuaLS 1.1.0 documentation</p>
   
 </a></div>
     
@@ -832,6 +832,10 @@ they are skipped even if <code class="xref rst rst-dir docutils literal notransl
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-private-members">
 <span class="sig-name descname"><span class="pre">:private-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-private-members" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object rst" id="directive-option-lua-autoobject-protected-members">
+<span class="sig-name descname"><span class="pre">:protected-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-protected-members" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object rst" id="directive-option-lua-autoobject-package-members">
+<span class="sig-name descname"><span class="pre">:package-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-package-members" title="Link to this definition">#</a></dt>
 <dd><p>Include non-public members to the object’s description.</p>
 </dd></dl>
 
@@ -886,6 +890,32 @@ at the end of the documentation.</p>
 
 </dd></dl>
 
+</section>
+<section id="controlling-generation-from-code-comments">
+<h2>Controlling generation from code comments<a class="headerlink" href="#controlling-generation-from-code-comments" title="Link to this heading">#</a></h2>
+<p>When using <a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> in recursive mode, it is sometimes necessary
+to override its options for some objects. To do this, you can include specially
+formatted comments to your documentation.</p>
+<p>To override any <a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> setting for a particular object,
+use <code class="docutils literal notranslate"><span class="pre">!doc</span></code> comments. For example, here we enable <a class="reference internal" href="#directive-option-lua-autoobject-special-members" title="lua:autoobject:special-members directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:special-members</span></code></a>
+and exclude <code class="docutils literal notranslate"><span class="pre">__tostring</span></code> for class <code class="docutils literal notranslate"><span class="pre">Foo</span></code>:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">--- Some class documentation...</span>
+<span class="c1">---</span>
+<span class="c1">--- !doc special-members</span>
+<span class="c1">--- !doc exclude-members: __tostring</span>
+<span class="c1">--- @class Foo</span>
+</pre></div>
+</div>
+<p>You can also specify which type of object is being documented by using
+a <code class="docutils literal notranslate"><span class="pre">!doctype</span></code> comment. For example, here we use <code class="docutils literal notranslate"><span class="pre">!doctype</span> <span class="pre">const</span></code> to indicate
+that a certain variable should be documented as <a class="reference internal" href="#directive-lua-const" title="lua:const directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:const</span></code></a>:</p>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">--- Some const documentation...</span>
+<span class="c1">---</span>
+<span class="c1">--- !doctype const</span>
+<span class="c1">--- @type string</span>
+<span class="nv">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bar!&quot;</span>
+</pre></div>
+</div>
 </section>
 <section id="settings">
 <h2>Settings<a class="headerlink" href="#settings" title="Link to this heading">#</a></h2>
@@ -1159,6 +1189,8 @@ to standard library functions. Does not otherwise affect parsing or generation.<
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-members"><code class="docutils literal notranslate"><span class="pre">:members:</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-undoc-members"><code class="docutils literal notranslate"><span class="pre">:undoc-members:</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-private-members"><code class="docutils literal notranslate"><span class="pre">:private-members:</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-protected-members"><code class="docutils literal notranslate"><span class="pre">:protected-members:</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-package-members"><code class="docutils literal notranslate"><span class="pre">:package-members:</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-special-members"><code class="docutils literal notranslate"><span class="pre">:special-members:</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-inherited-members"><code class="docutils literal notranslate"><span class="pre">:inherited-members:</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-exclude-members"><code class="docutils literal notranslate"><span class="pre">:exclude-members:</span></code></a></li>
@@ -1168,6 +1200,7 @@ to standard library functions. Does not otherwise affect parsing or generation.<
 </li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#controlling-generation-from-code-comments">Controlling generation from code comments</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#settings">Settings</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-output">Example output</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indices-and-tables">Indices and tables</a></li>
