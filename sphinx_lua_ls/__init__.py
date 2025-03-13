@@ -1,5 +1,6 @@
 import pathlib
 import re
+from typing import Any
 
 import sphinx.addnodes
 import sphinx.application
@@ -10,134 +11,235 @@ import sphinx.ext.intersphinx
 from sphinx.errors import ConfigError
 from sphinx.util.display import progress_message
 
+import sphinx_lua_ls.apidoc
 import sphinx_lua_ls.autodoc
+import sphinx_lua_ls.autoindex
 import sphinx_lua_ls.domain
-from sphinx_lua_ls import doctree, intersphinx, lua_ls
+import sphinx_lua_ls.intersphinx
+import sphinx_lua_ls.lua_ls
+import sphinx_lua_ls.objtree
 from sphinx_lua_ls._version import __version__, __version_tuple__
 
 
-def check_options(
-    app: sphinx.application.Sphinx,
-    config: sphinx.config.Config,
-):
-    lua_version = config["lua_ls_lua_version"]
-    if not isinstance(lua_version, str):
-        raise ConfigError(
-            f"expected lua_ls_lua_version to be a str, got {type(lua_version)} instead"
-        )
-    if not re.match(r"\d+(\.\d+)*", lua_version):
-        raise ConfigError(f"incorrect lua_ls_lua_version: {lua_version}")
+def _version(name: str, value) -> str:
+    if not isinstance(value, str):
+        raise ConfigError(f"{name} should be str, got {type(value)} instead")
+    if not re.match(r"\d+(\.\d+)*", value):
+        raise ConfigError(f"incorrect {name}: {value}")
+    return value
 
-    project_root = config["lua_ls_project_root"]
-    if project_root is None:
-        project_root = ""
-    if not isinstance(lua_version, (str, pathlib.Path)):
-        raise ConfigError(
-            f"expected lua_ls_project_root to be a str, got {type(project_root)} instead"
-        )
+
+def _path(name: str, value, root: str | pathlib.Path) -> pathlib.Path:
+    if value is None:
+        value = ""
+    if not isinstance(value, (str, pathlib.Path)):
+        raise ConfigError(f"{name} should be str, got {type(value)} instead")
     try:
-        project_root = config["lua_ls_project_root"] = (
-            pathlib.Path(app.srcdir, project_root).expanduser().resolve()
-        )
+        return pathlib.Path(root, value).expanduser().resolve()
     except ValueError as e:
         raise ConfigError(f"incorrect lua_ls_project_root: {e}") from None
 
-    project_directories = config["lua_ls_project_directories"]
-    if project_directories is None:
-        project_directories = config["lua_ls_project_directories"] = []
-    if not isinstance(project_directories, list):
-        raise ConfigError(
-            f"expected lua_ls_project_directories to be a list, got {type(project_directories)} instead"
-        )
-    for i, project_directory in enumerate(project_directories):
-        if not isinstance(project_directory, (str, pathlib.Path)):
-            raise ConfigError(
-                f"expected lua_ls_project_directories[{i}] to be a list, got {type(project_directory)} instead"
-            )
-        try:
-            project_directories[i] = (
-                pathlib.Path(project_root, project_directory).expanduser().resolve()
-            )
-        except ValueError as e:
-            raise ConfigError(
-                f"incorrect lua_ls_project_directories[{i}]: {e}"
-            ) from None
 
-    auto_install = config["lua_ls_auto_install"]
-    if not isinstance(auto_install, bool):
-        raise ConfigError(
-            f"expected lua_ls_auto_install to be a bool, got {type(auto_install)} instead"
-        )
+def _paths(name: str, value, root: str | pathlib.Path) -> list[pathlib.Path]:
+    if value is None:
+        value = []
+    if not isinstance(value, list):
+        raise ConfigError(f"{name} should be list, got {type(value)} instead")
+    return [_path(f"{name}[{i}]", v, root) for i, v in enumerate(value)]
 
-    auto_install_location = config["lua_ls_auto_install_location"]
-    if auto_install_location is not None:
-        if not isinstance(auto_install_location, (str, pathlib.Path)):
-            raise ConfigError(
-                f"expected lua_ls_auto_install_location to be a str, got {type(auto_install_location)} instead"
-            )
-        try:
-            auto_install_location = config["auto_install_location"] = (
-                pathlib.Path(auto_install_location).expanduser().resolve()
-            )
-        except ValueError as e:
-            raise ConfigError(f"incorrect lua_ls_auto_install_location: {e}") from None
 
-    min_version = config["lua_ls_min_version"]
-    if not isinstance(min_version, str):
-        raise ConfigError(
-            f"expected lua_ls_min_version to be a str, got {type(min_version)} instead"
-        )
-    if not re.match(r"\d+(\.\d+)*", min_version):
-        raise ConfigError(f"incorrect lua_ls_min_version: {min_version}")
+def _bool(name: str, value) -> bool:
+    if not isinstance(value, bool):
+        raise ConfigError(f"{name} should be bool, got {type(value)} instead")
+    return value
 
-    default_options = config["lua_ls_default_options"]
-    if default_options is None:
-        default_options = config["lua_ls_default_options"] = {}
-    if not isinstance(default_options, dict):
-        raise ConfigError(
-            f"expected lua_ls_default_options to be a dict, got {type(default_options)} instead"
-        )
-    for name, value in default_options.items():
-        parser = sphinx_lua_ls.autodoc.AutoObjectDirective.option_spec.get(name, None)
+
+def _int(name: str, value) -> int:
+    if not isinstance(value, int):
+        raise ConfigError(f"{name} should be int, got {type(value)} instead")
+    return value
+
+
+def _options(name: str, value) -> dict[str, Any]:
+    if value is None:
+        value = {}
+    if not isinstance(value, dict):
+        raise ConfigError(f"{name} should be dict, got {type(value)} instead")
+    new_value = {}
+    for key, option in value.items():
+        parser = sphinx_lua_ls.autodoc.AutoObjectDirective.option_spec.get(key, None)
         if parser is None:
-            raise ConfigError(f"unknown option in lua_ls_default_options: {name}")
-        if value is not None and not isinstance(value, str):
+            raise ConfigError(f"unknown option in {name}: {key}")
+        if option is not None and not isinstance(option, str):
             raise ConfigError(
-                f"expected lua_ls_default_options[{name!r} to be a string, got {type(value)} instead"
+                f"{name}[{key!r}] should be str, got {type(option)} instead"
             )
         try:
-            default_options[name] = parser(value)
+            new_value[key] = parser(option)
         except Exception as e:
+            raise ConfigError(f"incorrect {name}[{key!r}]: {e}") from None
+    return new_value
+
+
+def _api_roots(
+    name: str, value, root: str | pathlib.Path, max_depth: int, options: dict[str, Any]
+) -> dict[str, dict[str, Any]]:
+    if value is None:
+        value = []
+    if not isinstance(value, dict):
+        raise ConfigError(f"{name} should be list, got {type(value)} instead")
+    new_value = {}
+    for mod in value:
+        api_root = value[mod]
+        if isinstance(api_root, str):
+            api_root = {"path": _path(f"{name}[{mod!r}]", api_root, root)}
+        if not isinstance(api_root, dict):
             raise ConfigError(
-                f"incorrect option {name} in lua_ls_default_options: {e}"
-            ) from None
+                f"{name}[{mod!r}] should be dict or str, got {type(api_root)} instead"
+            )
 
-
-@progress_message("running lua language server")
-def run_lua_ls(
-    app: sphinx.application.Sphinx,
-    env: sphinx.environment.BuildEnvironment,
-    docnames: list[str],
-):
-    root_dir = app.config["lua_ls_project_root"]
-    project_directories = app.config["lua_ls_project_directories"] or [root_dir]
-
-    try:
-        runner = lua_ls.resolve(
-            min_version=app.config["lua_ls_min_version"],
-            cwd=root_dir,
-            reporter=lua_ls.SphinxProgressReporter(app.verbosity),
-            install=app.config["lua_ls_auto_install"],
-            cache_path=app.config["lua_ls_auto_install_location"],
+        new_api_root = {}
+        new_api_root["path"] = _path(
+            f"{name}[{mod!r}]['path']", api_root.pop("path", None), root
         )
-    except lua_ls.LuaLsError as e:
+        if not new_api_root["path"].is_relative_to(root):
+            raise ConfigError(
+                f"api root {name}[{mod!r}] lays outside of src root: {str(new_api_root['path'])}"
+            )
+        new_api_root["options"] = _options(
+            f"{name}[{mod!r}]['options']", api_root.pop("options", None)
+        )
+        for option_name, option_value in options.items():
+            if option_name not in new_api_root["options"]:
+                new_api_root["options"][option_name] = option_value
+        new_api_root["max_depth"] = _int(
+            f"{name}[{mod!r}]['max_depth']", api_root.pop("max_depth", max_depth)
+        )
+        if api_root:
+            raise ConfigError(
+                f"unknown keys in {name}[{mod!r}]: {', '.join(map(str, api_root))}"
+            )
+        new_value[mod] = new_api_root
+    return new_value
+
+
+def check_options(app: sphinx.application.Sphinx):
+    config = app.config
+
+    domain: sphinx_lua_ls.domain.LuaDomain = app.env.get_domain("lua")  # type: ignore
+    domain.config.clear()
+
+    domain.config["project_root"] = _path(
+        "lua_ls_project_root", config["lua_ls_project_root"], app.srcdir
+    )
+    domain.config["project_directories"] = _paths(
+        "lua_ls_project_directories",
+        config["lua_ls_project_directories"],
+        domain.config["project_root"],
+    )
+    domain.config["auto_install"] = _bool(
+        "lua_ls_auto_install", config["lua_ls_auto_install"]
+    )
+    if config["lua_ls_auto_install_location"] is not None:
+        domain.config["auto_install_location"] = _path(
+            "lua_ls_auto_install_location",
+            config["lua_ls_auto_install_location"],
+            pathlib.Path("/"),
+        )
+    else:
+        domain.config["auto_install_location"] = None
+    domain.config["min_version"] = _version(
+        "lua_ls_min_version", config["lua_ls_min_version"]
+    )
+    domain.config["lua_version"] = _version(
+        "lua_ls_lua_version", config["lua_ls_lua_version"]
+    )
+    domain.config["default_options"] = _options(
+        "lua_ls_default_options", config["lua_ls_default_options"]
+    )
+    domain.config["apidoc_default_options"] = _options(
+        "lua_ls_apidoc_default_options", config["lua_ls_apidoc_default_options"]
+    )
+    domain.config["apidoc_max_depth"] = _int(
+        "lua_ls_apidoc_max_depth", config["lua_ls_apidoc_max_depth"]
+    )
+    domain.config["apidoc_roots"] = _api_roots(
+        "lua_ls_apidoc_roots",
+        config["lua_ls_apidoc_roots"],
+        app.srcdir,
+        domain.config["apidoc_max_depth"],
+        domain.config["apidoc_default_options"],
+    )
+
+
+def run_lua_ls(app: sphinx.application.Sphinx):
+    domain: sphinx_lua_ls.domain.LuaDomain = app.env.get_domain("lua")  # type: ignore
+
+    root_dir = domain.config["project_root"]
+    project_directories = sorted(domain.config["project_directories"] or [root_dir])
+
+    modified = (
+        "objtree" not in domain.data
+        or "objtree_roots" not in domain.data
+        or "objtree_paths" not in domain.data
+        or domain.data["objtree_roots"] != project_directories
+    )
+    if not modified:
+        for path, modtime in domain.data["objtree_paths"].items():
+            if not path.exists() or path.stat().st_mtime_ns > modtime:
+                modified = True
+                break
+    if not modified:
+        for dir in project_directories:
+            for path in dir.rglob("*.lua"):
+                if path not in domain.data["objtree_paths"]:
+                    modified = True
+                    break
+    if not modified:
+        return
+
+    cwd = pathlib.Path.cwd()
+    try:
+        runner = sphinx_lua_ls.lua_ls.resolve(
+            min_version=domain.config["min_version"],
+            cwd=root_dir,
+            reporter=sphinx_lua_ls.lua_ls.SphinxProgressReporter(app.verbosity),
+            install=domain.config["auto_install"],
+            cache_path=domain.config["auto_install_location"],
+        )
+    except sphinx_lua_ls.lua_ls.LuaLsError as e:
         raise sphinx.errors.ExtensionError(str(e))
 
-    parser = doctree.Parser()
+    parser = sphinx_lua_ls.objtree.Parser()
     for dir in project_directories:
-        parser.parse(runner.run(dir))
+        with progress_message(
+            f"running lua language server in {dir.relative_to(cwd, walk_up=True) or '.'}"
+        ):
+            parser.parse(runner.run(dir), dir)
+            parser.files.update(dir.rglob("*.lua"))
 
-    setattr(env, "lua_ls_doc_root", parser.root)
+    domain.data["objtree"] = parser.root
+    domain.data["objtree_roots"] = project_directories
+    domain.data["objtree_paths"] = {p: p.stat().st_mtime_ns for p in parser.files}
+
+
+def run_apidoc(
+    app: sphinx.application.Sphinx,
+):
+    domain: sphinx_lua_ls.domain.LuaDomain = app.env.get_domain("lua")  # type: ignore
+    cwd = pathlib.Path.cwd()
+    for name, params in domain.config["apidoc_roots"].items():
+        root: sphinx_lua_ls.objtree.Object = app.env.domaindata["lua"]["objtree"]
+        with progress_message(
+            f"running lua apidoc in {params['path'].relative_to(cwd, walk_up=True) or '.'}"
+        ):
+            sphinx_lua_ls.apidoc.generate(
+                params["path"],
+                name,
+                root,
+                params["options"],
+                params["max_depth"],
+            )
 
 
 def setup(app: sphinx.application.Sphinx):
@@ -148,16 +250,25 @@ def setup(app: sphinx.application.Sphinx):
     app.add_config_value("lua_ls_auto_install", True, rebuild="")
     app.add_config_value("lua_ls_auto_install_location", None, rebuild="")
     app.add_config_value("lua_ls_min_version", "3.0.0", rebuild="env")
-    app.add_config_value("lua_ls_lua_version", "5.4", rebuild="env")
+    app.add_config_value("lua_ls_lua_version", "5.4", rebuild="html")
     app.add_config_value("lua_ls_default_options", None, rebuild="env")
+    app.add_config_value("lua_ls_apidoc_roots", {}, rebuild="")
+    app.add_config_value("lua_ls_apidoc_default_options", None, rebuild="")
+    app.add_config_value("lua_ls_apidoc_max_depth", 4, rebuild="")
 
     app.add_directive_to_domain(
         "lua", "autoobject", sphinx_lua_ls.autodoc.AutoObjectDirective
     )
+    app.add_directive_to_domain(
+        "lua", "autoindex", sphinx_lua_ls.autoindex.AutoIndexDirective
+    )
 
-    app.connect("config-inited", check_options)
-    app.connect("env-before-read-docs", run_lua_ls)
-    app.connect("missing-reference", intersphinx.resolve_std_reference)
+    app.connect("builder-inited", check_options)
+    app.connect("builder-inited", run_lua_ls)
+    app.connect("builder-inited", run_apidoc)
+    app.connect("missing-reference", sphinx_lua_ls.intersphinx.resolve_std_reference)
+
+    app.add_post_transform(sphinx_lua_ls.autoindex.AutoIndexTransform)
 
     return {
         "version": __version__,

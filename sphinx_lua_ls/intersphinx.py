@@ -197,7 +197,7 @@ def resolve_std_reference(
     if node["refdomain"] == "lua" or node["reftype"] == "any":
         target = node["reftarget"]
         if target in targets:
-            lua = env.config["lua_ls_lua_version"]
+            lua = env.domaindata["lua"]["config"]["lua_version"]
             uri = f"https://www.lua.org/manual/{lua}/manual.html#{targets[target]}"
             ref = docutils.nodes.reference("", "", contnode)
             ref["refuri"] = uri

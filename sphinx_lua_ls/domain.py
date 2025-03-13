@@ -10,7 +10,7 @@ See the original code here: https://github.com/boolangery/sphinx-luadomain
 import functools
 import re
 from collections.abc import Set
-from typing import Any, Callable, ClassVar, Generic, Iterable, Iterator, TypeVar
+from typing import Any, Callable, ClassVar, Generic, Iterator, TypeVar
 
 from docutils import nodes
 from docutils.parsers.rst import directives
@@ -18,7 +18,7 @@ from docutils.parsers.rst.states import Inliner
 from sphinx import addnodes
 from sphinx.builders import Builder
 from sphinx.directives import ObjectDescription
-from sphinx.domains import Domain, Index, IndexEntry, ObjType
+from sphinx.domains import Domain, ObjType
 from sphinx.environment import BuildEnvironment
 from sphinx.locale import get_translation
 from sphinx.roles import XRefRole
@@ -330,6 +330,7 @@ class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
         "async": directives.flag,
         "global": directives.flag,
         "deprecated": directives.flag,
+        "synopsis": directives.unchanged,
     }
 
     doc_field_types = [
@@ -361,7 +362,9 @@ class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
     allow_nesting = False
 
     def run(self) -> list[nodes.Node]:
-        for name, option in self.env.config["lua_ls_default_options"].items():
+        for name, option in self.env.domaindata["lua"]["config"][
+            "default_options"
+        ].items():
             if name not in self.options:
                 self.options[name] = option
         return super().run()
@@ -458,7 +461,7 @@ class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
             signode["first"] = not self.names
             self.state.document.note_explicit_target(signode)
             objects = self.env.domaindata["lua"]["objects"]
-            if fullname in objects:
+            if fullname in objects and self.env.docname != objects[fullname][0]:
                 self.state_machine.reporter.warning(
                     "duplicate object description of %s, " % fullname
                     + "other instance in "
@@ -466,7 +469,12 @@ class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
                     + ", use :no-index: for one of them",
                     line=self.lineno,
                 )
-            objects[fullname] = (self.env.docname, self.objtype)
+            objects[fullname] = (
+                self.env.docname,
+                self.objtype,
+                "deprecated" in self.options,
+                self.options.get("synopsis", None),
+            )
 
         indextext = self.get_index_text(fullname, modname, classname, objname)
         if indextext:
@@ -510,14 +518,14 @@ class LuaFunction(LuaObject[tuple[list[tuple[str, str]], list[tuple[str, str]]]]
             name = re.sub(r"\s", "", match.group())
             sig = sig[match.span()[1] :]
         else:
-            raise ValueError("Incorrect function name")
+            raise self.error("incorrect function name")
 
         params, returns = _separate_paren_prefix(sig)
 
         if returns and returns.startswith("->"):
             returns = returns[2:].lstrip()
         elif returns:
-            raise ValueError("Incorrect function return type")
+            raise self.error("incorrect function return type")
 
         if returns.startswith("(") and returns.endswith(")"):
             returns = returns[1:-1]
@@ -613,7 +621,7 @@ class LuaData(LuaObject[str]):
             name = re.sub(r"\s", "", match.group())
             sig = sig[match.span()[1] :]
         else:
-            raise ValueError("Incorrect data name")
+            raise self.error("incorrect data name")
 
         if sig.startswith("=") or sig.startswith(":"):
             sig = sig[1:]
@@ -664,7 +672,7 @@ class LuaAlias(LuaObject[str]):
             name = re.sub(r"\s", "", match.group())
             sig = sig[match.span()[1] :]
         else:
-            raise ValueError("Incorrect alias name")
+            raise self.error("incorrect alias name")
 
         if sig.startswith("=") or sig.startswith(":"):
             sig = sig[1:]
@@ -717,7 +725,7 @@ class LuaClass(LuaObject[list[str]]):
             name = re.sub(r"\s", "", match.group())
             sig = sig[match.span()[1] :]
         else:
-            raise ValueError("Incorrect data name")
+            raise self.error("incorrect data name")
 
         if sig.startswith("=") or sig.startswith(":"):
             sig = sig[1:]
@@ -770,14 +778,15 @@ class LuaModule(SphinxDirective):
     optional_arguments = 0
     final_argument_whitespace = False
     option_spec = {
-        "platform": lambda x: x,
-        "synopsis": lambda x: x,
         "no-index": directives.flag,
         "deprecated": directives.flag,
+        "synopsis": directives.unchanged,
     }
 
     def run(self) -> list[nodes.Node]:
-        for name, option in self.env.config["lua_ls_default_options"].items():
+        for name, option in self.env.domaindata["lua"]["config"][
+            "default_options"
+        ].items():
             if name not in self.options:
                 self.options[name] = option
 
@@ -786,24 +795,21 @@ class LuaModule(SphinxDirective):
             modname = re.sub(r"\s", "", match.group())
             sig = sig[match.span()[1] :]
             if sig:
-                raise ValueError("Unexpected symbols after module name")
+                raise self.error("unexpected symbols after module name")
         else:
-            raise ValueError("Incorrect module name")
+            raise self.error("incorrect module name")
 
         env = self.state.document.settings.env
         no_index = "no-index" in self.options
         env.ref_context["lua:module"] = modname
         ret = []
         if not no_index:
-            env.domaindata["lua"]["modules"][modname] = (
+            env.domaindata["lua"]["objects"][modname] = (
                 env.docname,
-                self.options.get("synopsis", ""),
-                self.options.get("platform", ""),
+                "module",
                 "deprecated" in self.options,
+                self.options.get("synopsis", None),
             )
-            # make a duplicate entry in 'objects' to facilitate searching for
-            # the module in LuaDomain.find_obj()
-            env.domaindata["lua"]["objects"][modname] = (env.docname, "module")
             target_node = nodes.target("", "", ids=["lua:" + modname], ismod=True)
             self.state.document.note_explicit_target(target_node)
             # the platform and synopsis aren't printed; in fact, they are only
@@ -835,9 +841,9 @@ class LuaCurrentModule(SphinxDirective):
             modname = re.sub(r"\s", "", match.group())
             sig = sig[match.span()[1] :]
             if sig:
-                raise ValueError("Unexpected symbols after module name")
+                raise self.error("unexpected symbols after module name")
         else:
-            raise ValueError("Incorrect module name")
+            raise self.error("incorrect module name")
 
         env = self.state.document.settings.env
         if modname == "None":
@@ -869,92 +875,6 @@ class LuaXRefRole(XRefRole):
                 if dot != -1:
                     title = title[dot + 1 :]
         return title, target
-
-
-class LuaModuleIndex(Index):
-    """
-    Index subclass to provide the Lua module index.
-    """
-
-    name = "modindex"
-    localname = _("Lua Module Index")
-    shortname = _("modules")
-
-    def generate(
-        self, docnames: Iterable[str] | None = None
-    ) -> tuple[list[tuple[str, list[IndexEntry]]], bool]:
-        content: dict[str, list[IndexEntry]] = {}
-        # list of prefixes to ignore
-        ignores = self.domain.env.config["modindex_common_prefix"]
-        ignores = sorted(ignores, key=len, reverse=True)
-        # list of all modules, sorted by module name
-        modules: list[tuple[str, tuple[str, str, str, bool]]] = sorted(
-            self.domain.data["modules"].items(), key=lambda x: x[0].lower()
-        )
-        # sort out collapsable modules
-        prev_modname = ""
-        num_top_levels = 0
-        for modname, (docname, synopsis, platforms, deprecated) in modules:
-            if docnames and docname not in docnames:
-                continue
-            if not modname:
-                continue
-
-            for ignore in ignores:
-                if modname.startswith(ignore):
-                    modname = modname[len(ignore) :]
-                    stripped = ignore
-                    break
-            else:
-                stripped = ""
-
-            # we stripped the whole module name?
-            if not modname:
-                modname, stripped = stripped, ""
-
-            entries = content.setdefault(modname[0].lower(), [])
-
-            package = modname.split(".")[0]
-            if package != modname:
-                # it's a submodule
-                if prev_modname == package:
-                    # first submodule - make parent a group head
-                    if entries:
-                        name, _subtype, *rest = entries[-1]
-                        entries[-1] = IndexEntry(name, 1, *rest)
-                elif not prev_modname.startswith(package):
-                    # submodule without parent in list, add dummy entry
-                    entries.append(
-                        IndexEntry(stripped + package, 1, "", "", "", "", "")
-                    )
-                subtype = 2
-            else:
-                num_top_levels += 1
-                subtype = 0
-
-            qualifier = deprecated and _("Deprecated") or ""
-            entries.append(
-                IndexEntry(
-                    stripped + modname,
-                    subtype,
-                    docname,
-                    "lua:" + stripped + modname,
-                    platforms,
-                    qualifier,
-                    synopsis,
-                )
-            )
-            prev_modname = modname
-
-        # apply heuristics when to collapse modindex at page load:
-        # only collapse if number of toplevel modules is larger than
-        # number of submodules
-        collapse = len(modules) - num_top_levels < num_top_levels
-
-        # sort by first letter
-        sorted_content = sorted(content.items())
-
-        return sorted_content, collapse
 
 
 class LuaDomain(Domain):
@@ -1000,29 +920,23 @@ class LuaDomain(Domain):
         "obj": LuaXRefRole(),
     }
     initial_data: dict[str, dict[str, tuple[Any]]] = {
-        "objects": {},  # fullname -> docname, objtype
-        "modules": {},  # modname -> docname, synopsis, platform, deprecated
+        "objects": {},  # fullname -> docname, objtype, deprecated, synopsis
     }
-    indices = [
-        LuaModuleIndex,
-    ]
+
+    @property
+    def config(self) -> dict[str, Any]:
+        return self.data.setdefault("config", {})
 
     def clear_doc(self, docname: str) -> None:
-        for fullname, (fn, _l) in list(self.data["objects"].items()):
+        for fullname, (fn, *_) in list(self.data["objects"].items()):
             if fn == docname:
                 del self.data["objects"][fullname]
-        for modname, (fn, _x, _x, _x) in list(self.data["modules"].items()):
-            if fn == docname:
-                del self.data["modules"][modname]
 
     def merge_domaindata(self, docnames: Set[str], otherdata: dict[Any, Any]) -> None:
         # XXX check duplicates?
-        for fullname, (fn, objtype) in otherdata["objects"].items():
+        for fullname, (fn, *rest) in otherdata["objects"].items():
             if fn in docnames:
-                self.data["objects"][fullname] = (fn, objtype)
-        for modname, data in otherdata["modules"].items():
-            if data[0] in docnames:
-                self.data["modules"][modname] = data
+                self.data["objects"][fullname] = (fn,) + tuple(rest)
 
     def _find_obj(
         self, modname: str, classname: str, name: str, typ: str | None
@@ -1067,7 +981,7 @@ class LuaDomain(Domain):
         modname = node.get("lua:module")
         classname = node.get("lua:class")
         if match := self._find_obj(modname, classname, target, typ):
-            name, (docname, objtype) = match
+            name, (docname, objtype, deprecated, *_) = match
             allowed_typs = self.object_types[objtype].roles
             if typ != "any" and typ not in allowed_typs:
                 logger.warning(
@@ -1080,7 +994,7 @@ class LuaDomain(Domain):
                 )
             if (
                 isinstance(contnode, nodes.literal)
-                and not node["refexplicit"]
+                and not node.get("refexplicit", False)
                 and len(contnode.children) == 1
                 and isinstance(contnode.children[0], nodes.Text)
             ):
@@ -1101,6 +1015,8 @@ class LuaDomain(Domain):
                     contnode = contnode.deepcopy()
                     contnode.clear()
                     contnode += nodes.Text(new_title)
+                if deprecated:
+                    contnode["classes"] += ["deprecated", "lua-deprecated"]
             return make_refnode(
                 builder, fromdocname, docname, "lua:" + name, contnode, name
             )
@@ -1117,7 +1033,7 @@ class LuaDomain(Domain):
         modname = node.get("lua:module")
         classname = node.get("lua:class")
         if match := self._find_obj(modname, classname, target, None):
-            name, (docname, objtype) = match
+            name, (docname, objtype, *_) = match
             role = "lua:" + (self.role_for_objtype(objtype, None) or "obj")
             return [
                 (
@@ -1131,11 +1047,8 @@ class LuaDomain(Domain):
         return []
 
     def get_objects(self) -> Iterator[tuple[str, str, str, str, str, int]]:
-        for modname, info in self.data["modules"].items():
-            yield (modname, modname, "module", info[0], "lua:" + modname, 0)
-        for refname, (docname, type) in self.data["objects"].items():
-            if type != "module":  # modules are already handled
-                yield (refname, refname, type, docname, refname, 1)
+        for refname, (docname, objtype, *_) in self.data["objects"].items():
+            yield (refname, refname, objtype, docname, refname, 1)
 
     def get_full_qualified_name(self, node: nodes.Element) -> str | None:
         modname = node.get("lua:module")

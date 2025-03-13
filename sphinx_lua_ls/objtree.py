@@ -31,6 +31,10 @@ class Kind(enum.Enum):
 
     Alias = "alias"
 
+    @property
+    def title(self) -> str:
+        return self.value.title()
+
 
 class Visibility(enum.Enum):
     """
@@ -182,8 +186,8 @@ class Object(_ParseDocstringMixin):
     #: priority wins.
     priority: _t.ClassVar[int] = 0
 
-    #: Kind of a lua object.
-    kind: Kind = dataclasses.field(default=Kind.Module, init=False)
+    #: Object kind.
+    kind: _t.ClassVar[Kind] = Kind.Module
 
     #: Deprecation marker.
     is_deprecated: bool = False
@@ -194,8 +198,15 @@ class Object(_ParseDocstringMixin):
     #: Object visibility.
     visibility: Visibility = Visibility.Public
 
-    #: Absolute path to the `.lua` file where this object was defined.
-    file: pathlib.Path | None = None
+    #: Absolute path to all `.lua` file where this object was defined.
+    files: set[pathlib.Path] = dataclasses.field(default_factory=set)
+
+    #: Where the docstring comes from.
+    docstring_file: pathlib.Path | None = None
+
+    #: True for definitions that come from Lua standard library and other libraries
+    #: not in the project root.
+    is_foreign: bool = False
 
     #: Line number in the file.
     line: int | None = None
@@ -305,9 +316,8 @@ class Data(Object):
 
     """
 
-    kind = Kind.Data
-
     priority = 1
+    kind = Kind.Data
 
     #: Variable type.
     type: str
@@ -326,9 +336,8 @@ class Function(Object):
 
     """
 
-    kind = Kind.Function
-
     priority = 2
+    kind = Kind.Function
 
     #: Function parameters.
     params: list[Param] = dataclasses.field(default_factory=list)
@@ -358,31 +367,13 @@ class Class(Object):
     """
 
     priority = 2
-
-    kind = Kind.Class  # type: ignore
+    kind = Kind.Class
 
     #: Base classes or types.
     bases: list[str] = dataclasses.field(default_factory=list)
 
-    @functools.cached_property
-    def is_module(self):
-        """
-        Indicates that this class is just a module or a namespace.
-
-        """
-
-        return self.bases == ["table"]
-
-    @property
-    def kind(self) -> Kind:  # type: ignore
-        return Kind.Module if self.is_module else Kind.Class
-
     def _print_object(self) -> str:
-        bases = ", ".join(self.bases)
-        if self.is_module:
-            return " = module {"
-        else:
-            return f" = class({bases}) {{"
+        return f" = class({', '.join(self.bases)}) {{"
 
     def _print_object_tail(self) -> str:
         return "}"
@@ -396,7 +387,6 @@ class Alias(Object):
     """
 
     priority = 2
-
     kind = Kind.Alias
 
     #: Alias type.
@@ -414,13 +404,19 @@ class Parser:
         #: Root of the object tree.
         self.root = Object()
 
-    def parse(self, json):
+        #: All files seen while parsing docs.
+        self.files: set[pathlib.Path] = set()
+
+    def parse(self, json, path: str | pathlib.Path):
         """
         Parse jua-ls json output.
 
         """
         if not isinstance(json, list):
             return
+
+        self.path = pathlib.Path(path).expanduser().resolve()
+
         for ns in json:
             self._parse_toplevel(ns)
 
@@ -445,19 +441,18 @@ class Parser:
 
         """
 
-        # TODO: handle function overloads?
-        a, b = sorted([a, b], key=lambda x: (-x.priority, x.line))
+        a, b = sorted([a, b], key=lambda x: (-x.is_foreign, -x.priority, x.line))
         for name, child in b.children.items():
             self.add_child(a, name, child)
-        if not a.file:
-            a.file = b.file
-            a.line = b.line
+        a.files.update(b.files)
+        a.is_foreign = a.is_foreign and b.is_foreign
         if not a.docstring:
             a.docstring = b.docstring
-        elif b.docstring:
-            if len(a.docstring) < len(b.docstring):
-                # Sometimes, `@see` directives are only included in one definition.
-                a.docstring = b.docstring
+            a.docstring_file = b.docstring_file
+        elif b.docstring and len(a.docstring) < len(b.docstring) and not b.is_foreign:
+            # Sometimes, `@see` directives are only included in one definition.
+            a.docstring = b.docstring
+            a.docstring_file = b.docstring_file
         return a
 
     def add_child(self, o: Object, name: str, child: Object):
@@ -501,11 +496,11 @@ class Parser:
         match ns.get("type"):
             case "doc.class":
                 res = Class()
-                res.docstring = ns.get("desc")
                 for base in ns.get("extends", []):
                     if "view" in base:
                         typ = self._normalize_type(base.get("view", None) or "unknown")
                         res.bases.append(typ)
+                res.docstring = ns.get("desc")
             case "doc.alias":
                 typ = self._normalize_type(ns.get("view", None) or "unknown")
                 res = Alias(type=typ)
@@ -516,7 +511,7 @@ class Parser:
         res.is_deprecated = bool(ns.get("deprecated", False))
         res.is_async = bool(ns.get("async", False))
         res.visibility = Visibility(ns.get("visible", "public"))
-        res.file = self._normalize_path(ns.get("file"))
+        self._set_path(res, ns.get("file"))
         res.line = ns.get("start", [None, None])[0]
 
         return res
@@ -554,15 +549,21 @@ class Parser:
         res.is_deprecated = bool(ns.get("deprecated", False))
         res.is_async = bool(ns.get("async", False))
         res.visibility = Visibility(ns.get("visible", "public"))
-        res.file = self._normalize_path(ns.get("file"))
+        self._set_path(res, ns.get("file"))
         res.line = ns.get("start", [None, None])[0]
         res.docstring = ns.get("desc")
 
         return res
 
-    def _normalize_path(self, path: str | None) -> pathlib.Path | None:
+    def _set_path(self, res: Object, path: str | None) -> pathlib.Path | None:
         if path:
-            return pathlib.Path(re.sub(r"^.*://", "", path)).resolve()
+            path = re.sub(r"^\s*\[FOREIGN\]\s*", "", path, flags=re.IGNORECASE)
+            path = re.sub(r"^.*?://", "", path)
+            resolved = pathlib.Path(self.path, path).resolve()
+            res.files = {resolved}
+            res.docstring_file = resolved
+            res.is_foreign = not resolved.is_relative_to(self.path)
+            self.files.add(resolved)
         else:
             return None
 

@@ -12,14 +12,17 @@ from typing import Any, Callable, ClassVar, Type
 
 import docutils.nodes
 import docutils.statemachine
+import docutils.transforms
 import sphinx.addnodes
 import sphinx.util.docutils
 import sphinx.util.nodes
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
 
+import sphinx_lua_ls.autoindex
 import sphinx_lua_ls.domain
-from sphinx_lua_ls.doctree import Kind, Object, Visibility
+import sphinx_lua_ls.objtree
+from sphinx_lua_ls.objtree import Kind, Object, Visibility
 
 
 def _parse_members(value: str):
@@ -48,6 +51,7 @@ class AutodocUtilsMixin(SphinxDirective):
         "async": directives.flag,
         "global": directives.flag,
         "deprecated": directives.flag,
+        "synopsis": directives.unchanged,
         "members": _parse_members,
         "undoc-members": _parse_members,
         "private-members": _parse_members,
@@ -56,7 +60,10 @@ class AutodocUtilsMixin(SphinxDirective):
         "special-members": _parse_members,
         "inherited-members": _parse_members,
         "exclude-members": _parse_members,
-        "recursive": lambda x: directives.flag(x) or True,
+        "title": directives.unchanged,
+        "index-title": directives.unchanged,
+        "recursive": directives.flag,
+        "index-table": directives.flag,
         "member-order": lambda x: directives.choice(
             x, ("alphabetical", "groupwise", "bysource")
         ),
@@ -94,29 +101,30 @@ class AutodocUtilsMixin(SphinxDirective):
             self.env.ref_context["lua:module"] = modname
             self.env.ref_context["lua:classname"] = classname
 
-    def render(self, root: Object, name: str, pass_through: bool = False):
-        if not self.env.ref_context.get("lua:class") and root.kind == Kind.Module:
-            # This is a module.
-            return self.render_module(root, name, pass_through)
+    def render(self, root: Object, name: str, top_level: bool = False):
+        force_data = root.parsed_doctype in ["data", "const", "attribute"] or (
+            root.kind == Kind.Module
+            and (self.env.ref_context.get("lua:class") or not top_level)
+        )
+
+        if force_data or root.kind == Kind.Data:
+            return self.render_data(root, name, top_level)
         elif root.kind == Kind.Module:
-            # This is a module inside of a class. We will render it as a class.
-            return self.render_class(root, name, pass_through)
-        elif root.kind == Kind.Data:
-            return self.render_data(root, name, pass_through)
+            return self.render_module(root, name, top_level)
         elif root.kind == Kind.Function:
-            return self.render_function(root, name, pass_through)
+            return self.render_function(root, name, top_level)
         elif root.kind == Kind.Class:
-            return self.render_class(root, name, pass_through)
+            return self.render_class(root, name, top_level)
         elif root.kind == Kind.Alias:
-            return self.render_alias(root, name, pass_through)
+            return self.render_alias(root, name, top_level)
         else:
             raise RuntimeError(f"unknown lua object kind {root.kind}")
 
-    def render_module(self, root: Object, name: str, pass_through: bool = False):
+    def render_module(self, root: Object, name: str, top_level: bool = False):
         if root.parsed_doctype:
             objtype = root.parsed_doctype
             if objtype not in ["module"]:
-                raise ValueError(f"incorrect doctype {objtype} for a module")
+                raise self.error(f"incorrect doctype {objtype} for a module")
         else:
             objtype = "module"
 
@@ -125,37 +133,68 @@ class AutodocUtilsMixin(SphinxDirective):
         fullname = ".".join(filter(None, [modname, classname, name]))
 
         with self.save_context():
-            nodes = list(
-                self._create_directive(
-                    fullname,
-                    sphinx_lua_ls.domain.LuaModule,
-                    "lua:" + objtype,
-                    pass_through,
-                ).run()
-            )
-
-            container = docutils.nodes.container()
-            nodes.append(container)
-
+            parsed_docs = docutils.nodes.container()
             if root.parsed_docstring:
                 self.render_docs(
-                    str(root.file or f"<docstring for {self.arguments[0]}>"),
+                    str(root.docstring_file or f"<docstring for {self.arguments[0]}>"),
                     root.line or 0,
                     root.parsed_docstring,
-                    container,
+                    parsed_docs,
                     titles=True,
                 )
 
+            directive = self._create_directive(
+                fullname,
+                sphinx_lua_ls.domain.LuaModule,
+                "lua:" + objtype,
+                top_level,
+            )
+
+            if (
+                "synopsis" not in directive.options
+                and parsed_docs.children
+                and isinstance(parsed_docs.children[0], docutils.nodes.paragraph)
+            ):
+                directive.options["synopsis"] = parsed_docs.children[0].astext()
+
+            nodes = list(directive.run())
+
+            nodes.extend(parsed_docs.children)
+
+            if "index-table" in self.options or "index-title" in self.options:
+                index = docutils.nodes.section("", names=[])
+                nodes.append(index)
+
+                title = self.options.get("index-title", None) or "Index"
+                index["name"] = docutils.nodes.fully_normalize_name(title)
+                index["names"].append(index["name"])
+                index += docutils.nodes.title("", title)
+
+                if "index-table" in self.options:
+                    index += sphinx_lua_ls.autoindex.AutoIndexNode("", target=fullname)
+
+                self.state.document.note_implicit_target(index, index)
+
+            api_docs = docutils.nodes.section("", names=[])
+            nodes.append(api_docs)
+            if "index-table" in self.options or "title" in self.options:
+                title = self.options.get("title", None) or "Api reference"
+                api_docs["name"] = docutils.nodes.fully_normalize_name(title)
+                api_docs["names"].append(api_docs["name"])
+                api_docs += docutils.nodes.title("", title)
+                self.state.document.note_implicit_target(api_docs, api_docs)
             for name, child in self.get_children(root):
-                nodes.extend(self.render(child, name))
+                api_docs += self.render(child, name)
 
             return nodes
 
-    def render_data(self, root: Object, name: str, pass_through: bool = False):
+    def render_data(self, root: Object, name: str, top_level: bool = False):
         if root.parsed_doctype:
             objtype = root.parsed_doctype
             if objtype not in ["data", "const", "attribute"]:
-                raise ValueError(f"incorrect doctype {objtype} for a data")
+                raise self.error(f"incorrect doctype {objtype} for a data")
+        elif root.kind == Kind.Module:
+            objtype = "module"
         else:
             objtype = "data"
 
@@ -164,16 +203,16 @@ class AutodocUtilsMixin(SphinxDirective):
                 name,
                 LuaData,
                 "lua:" + objtype,
-                pass_through,
+                top_level,
                 root=root,
             ).run()
 
-    def render_function(self, root: Object, name: str, pass_through: bool = False):
-        assert isinstance(root, sphinx_lua_ls.doctree.Function)
+    def render_function(self, root: Object, name: str, top_level: bool = False):
+        assert isinstance(root, sphinx_lua_ls.objtree.Function)
         if root.parsed_doctype:
             objtype = root.parsed_doctype
             if objtype not in ["function", "method", "staticmethod", "classmethod"]:
-                raise ValueError(f"incorrect doctype {objtype} for a function")
+                raise self.error(f"incorrect doctype {objtype} for a function")
         elif self.parent and self.parent.kind == Kind.Class:
             if not root.params or root.params[0].name != "self":
                 objtype = "staticmethod"
@@ -187,15 +226,15 @@ class AutodocUtilsMixin(SphinxDirective):
                 name,
                 LuaFunction,
                 "lua:" + objtype,
-                pass_through,
+                top_level,
                 root=root,
             ).run()
 
-    def render_class(self, root: Object, name: str, pass_through: bool = False):
+    def render_class(self, root: Object, name: str, top_level: bool = False):
         if root.parsed_doctype:
             objtype = root.parsed_doctype
             if objtype not in ["class"]:
-                raise ValueError(f"incorrect doctype {objtype} for a class")
+                raise self.error(f"incorrect doctype {objtype} for a class")
         else:
             objtype = "class"
 
@@ -204,15 +243,15 @@ class AutodocUtilsMixin(SphinxDirective):
                 name,
                 LuaClass,
                 "lua:" + objtype,
-                pass_through,
+                top_level,
                 root=root,
             ).run()
 
-    def render_alias(self, root: Object, name: str, pass_through: bool = False):
+    def render_alias(self, root: Object, name: str, top_level: bool = False):
         if root.parsed_doctype:
             objtype = root.parsed_doctype
             if objtype not in ["alias"]:
-                raise ValueError(f"incorrect doctype {objtype} for a alias")
+                raise self.error(f"incorrect doctype {objtype} for a alias")
         else:
             objtype = "alias"
 
@@ -221,13 +260,11 @@ class AutodocUtilsMixin(SphinxDirective):
                 name,
                 LuaAlias,
                 "lua:" + objtype,
-                pass_through,
+                top_level,
                 root=root,
             ).run()
 
     def render_docs(self, path: str, line: int, docs: str, node, titles=False):
-        pass
-
         lines = docs.splitlines()
 
         items = [(path, line)] * len(lines)
@@ -245,10 +282,10 @@ class AutodocUtilsMixin(SphinxDirective):
         name: str,
         cls: Type[SphinxDirective],
         directive_name: str,
-        pass_through: bool = False,
+        top_level: bool = False,
         **kwargs,
     ) -> SphinxDirective:
-        if pass_through:
+        if top_level:
             options = self.options.copy()
             options.pop("module", None)
         else:
@@ -276,10 +313,10 @@ class AutodocUtilsMixin(SphinxDirective):
             directive_name,
             [name],
             options,
-            self.content if pass_through else docutils.statemachine.StringList(),
-            self.lineno if pass_through else 0,
-            self.content_offset if pass_through else 0,
-            self.block_text if pass_through else "",
+            self.content if top_level else docutils.statemachine.StringList(),
+            self.lineno if top_level else 0,
+            self.content_offset if top_level else 0,
+            self.block_text if top_level else "",
             self.state,
             self.state_machine,
             **kwargs,
@@ -287,7 +324,7 @@ class AutodocUtilsMixin(SphinxDirective):
 
     @property
     def objtree(self) -> Object:
-        return getattr(self.env, "lua_ls_doc_root")
+        return self.env.domaindata["lua"]["objtree"]
 
     @functools.cached_property
     def parent(self):
@@ -316,7 +353,7 @@ class AutodocUtilsMixin(SphinxDirective):
         elif order == "bysource":
             children.sort(
                 key=lambda ch: (
-                    str(ch[1].file or "@"),
+                    str(ch[1].docstring_file or "@"),
                     ch[1].line or math.inf,
                     ch[0].lower(),
                 )
@@ -330,7 +367,7 @@ class AutodocUtilsMixin(SphinxDirective):
         if (
             parent
             and parent.kind == Kind.Class
-            and isinstance(parent, sphinx_lua_ls.doctree.Class)
+            and isinstance(parent, sphinx_lua_ls.objtree.Class)
         ):
             for basename in parent.bases:
                 base = self.objtree.find(basename)
@@ -394,13 +431,22 @@ class AutodocUtilsMixin(SphinxDirective):
                 is_undoc = not child.parsed_docstring
                 if is_undoc and not include_undoc:
                     continue
-                is_private = child.visibility == Visibility.Private
+                is_private = (
+                    child.visibility == Visibility.Private
+                    or "private" in child.parsed_options
+                )
                 if is_private and not include_private:
                     continue
-                is_protected = child.visibility == Visibility.Protected
+                is_protected = (
+                    child.visibility == Visibility.Protected
+                    or "protected" in child.parsed_options
+                )
                 if is_protected and not include_protected:
                     continue
-                is_package = child.visibility == Visibility.Package
+                is_package = (
+                    child.visibility == Visibility.Package
+                    or "package" in child.parsed_options
+                )
                 if is_package and not include_package:
                     continue
                 is_special = name.startswith("__")
@@ -428,43 +474,55 @@ class AutodocObjectMixin(sphinx_lua_ls.domain.LuaObject[Any], AutodocUtilsMixin)
         self.root = root
 
         if self.root.visibility == Visibility.Private:
-            self.options["private"] = True
+            self.options["private"] = ""
         elif self.root.visibility == Visibility.Protected:
-            self.options["protected"] = True
+            self.options["protected"] = ""
         elif self.root.visibility == Visibility.Package:
-            self.options["package"] = True
+            self.options["package"] = ""
         if self.root.is_async:
-            self.options["async"] = True
+            self.options["async"] = ""
         if self.root.is_deprecated:
-            self.options["deprecated"] = True
+            self.options["deprecated"] = ""
 
         for name, value in self.root.parsed_options.items():
             if name in AutoObjectDirective.option_spec:
                 try:
                     self.options[name] = AutoObjectDirective.option_spec[name](value)
                 except ValueError as e:
-                    raise ValueError(
+                    raise self.error(
                         f"invalid !doc option {name} in object {self.arguments[0]}: {e}"
                     ) from None
             else:
-                raise ValueError(
+                raise self.error(
                     f"unknown !doc option {name} in object {self.arguments[0]}"
                 )
 
     def run(self) -> list[docutils.nodes.Node]:
-        if self.root.file:
-            self.state.document.settings.record_dependencies.add(str(self.root.file))
+        for file in self.root.files:
+            self.state.document.settings.record_dependencies.add(str(file))
+
+        self.rendered_docs = docutils.nodes.container()
+
+        if self.root.parsed_docstring:
+            self.render_docs(
+                str(self.root.docstring_file or f"<docstring for {self.arguments[0]}>"),
+                self.root.line or 0,
+                self.root.parsed_docstring,
+                self.rendered_docs,
+                titles=False,
+            )
+
+            if (
+                "synopsis" not in self.options
+                and self.rendered_docs.children
+                and isinstance(self.rendered_docs.children[0], docutils.nodes.paragraph)
+            ):
+                self.options["synopsis"] = self.rendered_docs.children[0].astext()
+
         return super().run()
 
     def transform_content(self, content_node: sphinx.addnodes.desc_content) -> None:
-        if self.root.parsed_docstring:
-            self.render_docs(
-                str(self.root.file or f"<docstring for {self.arguments[0]}>"),
-                self.root.line or 0,
-                self.root.parsed_docstring,
-                content_node,
-                titles=True,
-            )
+        content_node += self.rendered_docs.children
         if self.allow_nesting:
             for name, child in self.get_children(self.root):
                 content_node += self.render(child, name)
@@ -472,7 +530,7 @@ class AutodocObjectMixin(sphinx_lua_ls.domain.LuaObject[Any], AutodocUtilsMixin)
 
 class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
     def parse_signature(self, sig):
-        assert isinstance(self.root, sphinx_lua_ls.doctree.Function)
+        assert isinstance(self.root, sphinx_lua_ls.objtree.Function)
         return (
             self.arguments[0],
             (
@@ -482,16 +540,9 @@ class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
         )
 
     def transform_content(self, content_node: sphinx.addnodes.desc_content) -> None:
-        assert isinstance(self.root, sphinx_lua_ls.doctree.Function)
+        assert isinstance(self.root, sphinx_lua_ls.objtree.Function)
 
-        if self.root.parsed_docstring:
-            self.render_docs(
-                str(self.root.file or f"<docstring for {self.arguments[0]}>"),
-                self.root.line or 0,
-                self.root.parsed_docstring,
-                content_node,
-                titles=True,
-            )
+        content_node += self.rendered_docs.children
 
         for child in content_node:
             if isinstance(child, docutils.nodes.field_list):
@@ -511,7 +562,7 @@ class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
                 field_body = docutils.nodes.field_body("")
                 self.render_docs(
                     str(
-                        self.root.file
+                        self.root.docstring_file
                         or f"<docstring for {self.arguments[0]}, param {param.name}>"
                     ),
                     self.root.line or 0,
@@ -542,7 +593,7 @@ class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
                 field_body = docutils.nodes.field_body("")
                 self.render_docs(
                     str(
-                        self.root.file
+                        self.root.docstring_file
                         or f"<docstring for {self.arguments[0]}, param {param.name}>"
                     ),
                     self.root.line or 0,
@@ -572,33 +623,22 @@ class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
 
 class LuaData(sphinx_lua_ls.domain.LuaData, AutodocObjectMixin):
     def parse_signature(self, sig):
-        assert isinstance(self.root, sphinx_lua_ls.doctree.Data)
-        return self.arguments[0], self.root.type
+        return (
+            self.arguments[0],
+            self.root.type if isinstance(self.root, sphinx_lua_ls.objtree.Data) else "",
+        )
 
 
 class LuaAlias(sphinx_lua_ls.domain.LuaAlias, AutodocObjectMixin):
     def parse_signature(self, sig):
-        assert isinstance(self.root, sphinx_lua_ls.doctree.Alias)
+        assert isinstance(self.root, sphinx_lua_ls.objtree.Alias)
         return self.arguments[0], self.root.type
 
 
 class LuaClass(sphinx_lua_ls.domain.LuaClass, AutodocObjectMixin):
     def parse_signature(self, sig):
-        if self.root.kind == Kind.Class:
-            bases = (
-                self.root.bases
-                if isinstance(self.root, sphinx_lua_ls.doctree.Class)
-                else []
-            )
-            return self.arguments[0], bases
-        else:
-            return self.arguments[0], []
-
-    def get_signature_prefix(self, signature: str):
-        if self.root.kind == Kind.Class:
-            return super().get_signature_prefix(signature)
-        else:
-            return sphinx_lua_ls.domain.LuaObject.get_signature_prefix(self, signature)
+        assert isinstance(self.root, sphinx_lua_ls.objtree.Class)
+        return self.arguments[0], self.root.bases
 
 
 class AutoObjectDirective(AutodocUtilsMixin):
@@ -607,7 +647,9 @@ class AutoObjectDirective(AutodocUtilsMixin):
     has_content = True
 
     def run(self):
-        for name, option in self.env.config["lua_ls_default_options"].items():
+        for name, option in self.env.domaindata["lua"]["config"][
+            "default_options"
+        ].items():
             if name not in self.options:
                 self.options[name] = option
 
@@ -616,7 +658,7 @@ class AutoObjectDirective(AutodocUtilsMixin):
         if not name:
             raise self.error(f"got an empty object name")
 
-        found = self.get_root(name, getattr(self.env, "lua_ls_doc_root"))
+        found = self.get_root(name)
         if not found:
             raise self.error(f"unknown lua object {name}")
 
@@ -624,11 +666,11 @@ class AutoObjectDirective(AutodocUtilsMixin):
 
         self.push_context(modname, classname)
         try:
-            return self.render(root, objname, pass_through=True)
+            return self.render(root, objname, top_level=True)
         finally:
             self.pop_context()
 
-    def get_root(self, name: str, root: Object) -> tuple[Object, str, str, str] | None:
+    def get_root(self, name: str) -> tuple[Object, str, str, str] | None:
         modname = self.options.get("module", self.env.ref_context.get("lua:module"))
         classname = self.env.ref_context.get("lua:class", None)
 
@@ -639,5 +681,5 @@ class AutoObjectDirective(AutodocUtilsMixin):
         ]
 
         for candidate in candidates:
-            if found := root.find_path(candidate):
+            if found := self.objtree.find_path(candidate):
                 return found
