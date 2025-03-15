@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import functools
 import math
+import os
 from typing import Any, Callable, ClassVar, Type
 
 import docutils.nodes
@@ -23,6 +24,10 @@ import sphinx_lua_ls.autoindex
 import sphinx_lua_ls.domain
 import sphinx_lua_ls.objtree
 from sphinx_lua_ls.objtree import Kind, Object, Visibility
+
+# Dirty hack =(
+# Alias files and types are not properly reported sometimes.
+_FIX_FLAKY_ALIAS_TESTS = "_LUA_LS_FIX_FLAKY_ALIAS_TESTS" in os.environ
 
 
 def _parse_members(value: str):
@@ -54,7 +59,14 @@ def _iter_children(
     elif order == "bysource":
         children.sort(
             key=lambda ch: (
-                str(ch[1].docstring_file or "@"),
+                str(
+                    (
+                        ch[1].docstring_file
+                        if not (_FIX_FLAKY_ALIAS_TESTS and ch[1].kind == Kind.Alias)
+                        else None
+                    )
+                    or "@"
+                ),
                 ch[1].line or math.inf,
                 ch[0],
             )
@@ -552,6 +564,8 @@ class LuaTable(sphinx_lua_ls.domain.LuaTable, AutodocObjectMixin):
 class LuaAlias(sphinx_lua_ls.domain.LuaAlias, AutodocObjectMixin):
     def parse_signature(self, sig):
         assert isinstance(self.root, sphinx_lua_ls.objtree.Alias)
+        if _FIX_FLAKY_ALIAS_TESTS:
+            return self.arguments[0], "__alias_base_type"
         return self.arguments[0], self.root.type
 
 

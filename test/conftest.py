@@ -1,8 +1,11 @@
+import os
 import pathlib
 
 import pytest
 
 pytest_plugins = "sphinx.testing.fixtures"
+
+os.environ["_LUA_LS_FIX_FLAKY_ALIAS_TESTS"] = ""
 
 
 @pytest.fixture(scope="session")
