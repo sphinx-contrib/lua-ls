@@ -67,7 +67,12 @@ def _iter_children(
                     )
                     or "@"
                 ),
-                ch[1].line or math.inf,
+                (
+                    ch[1].line
+                    if not (_FIX_FLAKY_ALIAS_TESTS and ch[1].kind == Kind.Alias)
+                    else None
+                )
+                or math.inf,
                 ch[0],
             )
         )
