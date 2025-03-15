@@ -59,7 +59,7 @@ def _iter_children(
     elif order == "bysource":
         children.sort(
             key=lambda ch: (
-                str(ch[1].docstring_file or "@") if not _FIX_FLAKY_ALIAS_TESTS else "",
+                str(ch[1].docstring_file or "~") if not _FIX_FLAKY_ALIAS_TESTS else "",
                 ch[1].line or math.inf,
                 ch[0],
             )
