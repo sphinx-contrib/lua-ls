@@ -232,9 +232,11 @@ def run_lua_ls(app: sphinx.application.Sphinx):
 
     parser = sphinx_lua_ls.objtree.Parser()
     for dir in project_directories:
-        with progress_message(
-            f"running lua language server in {dir.relative_to(cwd, walk_up=True) or '.'}"
-        ):
+        try:
+            relpath = dir.relative_to(cwd, walk_up=True)
+        except ValueError:
+            relpath = dir
+        with progress_message(f"running lua language server in {relpath or '.'}"):
             parser.parse(runner.run(dir), dir)
             parser.files.update(dir.rglob("*.lua"))
 
@@ -250,9 +252,11 @@ def run_apidoc(
     cwd = pathlib.Path.cwd()
     for name, params in domain.config["apidoc_roots"].items():
         objtree: sphinx_lua_ls.objtree.Object = app.env.domaindata["lua"]["objtree"]
-        with progress_message(
-            f"running lua apidoc in {params['path'].relative_to(cwd, walk_up=True) or '.'}"
-        ):
+        try:
+            relpath = params["path"].relative_to(cwd, walk_up=True)
+        except ValueError:
+            relpath = params["path"]
+        with progress_message(f"running lua apidoc in {relpath or '.'}"):
             ignored_modules = params["ignored_modules"]
             if ignored_modules:
                 mod_filter = re.compile(
