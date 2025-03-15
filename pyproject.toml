@@ -58,7 +58,7 @@ Source = "https://github.com/taminomara/sphinx-lua-ls/"
 Changelog = "https://github.com/taminomara/sphinx-lua-ls/blob/main/CHANGELOG.md"
 
 [build-system]
-requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2", "wheel>=0.40"]
+requires = ["setuptools>=60", "setuptools_scm[toml]>=8", "wheel>=0.40"]
 
 [tool.setuptools_scm]
 write_to = "sphinx_lua_ls/_version.py"
