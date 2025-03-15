@@ -1,5 +1,14 @@
 # Changelog
 
+## v2.0.0
+
+- Breaking change: don't implicitly convert classes that're derived from `table`
+  to modules. Users should use a `!doctype` comment instead.
+- Breaking change: disallow nesting modules inside classes.
+- Added `autoindex` directive.
+- Added `apidoc` functionality.
+- Improved test coverage and fixed found bugs.
+
 ## v1.1.0
 
 - Added support for `!doc` and `!doctype` comments.
