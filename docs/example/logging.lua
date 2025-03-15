@@ -3,7 +3,8 @@
 --- .. lua:autoobject:: LOG_LEVEL
 ---    :global:
 ---
---- @class logging: table
+--- !doctype module
+--- @class logging
 logging = {}
 
 --- Represents message severity.

@@ -1,22 +1,28 @@
 Modules
 =======
 
-.. lua:data:: globalData
+.. container:: regression
 
-.. lua:module:: mod
+   .. lua:data:: object_before_module
 
-.. lua:data:: moduleData
+   .. lua:module:: module
 
-.. lua:data:: globalDataModuleOverride
-   :module:
+   .. lua:data:: object_after_module
 
-.. lua:data:: mod2DataModuleOverride
-   :module: mod2
+   .. lua:data:: object_redefines_module_to_global
+      :module:
 
-.. lua:currentmodule:: mod2
+   .. lua:data:: object_redefines_module_to_module_2
+      :module: module_2
 
-.. lua:data:: mod2Data
+   .. lua:module:: module_2
 
-.. lua:currentmodule:: None
+   .. lua:data:: object_after_module_2
 
-.. lua:data:: noneData
+   .. lua:currentmodule:: current_module
+
+   .. lua:data:: object_after_current_module
+
+   .. lua:currentmodule:: None
+
+   .. lua:data:: object_after_current_module_none

@@ -1,6 +1,7 @@
+import fnmatch
 import pathlib
 import re
-from typing import Any
+from typing import Any, Type, TypeVar
 
 import sphinx.addnodes
 import sphinx.application
@@ -20,10 +21,21 @@ import sphinx_lua_ls.lua_ls
 import sphinx_lua_ls.objtree
 from sphinx_lua_ls._version import __version__, __version_tuple__
 
+T = TypeVar("T")
+
+
+def _type(name: str, value, types: Type[T] | tuple[Type[T], ...]) -> T:
+    if not isinstance(value, types):
+        if not isinstance(types, tuple):
+            types = (types,)
+        raise ConfigError(
+            f"{name} should be {' or '.join(map(str, types))}, got {type(value)} instead"
+        )
+    return value
+
 
 def _version(name: str, value) -> str:
-    if not isinstance(value, str):
-        raise ConfigError(f"{name} should be str, got {type(value)} instead")
+    _type(name, value, str)
     if not re.match(r"\d+(\.\d+)*", value):
         raise ConfigError(f"incorrect {name}: {value}")
     return value
@@ -32,8 +44,7 @@ def _version(name: str, value) -> str:
 def _path(name: str, value, root: str | pathlib.Path) -> pathlib.Path:
     if value is None:
         value = ""
-    if not isinstance(value, (str, pathlib.Path)):
-        raise ConfigError(f"{name} should be str, got {type(value)} instead")
+    _type(name, value, (str, pathlib.Path))
     try:
         return pathlib.Path(root, value).expanduser().resolve()
     except ValueError as e:
@@ -43,37 +54,20 @@ def _path(name: str, value, root: str | pathlib.Path) -> pathlib.Path:
 def _paths(name: str, value, root: str | pathlib.Path) -> list[pathlib.Path]:
     if value is None:
         value = []
-    if not isinstance(value, list):
-        raise ConfigError(f"{name} should be list, got {type(value)} instead")
+    _type(name, value, list)
     return [_path(f"{name}[{i}]", v, root) for i, v in enumerate(value)]
-
-
-def _bool(name: str, value) -> bool:
-    if not isinstance(value, bool):
-        raise ConfigError(f"{name} should be bool, got {type(value)} instead")
-    return value
-
-
-def _int(name: str, value) -> int:
-    if not isinstance(value, int):
-        raise ConfigError(f"{name} should be int, got {type(value)} instead")
-    return value
 
 
 def _options(name: str, value) -> dict[str, Any]:
     if value is None:
         value = {}
-    if not isinstance(value, dict):
-        raise ConfigError(f"{name} should be dict, got {type(value)} instead")
+    _type(name, value, dict)
     new_value = {}
     for key, option in value.items():
         parser = sphinx_lua_ls.autodoc.AutoObjectDirective.option_spec.get(key, None)
         if parser is None:
             raise ConfigError(f"unknown option in {name}: {key}")
-        if option is not None and not isinstance(option, str):
-            raise ConfigError(
-                f"{name}[{key!r}] should be str, got {type(option)} instead"
-            )
+        _type(f"{name}[{key!r}]", option, str)
         try:
             new_value[key] = parser(option)
         except Exception as e:
@@ -82,21 +76,22 @@ def _options(name: str, value) -> dict[str, Any]:
 
 
 def _api_roots(
-    name: str, value, root: str | pathlib.Path, max_depth: int, options: dict[str, Any]
+    name: str,
+    value,
+    root: str | pathlib.Path,
+    max_depth: int,
+    options: dict[str, Any],
+    excludes: set[str],
 ) -> dict[str, dict[str, Any]]:
     if value is None:
         value = []
-    if not isinstance(value, dict):
-        raise ConfigError(f"{name} should be list, got {type(value)} instead")
+    _type(name, value, dict)
     new_value = {}
     for mod in value:
         api_root = value[mod]
         if isinstance(api_root, str):
             api_root = {"path": _path(f"{name}[{mod!r}]", api_root, root)}
-        if not isinstance(api_root, dict):
-            raise ConfigError(
-                f"{name}[{mod!r}] should be dict or str, got {type(api_root)} instead"
-            )
+        _type(f"{name}[{mod!r}]", api_root, (dict, str))
 
         new_api_root = {}
         new_api_root["path"] = _path(
@@ -106,14 +101,16 @@ def _api_roots(
             raise ConfigError(
                 f"api root {name}[{mod!r}] lays outside of src root: {str(new_api_root['path'])}"
             )
-        new_api_root["options"] = _options(
-            f"{name}[{mod!r}]['options']", api_root.pop("options", None)
+        new_api_root["options"] = options.copy()
+        new_api_root["options"].update(
+            _options(f"{name}[{mod!r}]['options']", api_root.pop("options", None))
         )
-        for option_name, option_value in options.items():
-            if option_name not in new_api_root["options"]:
-                new_api_root["options"][option_name] = option_value
-        new_api_root["max_depth"] = _int(
-            f"{name}[{mod!r}]['max_depth']", api_root.pop("max_depth", max_depth)
+        new_api_root["max_depth"] = _type(
+            f"{name}[{mod!r}]['max_depth']", api_root.pop("max_depth", max_depth), int
+        )
+        new_api_root["ignored_modules"] = _excludes(
+            f"{name}[{mod!r}]['ignored_modules']",
+            api_root.pop("ignored_modules", excludes),
         )
         if api_root:
             raise ConfigError(
@@ -121,6 +118,19 @@ def _api_roots(
             )
         new_value[mod] = new_api_root
     return new_value
+
+
+def _excludes(name: str, value) -> set[str]:
+    if value is None:
+        value = []
+    _type(name, value, (list, set))
+    if isinstance(value, list):
+        for i in range(len(value)):
+            _type(f"{name}[{i}]", value[i], str)
+    else:
+        for v in value:
+            _type(f"{name}[{v}]", v, str)
+    return set(value)
 
 
 def check_options(app: sphinx.application.Sphinx):
@@ -132,13 +142,16 @@ def check_options(app: sphinx.application.Sphinx):
     domain.config["project_root"] = _path(
         "lua_ls_project_root", config["lua_ls_project_root"], app.srcdir
     )
-    domain.config["project_directories"] = _paths(
-        "lua_ls_project_directories",
-        config["lua_ls_project_directories"],
-        domain.config["project_root"],
-    )
-    domain.config["auto_install"] = _bool(
-        "lua_ls_auto_install", config["lua_ls_auto_install"]
+    if config["lua_ls_project_directories"] is not None:
+        domain.config["project_directories"] = _paths(
+            "lua_ls_project_directories",
+            config["lua_ls_project_directories"],
+            domain.config["project_root"],
+        )
+    else:
+        domain.config.pop("project_directories", None)
+    domain.config["auto_install"] = _type(
+        "lua_ls_auto_install", config["lua_ls_auto_install"], bool
     )
     if config["lua_ls_auto_install_location"] is not None:
         domain.config["auto_install_location"] = _path(
@@ -157,11 +170,17 @@ def check_options(app: sphinx.application.Sphinx):
     domain.config["default_options"] = _options(
         "lua_ls_default_options", config["lua_ls_default_options"]
     )
-    domain.config["apidoc_default_options"] = _options(
-        "lua_ls_apidoc_default_options", config["lua_ls_apidoc_default_options"]
+    domain.config["apidoc_default_options"] = domain.config["default_options"].copy()
+    domain.config["apidoc_default_options"].update(
+        _options(
+            "lua_ls_apidoc_default_options", config["lua_ls_apidoc_default_options"]
+        )
     )
-    domain.config["apidoc_max_depth"] = _int(
-        "lua_ls_apidoc_max_depth", config["lua_ls_apidoc_max_depth"]
+    domain.config["apidoc_max_depth"] = _type(
+        "lua_ls_apidoc_max_depth", config["lua_ls_apidoc_max_depth"], int
+    )
+    domain.config["apidoc_ignored_modules"] = _excludes(
+        "lua_ls_apidoc_ignored_modules", config["lua_ls_apidoc_ignored_modules"]
     )
     domain.config["apidoc_roots"] = _api_roots(
         "lua_ls_apidoc_roots",
@@ -169,6 +188,7 @@ def check_options(app: sphinx.application.Sphinx):
         app.srcdir,
         domain.config["apidoc_max_depth"],
         domain.config["apidoc_default_options"],
+        domain.config["apidoc_ignored_modules"],
     )
 
 
@@ -176,7 +196,7 @@ def run_lua_ls(app: sphinx.application.Sphinx):
     domain: sphinx_lua_ls.domain.LuaDomain = app.env.get_domain("lua")  # type: ignore
 
     root_dir = domain.config["project_root"]
-    project_directories = sorted(domain.config["project_directories"] or [root_dir])
+    project_directories = sorted(domain.config.get("project_directories", [root_dir]))
 
     modified = (
         "objtree" not in domain.data
@@ -229,16 +249,24 @@ def run_apidoc(
     domain: sphinx_lua_ls.domain.LuaDomain = app.env.get_domain("lua")  # type: ignore
     cwd = pathlib.Path.cwd()
     for name, params in domain.config["apidoc_roots"].items():
-        root: sphinx_lua_ls.objtree.Object = app.env.domaindata["lua"]["objtree"]
+        objtree: sphinx_lua_ls.objtree.Object = app.env.domaindata["lua"]["objtree"]
         with progress_message(
             f"running lua apidoc in {params['path'].relative_to(cwd, walk_up=True) or '.'}"
         ):
+            ignored_modules = params["ignored_modules"]
+            if ignored_modules:
+                mod_filter = re.compile(
+                    "|".join(f"(?:{fnmatch.translate(e)})" for e in ignored_modules)
+                ).match
+            else:
+                mod_filter = lambda s: False
             sphinx_lua_ls.apidoc.generate(
                 params["path"],
                 name,
-                root,
+                objtree,
                 params["options"],
                 params["max_depth"],
+                mod_filter,
             )
 
 
@@ -255,6 +283,7 @@ def setup(app: sphinx.application.Sphinx):
     app.add_config_value("lua_ls_apidoc_roots", {}, rebuild="")
     app.add_config_value("lua_ls_apidoc_default_options", None, rebuild="")
     app.add_config_value("lua_ls_apidoc_max_depth", 4, rebuild="")
+    app.add_config_value("lua_ls_apidoc_ignored_modules", None, rebuild="")
 
     app.add_directive_to_domain(
         "lua", "autoobject", sphinx_lua_ls.autodoc.AutoObjectDirective

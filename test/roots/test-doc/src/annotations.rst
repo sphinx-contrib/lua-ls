@@ -1,16 +1,18 @@
 Annotations
 ===========
 
-.. lua:data:: annotatedObject
-   :global:
-   :private:
-   :protected:
-   :package:
-   :abstract:
-   :virtual:
-   :async:
+.. container:: regression
 
-   Description
+   .. lua:data:: annotated_object
+      :global:
+      :private:
+      :protected:
+      :package:
+      :abstract:
+      :virtual:
+      :async:
 
-.. lua:data:: customAnnotatedObject
-   :annotation: custom annotation
+      Description
+
+   .. lua:data:: custom_annotated_object
+      :annotation: custom annotation

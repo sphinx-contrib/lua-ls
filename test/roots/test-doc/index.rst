@@ -2,11 +2,10 @@ Test documentation
 ==================
 
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
    src/annotations.rst
-   src/autodoc.rst
+   src/autoindex.rst
    src/directives.rst
+   src/intersphinx.rst
    src/modules.rst
    src/refs.rst

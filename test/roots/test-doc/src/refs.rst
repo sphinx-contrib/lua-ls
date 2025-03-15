@@ -1,57 +1,68 @@
 Refs
 ====
 
-.. lua:data:: refTarget
+.. container:: regression
 
-   Ref from inside: :lua:obj:`refTarget`.
+   .. lua:data:: ref_target
 
-Ref from outside: :lua:obj:`refTarget`.
+      Ref from inside: :lua:obj:`ref_target`.
 
-.. lua:data:: mod.refTarget
+   Ref from outside: :lua:obj:`ref_target`.
 
-   Ref from inside: :lua:obj:`refTarget`.
+   .. lua:data:: mod.ref_target
 
-   Absolute ref from inside: :lua:obj:`mod.refTarget`.
+      Ref from inside: :lua:obj:`ref_target`.
 
-Ref from outside: :lua:obj:`mod.refTarget`.
+      Absolute ref from inside: :lua:obj:`mod.ref_target`.
 
-Ref from outside short: :lua:obj:`~mod.refTarget`.
+   Ref from outside: :lua:obj:`mod.ref_target`.
 
-.. lua:module:: refModule
+   Ref from outside short: :lua:obj:`~mod.ref_target`.
 
-.. lua:data:: refTarget
+   .. lua:module:: ref_module
 
-   Ref from inside: :lua:obj:`refTarget`.
+   .. lua:data:: ref_target
 
-   Absolute ref from inside: :lua:obj:`refModule.refTarget`.
+      Ref from inside: :lua:obj:`ref_target`.
 
-Ref from outside: :lua:obj:`refTarget`.
+      Absolute ref from inside: :lua:obj:`ref_module.ref_target`.
 
-Absolute ref from outside: :lua:obj:`refModule.refTarget`.
+   Ref from outside: :lua:obj:`ref_target`.
 
-.. lua:class:: refClass
+   Absolute ref from outside: :lua:obj:`ref_module.ref_target`.
 
-   .. lua:data:: refTarget
+   .. lua:class:: refClass
 
-      Ref from inside: :lua:obj:`refTarget`.
+      .. lua:data:: ref_target
 
-   Ref from a class: :lua:obj:`refTarget`.
+         Ref from inside: :lua:obj:`ref_target`.
 
-   Semi-absolute from a class: :lua:obj:`refClass.refTarget`.
+      Ref from a class: :lua:obj:`ref_target`.
 
-   Absolute from a class: :lua:obj:`refModule.refClass.refTarget`.
+      Semi-absolute from a class: :lua:obj:`refClass.ref_target`.
 
-   .. lua:class:: refSubClass
+      Absolute from a class: :lua:obj:`ref_module.refClass.ref_target`.
 
-      .. lua:data:: refTarget
+      .. lua:class:: refSubClass
 
-      Ref from a class: :lua:obj:`refTarget`.
+         .. lua:data:: ref_target
 
-      Ref from a class to containing class: :lua:obj:`refSubClass` (should not work).
+         Ref from a class: :lua:obj:`ref_target`.
 
-      Semi-absolute ref from a class to containing class: :lua:obj:`refClass.refSubClass`.
+         Ref from a class to containing class: :lua:obj:`refSubClass` (should not work).
 
-.. lua:module:: refProcessing
+         Semi-absolute ref from a class to containing class: :lua:obj:`refClass.refSubClass`.
+
+   Ref: :lua:obj:`ref_processing.data`, :lua:obj:`ref_processing.function`,
+   :lua:obj:`ref_processing.method`, :lua:obj:`ref_processing.classmethod`,
+   :lua:obj:`ref_processing.staticmethod`, :lua:obj:`ref_processing.deprecated`.
+
+   Ref with explicit title: :lua:obj:`explicit.title <ref_processing.classmethod>`.
+
+Targets
+-------
+
+.. lua:module:: ref_processing
 
 .. lua:data:: data
 
@@ -63,8 +74,5 @@ Absolute ref from outside: :lua:obj:`refModule.refTarget`.
 
 .. lua:staticmethod:: staticmethod
 
-Ref: :lua:obj:`refProcessing.data`, :lua:obj:`refProcessing.function`,
-:lua:obj:`refProcessing.method`, :lua:obj:`refProcessing.classmethod`,
-:lua:obj:`refProcessing.staticmethod`.
-
-Ref with explicit title: :lua:obj:`title <refProcessing.classmethod>`.
+.. lua:data:: deprecated
+   :deprecated:

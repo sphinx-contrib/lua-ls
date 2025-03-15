@@ -1,10 +1,12 @@
 import os
 import pathlib
-from typing import Any
+from typing import Any, Callable
 
 import jinja2
+import sphinx.errors
 
-from sphinx_lua_ls.objtree import Kind, Object, Visibility
+from sphinx_lua_ls.autodoc import AutoObjectDirective, _iter_children
+from sphinx_lua_ls.objtree import Kind, Object
 
 _ENV = jinja2.Environment()
 _ENV.filters["h1"] = lambda title: f"{title}\n{'=' * len(title)}"  # type: ignore
@@ -34,26 +36,26 @@ _TEMPLATE = _ENV.from_string(
 def generate(
     dir: pathlib.Path,
     fullname: str,
-    root: Object,
+    objtree: Object,
     options: dict[str, Any],
-    depth: int = 4,
+    depth: int,
+    mod_filter: Callable[[str], Any],
 ):
     dir.mkdir(parents=True, exist_ok=True)
 
-    (dir / ".gitignore").write_text("*\n")
-
-    options.setdefault("members", "")
-    options.setdefault("recursive", "")
-    options.setdefault("index-table", "")
+    options.setdefault("members", True)
+    options.setdefault("recursive", True)
+    options.setdefault("index-table", True)
 
     files: set[pathlib.Path] = set()
     _generate(
         dir,
         fullname,
-        root,
+        objtree,
         "",
         depth,
         options,
+        mod_filter,
         files,
     )
 
@@ -67,27 +69,36 @@ def generate(
 def _generate(
     dir: pathlib.Path,
     fullname: str,
-    root: Object,
+    objtree: Object,
     filename: str,
     depth: int,
     options: dict[str, Any],
+    mod_filter: Callable[[str], Any],
     files: set[pathlib.Path],
 ):
-    found = root.find_path(fullname)
-    if not found:
-        raise ValueError(f"can't find module {fullname}")
-    obj, _, classname, _ = found
+    obj = objtree.find(fullname)
+    if not obj:
+        raise sphinx.errors.ConfigError(f"can't find module {fullname}")
 
-    if (
-        obj.kind != Kind.Module
-        or obj.parsed_doctype not in [None, "module"]
-        or classname
-    ):
-        raise RuntimeError(
-            "lua apidoc can only work with modules"
-        )  # TODO: better error message
+    if obj.kind != Kind.Module:
+        raise sphinx.errors.ConfigError(
+            f"lua apidoc can only work with modules, "
+            f"instead it got {obj.kind} {fullname}"
+        )
 
     autodoc_options = options.copy()
+    for name, value in obj.parsed_options.items():
+        if name in AutoObjectDirective.option_spec:
+            try:
+                autodoc_options[name] = AutoObjectDirective.option_spec[name](value)
+            except ValueError as e:
+                raise sphinx.errors.DocumentError(
+                    f"invalid !doc option {name} in object {fullname}: {e}"
+                ) from None
+        else:
+            raise sphinx.errors.DocumentError(
+                f"unknown !doc option {name} in object {fullname}"
+            )
     if (
         "exclude-members" not in autodoc_options
         or autodoc_options["exclude-members"] is True
@@ -98,35 +109,14 @@ def _generate(
 
     submodules: dict[str, str] = {}
 
-    for child_name, child in obj.children.items():
-        if child_name in autodoc_options["exclude-members"]:
-            continue
-        is_private = (
-            child.visibility == Visibility.Private or "private" in child.parsed_options
-        )
-        if is_private and "private-members" not in options:
-            continue
-        is_protected = (
-            child.visibility == Visibility.Protected
-            or "protected" in child.parsed_options
-        )
-        if is_protected and "protected-members" not in options:
-            continue
-        is_package = (
-            child.visibility == Visibility.Package or "package" in child.parsed_options
-        )
-        if is_package and "package-members" not in options:
-            continue
-
-        if (
-            depth > 0
-            and child.kind == Kind.Module
-            and root.parsed_doctype in [None, "module"]
-        ):
-            child_fullname = f"{fullname}.{child_name}"
-            child_filename = f"{filename}.{child_name}" if filename else child_name
-            submodules[child_fullname] = child_filename
-            autodoc_options["exclude-members"].add(child_name)
+    if depth > 0:
+        for child_name, child in _iter_children(obj, objtree, None, autodoc_options):
+            if child.kind == Kind.Module:
+                child_fullname = f"{fullname}.{child_name}"
+                child_filename = f"{filename}.{child_name}" if filename else child_name
+                autodoc_options["exclude-members"].add(child_name)
+                if not mod_filter(child_fullname):
+                    submodules[child_fullname] = child_filename
 
     for option_name in autodoc_options:
         if autodoc_options[option_name] in (None, True):
@@ -152,9 +142,10 @@ def _generate(
         _generate(
             dir,
             child_fullname,
-            root,
+            objtree,
             child_filename,
             depth - 1,
             options,
+            mod_filter,
             files,
         )

@@ -1,8 +1,9 @@
 --- This is a module.
 ---
+--- !doctype module
 --- @see autodoc.data
 --- @see autodoc.brokenRef
---- @class autodoc: table
+--- @class autodoc
 autodoc = {}
 
 --- Module data.
@@ -35,7 +36,9 @@ autodoc.Class.data = 1
 autodoc.Class.private = "meow ^^"
 
 --- Class attribute with sub-items.
---- @class autodoc.Class.namespace: table
+---
+--- !doctype table
+--- @class autodoc.Class.namespace
 autodoc.Class.namespace = {}
 
 --- Namespace attribute.

@@ -23,6 +23,8 @@ class Kind(enum.Enum):
 
     Module = "module"
 
+    Table = "table"
+
     Data = "data"
 
     Function = "function"
@@ -32,8 +34,18 @@ class Kind(enum.Enum):
     Alias = "alias"
 
     @property
-    def title(self) -> str:
-        return self.value.title()
+    def order(self) -> int:
+        return _GROUPWISE_ORDER[self]
+
+
+_GROUPWISE_ORDER = {
+    Kind.Table: 1,
+    Kind.Data: 1,
+    Kind.Function: 2,
+    Kind.Class: 3,
+    Kind.Alias: 4,
+    Kind.Module: 5,
+}
 
 
 class Visibility(enum.Enum):
@@ -116,6 +128,27 @@ class _ParseDocstringMixin:
                 see_lines.append(f":lua:obj:`{typ}`{doc}")
             else:
                 rejected_see_lines.append(see_line)
+        else:
+            if match := re.match(
+                r"""
+                ^
+                See:[ ]
+                (?:
+                    ~(?P<rejected_type>.+?)~ (?P<rejected_doc>.*)
+                    |
+                    \[(?P<type>.+?)\]\(.*?\) (?P<doc>.*)
+                )
+                $
+                """,
+                docs,
+                flags=re.MULTILINE | re.VERBOSE,
+            ):
+                typ = match.group("type") or match.group("rejected_type")
+                doc = match.group("doc") or match.group("rejected_doc") or ""
+                if doc:
+                    doc = ": " + doc
+                see_lines.append(f":lua:obj:`{typ}`{doc}")
+                docs = docs.replace(match.group(0), "")
 
         if rejected_see_lines:
             docs += "\n\nSee:\n" + "\n".join(rejected_see_lines)
@@ -127,7 +160,7 @@ class _ParseDocstringMixin:
                 nl for l in see_lines for nl in (f"- {l}", "")
             ]
         else:
-            see_lines = [""] + [f"See: {l}" for l in see_lines]
+            see_lines = [""] + [f"See {l}" for l in see_lines]
 
         if see_lines:
             docs += "\n".join(see_lines)
@@ -186,9 +219,6 @@ class Object(_ParseDocstringMixin):
     #: priority wins.
     priority: _t.ClassVar[int] = 0
 
-    #: Object kind.
-    kind: _t.ClassVar[Kind] = Kind.Module
-
     #: Deprecation marker.
     is_deprecated: bool = False
 
@@ -216,6 +246,25 @@ class Object(_ParseDocstringMixin):
 
     #: Child objects.
     children: dict[str, Object] = dataclasses.field(default_factory=dict)
+
+    @functools.cached_property
+    def kind(self) -> Kind | None:
+        """
+        Determine object's kind based on how lua-ls reported this object
+        and how user specified ``!doctype``.
+
+        Return `None` if user's ``!doctype`` is incompatible with returned type.
+
+        """
+
+        if self.parsed_doctype in [None, "module"]:
+            return Kind.Module
+        elif self.parsed_doctype in ["data", "const", "attribute"]:
+            return Kind.Data
+        elif self.parsed_doctype in ["table"]:
+            return Kind.Table
+        else:
+            return None
 
     def __repr__(self) -> str:
         return self.__class__.__name__
@@ -291,13 +340,13 @@ class Object(_ParseDocstringMixin):
             if name not in root.children:
                 return None
 
+            root = root.children[name]
+
             if in_class or root.kind != Kind.Module:
                 in_class = True
                 classname.append(name)
             else:
                 modname.append(name)
-
-            root = root.children[name]
 
         if classname:
             name = classname.pop()
@@ -317,10 +366,20 @@ class Data(Object):
     """
 
     priority = 1
-    kind = Kind.Data
 
     #: Variable type.
     type: str
+
+    @functools.cached_property
+    def kind(self) -> Kind | None:
+        if self.parsed_doctype in [None, "data", "const", "attribute"]:
+            return Kind.Data
+        elif self.parsed_doctype in ["table"]:
+            return Kind.Table
+        elif self.parsed_doctype in ["module"]:
+            return Kind.Module
+        else:
+            return None
 
     def _print_object(self) -> str:
         return f": {self.type}"
@@ -337,7 +396,6 @@ class Function(Object):
     """
 
     priority = 2
-    kind = Kind.Function
 
     #: Function parameters.
     params: list[Param] = dataclasses.field(default_factory=list)
@@ -347,6 +405,19 @@ class Function(Object):
 
     #: Indicates that this function implicitly accepts ``self`` argument.
     implicit_self: bool = False
+
+    @functools.cached_property
+    def kind(self) -> Kind | None:
+        if self.parsed_doctype in [
+            None,
+            "function",
+            "method",
+            "classmethod",
+            "staticmethod",
+        ]:
+            return Kind.Function
+        else:
+            return None
 
     def _print_object(self) -> str:
         params = ", ".join(map(str, self.params))
@@ -367,10 +438,22 @@ class Class(Object):
     """
 
     priority = 2
-    kind = Kind.Class
 
     #: Base classes or types.
     bases: list[str] = dataclasses.field(default_factory=list)
+
+    @functools.cached_property
+    def kind(self) -> Kind | None:
+        if self.parsed_doctype in [None, "class"]:
+            return Kind.Class
+        elif self.parsed_doctype in ["data", "const", "attribute"]:
+            return Kind.Data
+        elif self.parsed_doctype in ["table"]:
+            return Kind.Table
+        elif self.parsed_doctype in ["module"]:
+            return Kind.Module
+        else:
+            return None
 
     def _print_object(self) -> str:
         return f" = class({', '.join(self.bases)}) {{"
@@ -387,10 +470,22 @@ class Alias(Object):
     """
 
     priority = 2
-    kind = Kind.Alias
 
     #: Alias type.
     type: str
+
+    @functools.cached_property
+    def kind(self) -> Kind | None:
+        if self.parsed_doctype in [None, "alias"]:
+            return Kind.Alias
+        elif self.parsed_doctype in ["data", "const", "attribute"]:
+            return Kind.Data
+        elif self.parsed_doctype in ["table"]:
+            return Kind.Table
+        elif self.parsed_doctype in ["module"]:
+            return Kind.Module
+        else:
+            return None
 
     def _print_object(self) -> str:
         return f" = {self.type}"

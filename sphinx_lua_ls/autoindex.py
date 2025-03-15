@@ -6,7 +6,9 @@ import sphinx.environment
 from sphinx.transforms import SphinxTransform
 from sphinx.util.docutils import SphinxDirective
 
+import sphinx_lua_ls.autodoc
 import sphinx_lua_ls.domain
+from sphinx_lua_ls.objtree import Kind
 
 
 class AutoIndexNode(docutils.nodes.Element):
@@ -36,10 +38,9 @@ class AutoIndexTransform(SphinxTransform):
         "classmethod": "function",
         "staticmethod": "function",
         "attribute": "data",
+        "table": "data",
         "module": "module",
     }
-
-    _OBJTYPES = ["module", "data", "function", "alias", "class"]
 
     @property
     def domain(self) -> sphinx_lua_ls.domain.LuaDomain:
@@ -47,7 +48,7 @@ class AutoIndexTransform(SphinxTransform):
 
     def apply(self, **kwargs):
         node: AutoIndexNode
-        for node in self.document.findall(AutoIndexNode):
+        for node in list(self.document.findall(AutoIndexNode)):
             prefix = node["target"] + "."
             objects: dict[str, list[tuple[str, str, str, str]]] = defaultdict(list)
             for fullname, (docname, objtype, _, synopsis) in self.env.domaindata["lua"][
@@ -62,20 +63,24 @@ class AutoIndexTransform(SphinxTransform):
                     (name, fullname, docname, synopsis)
                 )
 
-            node.replace_self(self.render_index(objects))
+            node.replace_self(
+                docutils.nodes.container(
+                    "", *self.render_index(objects), classes=["lua-index"]
+                )
+            )
 
     def render_index(
         self, objects: dict[str, list[tuple[str, str, str, str]]]
     ) -> list[docutils.nodes.Node]:
         nodes: list[docutils.nodes.Node] = []
 
-        for objtype in self._OBJTYPES:
+        for kind in Kind:
+            objtype = kind.value
             if objtype in objects:
                 nodes.extend(self.render_type(objtype, objects.pop(objtype)))
         for objtype in sorted(objects):
             nodes.extend(self.render_type(objtype, objects[objtype]))
 
-        # self.domain.resolve_any_xref()
         return nodes
 
     def render_type(

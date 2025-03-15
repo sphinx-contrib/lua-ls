@@ -7,6 +7,7 @@ See the original code here: https://github.com/boolangery/sphinx-luadomain
 
 """
 
+import contextlib
 import functools
 import re
 from collections.abc import Set
@@ -100,7 +101,7 @@ def _separate_paren_prefix(sig: str) -> tuple[str, str]:
 
 def _separate_sig(sig: str, sep: str = ",", strip: bool = True) -> list[str]:
     """
-    Separate a string by comas, ignoring comas within parens and string literals.
+    Separate a string by commas, ignoring commas within parens and string literals.
 
     """
 
@@ -150,7 +151,7 @@ def _parse_types(
     sig: str, parsingFunctionParams: bool = False
 ) -> list[tuple[str, str]]:
     """
-    Parse sequence of type annotations separated by comas.
+    Parse sequence of type annotations separated by commas.
 
     Each type annotation might consist of a single type or a name-type pair.
 
@@ -194,7 +195,7 @@ def _type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
             |
             # Literal string with escapes.
             # Example: `"foo"`, `"foo-\"-bar"`.
-            (?P<string>(?P<string_q>['"`])(?:\\.|[^\\])*(?P=string_q))
+            (?P<string>(?P<string_q>['"`])(?:\\.|[^\\])*?(?P=string_q))
             |
             # Number with optional exponent.
             # Example: `1.0`, `.1`, `1.`, `1e+5`.
@@ -302,7 +303,43 @@ class LuaTypedField(TypedField):
         return super().make_field(types, domain, items, env, inliner, location)
 
 
-class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
+class LuaContextManagerMixin(SphinxDirective):
+    def push_context(self, modname: str, classname: str):
+        classes = self.env.ref_context.setdefault("lua:classes", [])
+        classes.append(self.env.ref_context.get("lua:class"))
+        self.env.ref_context["lua:class"] = classname
+
+        modules = self.env.ref_context.setdefault("lua:modules", [])
+        modules.append(self.env.ref_context.get("lua:module"))
+        self.env.ref_context["lua:module"] = modname
+
+    def pop_context(self):
+        classes = self.env.ref_context.setdefault("lua:classes", [])
+        if classes:
+            self.env.ref_context["lua:class"] = classes.pop()
+        else:
+            self.env.ref_context.pop("lua:class")
+
+        modules = self.env.ref_context.setdefault("lua:modules", [])
+        if modules:
+            self.env.ref_context["lua:module"] = modules.pop()
+        else:
+            self.env.ref_context.pop("lua:module")
+
+    @contextlib.contextmanager
+    def save_context(self):
+        modname = self.env.ref_context.get("lua:module")
+        classname = self.env.ref_context.get("lua:classname")
+        try:
+            yield
+        finally:
+            self.env.ref_context["lua:module"] = modname
+            self.env.ref_context["lua:classname"] = classname
+
+
+class LuaObject(
+    ObjectDescription[tuple[str, str, str, str]], LuaContextManagerMixin, Generic[T]
+):
     """
     Description of a general Lua object.
 
@@ -318,7 +355,7 @@ class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
 
     """
 
-    option_spec: ClassVar[dict[str, Callable[[str], Any]]] = {
+    option_spec: ClassVar[dict[str, Callable[[str], Any]]] = {  # type: ignore
         "no-index": directives.flag,
         "module": directives.unchanged,
         "annotation": directives.unchanged,
@@ -384,10 +421,19 @@ class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
         classname = self.env.ref_context.get("lua:class", None)
         fullname = ".".join(filter(None, [modname, classname, name]))
 
+        if classname and "module" in self.options:
+            raise self.error("you can only use :module: while on a module level")
+
         # Only display full path if we're not inside of a class.
         prefix = "" if classname else ".".join(filter(None, [modname, classname]))
-        if prefix:
-            prefix += ":" if self.use_semicolon_path() else "."
+        descname = name
+        if self.use_semicolon_path():
+            if (dot_index := descname.rfind(".")) != -1:
+                descname = descname[:dot_index] + ":" + descname[dot_index + 1 :]
+            elif prefix:
+                prefix += ":"
+        if prefix and not prefix.endswith((".", ":")):
+            prefix += "."
 
         signode["module"] = modname
         signode["class"] = classname
@@ -399,7 +445,7 @@ class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
 
         if prefix:
             signode += addnodes.desc_addname(prefix, prefix)
-        signode += addnodes.desc_name(name, name)
+        signode += addnodes.desc_name(descname, descname)
 
         return fullname, modname, classname, name, sigdata
 
@@ -482,27 +528,19 @@ class LuaObject(ObjectDescription[tuple[str, str, str, str]], Generic[T]):
 
     def before_content(self) -> None:
         if self.names and self.allow_nesting:
-            _, _, classname, name = self.names[-1]
-            # Add name of the current object to the current classname,
-            # thus getting a new classname.
-            new_classname = ".".join(filter(None, [classname, name]))
-            classes = self.env.ref_context.setdefault("lua:classes", [])
-            classes.append(self.env.ref_context.get("lua:class"))
-            self.env.ref_context["lua:class"] = new_classname
+            _, modname, classname, objname = self.names[-1]
+            if self.objtype == "module" and not classname:
+                modname = modname + "." if modname else ""
+                modname += objname
+            else:
+                classname = classname + "." if classname else ""
+                classname += objname
 
-        if "module" in self.options:
-            modules = self.env.ref_context.setdefault("lua:modules", [])
-            modules.append(self.env.ref_context.get("lua:module"))
-            self.env.ref_context["lua:module"] = self.options["module"]
+            self.push_context(modname, classname)
 
     def after_content(self) -> None:
         if self.names and self.allow_nesting:
-            classes = self.env.ref_context.setdefault("lua:classes", [])
-            self.env.ref_context["lua:class"] = classes.pop() if classes else None
-
-        if "module" in self.options:
-            modules = self.env.ref_context.setdefault("lua:modules", [])
-            self.env.ref_context["lua:module"] = modules.pop() if modules else None
+            self.pop_context()
 
 
 class LuaFunction(LuaObject[tuple[list[tuple[str, str]], list[tuple[str, str]]]]):
@@ -768,9 +806,52 @@ class LuaClass(LuaObject[list[str]]):
         return prefix
 
 
+class LuaTable(LuaObject[None]):
+    """
+    Like data, but allows nesting. Used to document tables that aren't modules.
+
+    """
+
+    allow_nesting = True
+
+    def parse_signature(self, sig):
+        sig = self.arguments[0]
+        if match := _OBJECT_NAME_RE.match(sig):
+            name = re.sub(r"\s", "", match.group())
+            sig = sig[match.span()[1] :]
+            if sig:
+                raise self.error("unexpected symbols after table name")
+        else:
+            raise self.error("incorrect table name")
+
+        return name, None
+
+    @_handle_signature_errors
+    def handle_signature(
+        self, sig: str, signode: addnodes.desc_signature
+    ) -> tuple[str, str, str, str]:
+        fullname, modname, classname, name, _ = self.handle_signature_prefix(
+            sig, signode
+        )
+
+        return fullname, modname, classname, name
+
+    def get_signature_prefix(self, signature: str) -> list[nodes.Node]:
+        prefix = super().get_signature_prefix(signature)
+        if self.objtype not in ("table"):
+            prefix.extend(
+                [
+                    addnodes.desc_sig_keyword("", self.objtype),
+                    addnodes.desc_sig_space(),
+                ]
+            )
+        return prefix
+
+
 class LuaModule(SphinxDirective):
     """
     Directive to mark description of a new module.
+
     """
 
     has_content = False
@@ -790,6 +871,9 @@ class LuaModule(SphinxDirective):
             if name not in self.options:
                 self.options[name] = option
 
+        if self.env.ref_context.get("lua:class", None):
+            raise self.severe("lua:module only available on top level")
+
         sig = self.arguments[0]
         if match := _OBJECT_NAME_RE.match(sig):
             modname = re.sub(r"\s", "", match.group())
@@ -799,13 +883,11 @@ class LuaModule(SphinxDirective):
         else:
             raise self.error("incorrect module name")
 
-        env = self.state.document.settings.env
-        no_index = "no-index" in self.options
-        env.ref_context["lua:module"] = modname
+        self.env.ref_context["lua:module"] = modname
         ret = []
-        if not no_index:
-            env.domaindata["lua"]["objects"][modname] = (
-                env.docname,
+        if "no-index" not in self.options:
+            self.env.domaindata["lua"]["objects"][modname] = (
+                self.env.docname,
                 "module",
                 "deprecated" in self.options,
                 self.options.get("synopsis", None),
@@ -836,6 +918,9 @@ class LuaCurrentModule(SphinxDirective):
     option_spec = {}
 
     def run(self) -> list[nodes.Node]:
+        if self.env.ref_context.get("lua:class", None):
+            raise self.severe("lua:currentmodule only available on top level")
+
         sig = self.arguments[0]
         if match := _OBJECT_NAME_RE.match(sig):
             modname = re.sub(r"\s", "", match.group())
@@ -845,11 +930,10 @@ class LuaCurrentModule(SphinxDirective):
         else:
             raise self.error("incorrect module name")
 
-        env = self.state.document.settings.env
         if modname == "None":
-            env.ref_context.pop("lua:module", None)
+            self.env.ref_context.pop("lua:module", None)
         else:
-            env.ref_context["lua:module"] = modname
+            self.env.ref_context["lua:module"] = modname
         return []
 
 
@@ -892,6 +976,7 @@ class LuaDomain(Domain):
         "classmethod": ObjType(_("class method"), "meth", "obj"),
         "staticmethod": ObjType(_("static method"), "meth", "obj"),
         "attribute": ObjType(_("attribute"), "attr", "obj"),
+        "table": ObjType(_("data"), "attr", "data", "obj"),
         "module": ObjType(_("module"), "mod", "obj"),
     }
 
@@ -905,6 +990,7 @@ class LuaDomain(Domain):
         "classmethod": LuaFunction,
         "staticmethod": LuaFunction,
         "attribute": LuaData,
+        "table": LuaTable,
         "module": LuaModule,
         "currentmodule": LuaCurrentModule,
     }
