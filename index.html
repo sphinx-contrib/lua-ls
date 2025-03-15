@@ -1,293 +1,255 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
 
-<!DOCTYPE html>
-
-
-<html lang="en" data-content_root="./" >
-
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <title>Sphinx-LuaLS &#8212; Sphinx-LuaLS 1.1.0 documentation</title>
-  
-  
-  
-  <script data-cfasync="false">
-    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
-    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
-  </script>
-  <!--
-    this give us a css class that will be invisible only if js is disabled
-  -->
-  <noscript>
-    <style>
-      .pst-js-only { display: none !important; }
-
-    </style>
-  </noscript>
-  
-  <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
-
-    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <!-- Generated with Sphinx 8.2.3 and Furo 2024.08.06 -->
+        <title>Sphinx-LuaLS 2.0.0b0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/lua.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
-  
-  <!-- So that users can add custom icons -->
-  <script src="_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
-  <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
-
-    <script src="_static/documentation_options.js?v=fc837d61"></script>
-    <script src="_static/doctools.js?v=9bcbadda"></script>
-    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-    <script src="_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'index';</script>
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="1.1.0" />
-  </head>
-  
-  
-  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
-
-  
-  
-  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
-  
-  <div id="pst-scroll-pixel-helper"></div>
-  
-  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
-    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
-
-  
-  <dialog id="pst-search-dialog">
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
     
-<form class="bd-search d-flex align-items-center"
-      action="search.html"
-      method="get">
-  <i class="fa-solid fa-magnifying-glass"></i>
-  <input type="search"
-         class="form-control"
-         name="q"
-         placeholder="Search the docs ..."
-         aria-label="Search the docs ..."
-         autocomplete="off"
-         autocorrect="off"
-         autocapitalize="off"
-         spellcheck="false"/>
-  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="#"><div class="brand">Sphinx-LuaLS 2.0.0b0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+  
+  
+  <span class="sidebar-brand-text">Sphinx-LuaLS 2.0.0b0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
 </form>
-  </dialog>
-
-  <div class="pst-async-banner-revealer d-none">
-  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  
+</div>
 </div>
 
-  
-    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
-<div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
-    <span class="fa-solid fa-bars"></span>
-  </button>
-  
-  
-  <div class="col-lg-3 navbar-header-items__start">
-    
-      <div class="navbar-item">
-
-  
-    
-  
-
-<a class="navbar-brand logo" href="#">
-  
-  
-  
-  
-  
-  
-    <p class="title logo__title">Sphinx-LuaLS 1.1.0 documentation</p>
-  
-</a></div>
-    
-  </div>
-  
-  <div class="col-lg-9 navbar-header-items">
-    
-    <div class="me-auto navbar-header-items__center">
-      
-        <div class="navbar-item">
-<nav>
-  <ul class="bd-navbar-elements navbar-nav">
-    
-  </ul>
-</nav></div>
+      </div>
       
     </div>
-    
-    
-    <div class="navbar-header-items__end">
-      
-        <div class="navbar-item navbar-persistent--container">
-          
-
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/blob/main/docs/source/index.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/edit/main/docs/source/index.rst" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
         </div>
-      
-      
-        <div class="navbar-item">
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
-      
-        <div class="navbar-item"><ul class="navbar-icon-links"
-    aria-label="Icon Links">
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://github.com/taminomara/sphinx-lua-ls" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
-        </li>
-</ul></div>
-      
-    </div>
-    
-  </div>
-  
-  
-    <div class="navbar-persistent--mobile">
-
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
- <i class="fa-solid fa-magnifying-glass"></i>
- <span class="search-button__default-text">Search</span>
- <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
-</button>
-    </div>
-  
-
-  
-    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
-      <span class="fa-solid fa-outdent"></span>
-    </button>
-  
-</div>
-
-    </header>
-  
-
-  <div class="bd-container">
-    <div class="bd-container__inner bd-page-width">
-      
-      
-      
-        
-      
-      <dialog id="pst-primary-sidebar-modal"></dialog>
-      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
-        
-
-  
-  <div class="sidebar-header-items sidebar-primary__section">
-    
-    
-      <div class="sidebar-header-items__center">
-        
-          
-          
-            <div class="navbar-item">
-<nav>
-  <ul class="bd-navbar-elements navbar-nav">
-    
-  </ul>
-</nav></div>
-          
-        
-      </div>
-    
-    
-    
-      <div class="sidebar-header-items__end">
-        
-          <div class="navbar-item">
-
-<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
-  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
-  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
-  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
-</button></div>
-        
-          <div class="navbar-item"><ul class="navbar-icon-links"
-    aria-label="Icon Links">
-        <li class="nav-item">
-          
-          
-          
-          
-          
-          
-          
-          
-          <a href="https://github.com/taminomara/sphinx-lua-ls" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i>
-            <span class="sr-only">GitHub</span></a>
-        </li>
-</ul></div>
-        
-      </div>
-    
-  </div>
-  
-  
-  <div class="sidebar-primary-items__end sidebar-primary__section">
-      <div class="sidebar-primary-item">
-<div id="ethical-ad-placement"
-      class="flat"
-      data-ea-publisher="readthedocs"
-      data-ea-type="readthedocs-sidebar"
-      data-ea-manual="true">
-</div></div>
-  </div>
-
-
-      </div>
-      
-      <main id="main-content" class="bd-main" role="main">
-        
-        
-          <div class="bd-content">
-            <div class="bd-article-container">
-              
-              <div class="bd-header-article d-print-none"></div>
-              
-              
-              
-                
-<div id="searchbox"></div>
-                <article class="bd-article">
-                  
-  <section id="sphinx-luals">
-<h1>Sphinx-LuaLS<a class="headerlink" href="#sphinx-luals" title="Link to this heading">#</a></h1>
+        <article role="main" id="furo-main-content">
+          <section id="sphinx-luals">
+<h1>Sphinx-LuaLS<a class="headerlink" href="#sphinx-luals" title="Link to this heading">¶</a></h1>
 <p>Sphinx-LuaLS features domain for <a class="reference external" href="https://lua.org">Lua</a> and automatic documentation generator
 based on <a class="reference external" href="https://lua_ls.github.io/">Lua Language Server</a>.</p>
-<p>See an example output: <a class="reference internal" href="#lua:logging" title="logging"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging</span></code></a>.</p>
+<p>See an example output: <a class="reference internal" href="#lua-logging" title="logging"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging</span></code></a>.</p>
 <section id="installation">
-<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h2>
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading">¶</a></h2>
 <p>You’ll need a Python installation and a Sphinx project to start with Sphinx-LuaLS.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
@@ -379,7 +341,7 @@ and specify the location of your Lua project:</p>
 <p>If you plan to use Markdown in code comments, install the <a class="reference external" href="https://myst-parser.readthedocs.io/en/latest/index.html">MySt</a> plugin for Sphinx.</p>
 </section>
 <section id="quickstart">
-<h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">#</a></h2>
+<h2>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">¶</a></h2>
 <p>Use <a class="reference internal" href="#directive-lua-module" title="lua:module directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:module</span></code></a> to indicate which module you’re documenting.
 After it, use <a class="reference internal" href="#directive-lua-data" title="lua:data directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:data</span></code></a>, <a class="reference internal" href="#directive-lua-function" title="lua:function directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:function</span></code></a>, <a class="reference internal" href="#directive-lua-class" title="lua:class directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:class</span></code></a>,
 and others to document module’s contents.</p>
@@ -404,27 +366,27 @@ and others to document module’s contents.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Example output</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<dl class="lua class" id="lua:soundboard">
-<dt class="sig sig-object lua" id="lua:soundboard.Sound">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soundboard.</span></span><span class="sig-name descname"><span class="pre">Sound</span></span><a class="headerlink" href="#lua:soundboard.Sound" title="Link to this definition">#</a></dt>
+<dl class="lua class" id="lua-soundboard">
+<dt class="sig sig-object lua" id="lua-soundboard.Sound">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soundboard.</span></span><span class="sig-name descname"><span class="pre">Sound</span></span><a class="headerlink" href="#lua-soundboard.Sound" title="Link to this definition">¶</a></dt>
 <dd><p class="sd-card-text">A sound that can be played by the sound board.</p>
 <dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua:soundboard.Sound.new">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua:soundboard.Sound" title="soundboard.Sound"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Sound</span></code></a></span></span><a class="headerlink" href="#lua:soundboard.Sound.new" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object lua" id="lua-soundboard.Sound.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="n"><span class="pre">sound</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-soundboard.Sound" title="soundboard.Sound"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Sound</span></code></a></span></span><a class="headerlink" href="#lua-soundboard.Sound.new" title="Link to this definition">¶</a></dt>
 <dd><p class="sd-card-text">Create a new sound.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p class="sd-card-text"><strong>id</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – id of a sound.</p>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
-<dd class="field-even"><p class="sd-card-text"><strong>sound</strong> (<a class="reference internal" href="#lua:soundboard.Sound" title="soundboard.Sound"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Sound</span></code></a>) – a new class instance.</p>
+<dd class="field-even"><p class="sd-card-text"><strong>sound</strong> (<a class="reference internal" href="#lua-soundboard.Sound" title="soundboard.Sound"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Sound</span></code></a>) – a new class instance.</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="lua method">
-<dt class="sig sig-object lua" id="lua:soundboard.Sound.play">
-<span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua:soundboard.Sound" title="soundboard.Sound"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Sound</span></code></a></em><span class="sig-paren">)</span><a class="headerlink" href="#lua:soundboard.Sound.play" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object lua" id="lua-soundboard.Sound.play">
+<span class="sig-name descname"><span class="pre">play</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-soundboard.Sound" title="soundboard.Sound"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Sound</span></code></a></em><span class="sig-paren">)</span><a class="headerlink" href="#lua-soundboard.Sound.play" title="Link to this definition">¶</a></dt>
 <dd><p class="sd-card-text">Plays the sound.</p>
 </dd></dl>
 
@@ -439,7 +401,7 @@ and <a class="reference internal" href="#role-lua-class" title="lua:class role">
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Example output</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">Here’s a reference to the <a class="reference internal" href="#lua:soundboard.Sound" title="soundboard.Sound"><code class="xref lua lua-class docutils literal notranslate"><span class="pre">soundboard.Sound</span></code></a> class.</p>
+<p class="sd-card-text">Here’s a reference to the <a class="reference internal" href="#lua-soundboard.Sound" title="soundboard.Sound"><code class="xref lua lua-class docutils literal notranslate"><span class="pre">soundboard.Sound</span></code></a> class.</p>
 </div>
 </details><p>Use <code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:autoobject</span></code> to extract documentation from source code.
 Its options are similar to the ones used by python <code class="docutils literal notranslate"><span class="pre">autodoc</span></code>:</p>
@@ -458,14 +420,14 @@ Its options are similar to the ones used by python <code class="docutils literal
 </div>
 </details></section>
 <section id="declaring-objects">
-<h2>Declaring objects<a class="headerlink" href="#declaring-objects" title="Link to this heading">#</a></h2>
+<h2>Declaring objects<a class="headerlink" href="#declaring-objects" title="Link to this heading">¶</a></h2>
 <dl class="rst directive">
 <dt class="sig sig-object rst" id="directive-lua-data">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:data::</span></span><span class="sig-prename descclassname"> <span class="pre">name:</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-data" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:data::</span></span><span class="sig-prename descclassname"> <span class="pre">name:</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-data" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-lua-const">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:const::</span></span><span class="sig-prename descclassname"> <span class="pre">name:</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-const" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:const::</span></span><span class="sig-prename descclassname"> <span class="pre">name:</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-const" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-lua-attribute">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:attribute::</span></span><span class="sig-prename descclassname"> <span class="pre">name:</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-attribute" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:attribute::</span></span><span class="sig-prename descclassname"> <span class="pre">name:</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-attribute" title="Link to this definition">¶</a></dt>
 <dd><p>Directives for documenting variables. Accepts name of the variable,
 and an optional type:</p>
 <div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:data</span><span class="p">::</span> name: string
@@ -486,14 +448,21 @@ and an optional type:</p>
 </details></dd></dl>
 
 <dl class="rst directive">
+<dt class="sig sig-object rst" id="directive-lua-table">
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:table::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#directive-lua-table" title="Link to this definition">¶</a></dt>
+<dd><p>Directive for documenting tables that serve as namespaces.
+It works like <code class="xref rst rst-dir docutils literal notranslate"><span class="pre">data</span></code>, but can contain nested members.</p>
+</dd></dl>
+
+<dl class="rst directive">
 <dt class="sig sig-object rst" id="directive-lua-function">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:function::</span></span><span class="sig-prename descclassname"> <span class="pre">name(param:</span> <span class="pre">type)</span> <span class="pre">-&gt;</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-function" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:function::</span></span><span class="sig-prename descclassname"> <span class="pre">name(param:</span> <span class="pre">type)</span> <span class="pre">-&gt;</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-function" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-lua-method">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:method::</span></span><span class="sig-prename descclassname"> <span class="pre">name(param:</span> <span class="pre">type)</span> <span class="pre">-&gt;</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-method" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:method::</span></span><span class="sig-prename descclassname"> <span class="pre">name(param:</span> <span class="pre">type)</span> <span class="pre">-&gt;</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-method" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-lua-classmethod">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:classmethod::</span></span><span class="sig-prename descclassname"> <span class="pre">name(param:</span> <span class="pre">type)</span> <span class="pre">-&gt;</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-classmethod" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:classmethod::</span></span><span class="sig-prename descclassname"> <span class="pre">name(param:</span> <span class="pre">type)</span> <span class="pre">-&gt;</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-classmethod" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-lua-staticmethod">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:staticmethod::</span></span><span class="sig-prename descclassname"> <span class="pre">name(param:</span> <span class="pre">type)</span> <span class="pre">-&gt;</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-staticmethod" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:staticmethod::</span></span><span class="sig-prename descclassname"> <span class="pre">name(param:</span> <span class="pre">type)</span> <span class="pre">-&gt;</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-staticmethod" title="Link to this definition">¶</a></dt>
 <dd><p>Directives for documenting functions and class methods. Accepts function name,
 optional parenthesized list of parameters, and an optional return type:</p>
 <div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:function</span><span class="p">::</span> doABarrelRoll(times: integer) -&gt; success: boolean
@@ -515,7 +484,7 @@ optional parenthesized list of parameters, and an optional return type:</p>
 
 <dl class="rst directive">
 <dt class="sig sig-object rst" id="directive-lua-class">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:class::</span></span><span class="sig-prename descclassname"> <span class="pre">name:</span> <span class="pre">bases</span></span><a class="headerlink" href="#directive-lua-class" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:class::</span></span><span class="sig-prename descclassname"> <span class="pre">name:</span> <span class="pre">bases</span></span><a class="headerlink" href="#directive-lua-class" title="Link to this definition">¶</a></dt>
 <dd><p>For documenting classes and metatables. Accepts a class name and an optional list
 of base classes:</p>
 <div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:class</span><span class="p">::</span> Logger: LogFilter, LogSink
@@ -537,7 +506,7 @@ of base classes:</p>
 
 <dl class="rst directive">
 <dt class="sig sig-object rst" id="directive-lua-alias">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:alias::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span> <span class="pre">=</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-alias" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:alias::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span> <span class="pre">=</span> <span class="pre">type</span></span><a class="headerlink" href="#directive-lua-alias" title="Link to this definition">¶</a></dt>
 <dd><p>For documenting type aliases. Accepts name of the alias and its type:</p>
 <div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:alias</span><span class="p">::</span> LogLevel = integer
 
@@ -558,15 +527,17 @@ of base classes:</p>
 
 <dl class="rst directive">
 <dt class="sig sig-object rst" id="directive-lua-module">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:module::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#directive-lua-module" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:module::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#directive-lua-module" title="Link to this definition">¶</a></dt>
 <dd><p>Specifies beginning of a module. Other objects declared after this directive
 will be automatically attached to this module.</p>
 <p>This directive doesn’t accept any content, it just creates an anchor.</p>
+<p>Modules are something you can <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-require"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">require</span></code></a>. If you need to document a namespace
+inside of a module, use a <a class="reference internal" href="#directive-lua-table" title="lua:table directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:table</span></code></a> instead.</p>
 </dd></dl>
 
 <dl class="rst directive">
 <dt class="sig sig-object rst" id="directive-lua-currentmodule">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:currentmodule::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#directive-lua-currentmodule" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:currentmodule::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#directive-lua-currentmodule" title="Link to this definition">¶</a></dt>
 <dd><p>Switches current module without making an index entry or an anchor.
 If <code class="docutils literal notranslate"><span class="pre">name</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>, sets current module to be the global namespace.</p>
 </dd></dl>
@@ -583,7 +554,7 @@ as your default domain. For this, declare <code class="docutils literal notransl
 <p>All directives that document Lua objects accept the standard parameters:</p>
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-no-index">
-<span class="sig-name descname"><span class="pre">:no-index:</span></span><a class="headerlink" href="#directive-option-no-index" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:no-index:</span></span><a class="headerlink" href="#directive-option-no-index" title="Link to this definition">¶</a></dt>
 <dd><p>Render the documentation, but don’t add it to the index
 and don’t create anchors. You will not be able to reference
 un-indexed objects.</p>
@@ -591,19 +562,19 @@ un-indexed objects.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-private">
-<span class="sig-name descname"><span class="pre">:private:</span></span><a class="headerlink" href="#directive-option-private" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:private:</span></span><a class="headerlink" href="#directive-option-private" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-protected">
-<span class="sig-name descname"><span class="pre">:protected:</span></span><a class="headerlink" href="#directive-option-protected" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:protected:</span></span><a class="headerlink" href="#directive-option-protected" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-package">
-<span class="sig-name descname"><span class="pre">:package:</span></span><a class="headerlink" href="#directive-option-package" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:package:</span></span><a class="headerlink" href="#directive-option-package" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-virtual">
-<span class="sig-name descname"><span class="pre">:virtual:</span></span><a class="headerlink" href="#directive-option-virtual" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:virtual:</span></span><a class="headerlink" href="#directive-option-virtual" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-abstract">
-<span class="sig-name descname"><span class="pre">:abstract:</span></span><a class="headerlink" href="#directive-option-abstract" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:abstract:</span></span><a class="headerlink" href="#directive-option-abstract" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-async">
-<span class="sig-name descname"><span class="pre">:async:</span></span><a class="headerlink" href="#directive-option-async" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:async:</span></span><a class="headerlink" href="#directive-option-async" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-global">
-<span class="sig-name descname"><span class="pre">:global:</span></span><a class="headerlink" href="#directive-option-global" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:global:</span></span><a class="headerlink" href="#directive-option-global" title="Link to this definition">¶</a></dt>
 <dd><p>Adds a corresponding annotation before object’s name:</p>
 <div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:function</span><span class="p">::</span> fetch(url: string) -&gt; code: integer, content: string?
    <span class="nc">:async:</span>
@@ -625,13 +596,13 @@ un-indexed objects.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-annotation">
-<span class="sig-name descname"><span class="pre">:annotation:</span></span><a class="headerlink" href="#directive-option-annotation" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:annotation:</span></span><a class="headerlink" href="#directive-option-annotation" title="Link to this definition">¶</a></dt>
 <dd><p>Allows adding custom short annotations.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-deprecated">
-<span class="sig-name descname"><span class="pre">:deprecated:</span></span><a class="headerlink" href="#directive-option-deprecated" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:deprecated:</span></span><a class="headerlink" href="#directive-option-deprecated" title="Link to this definition">¶</a></dt>
 <dd><p>Marks object as deprecated in index and when cross-referencing.
 This will not add any text to the documented object, you’ll need
 to use the <code class="docutils literal notranslate"><span class="pre">deprecated</span></code> directive for this:</p>
@@ -661,8 +632,15 @@ to use the <code class="docutils literal notranslate"><span class="pre">deprecat
 </details></dd></dl>
 
 <dl class="rst directive:option">
+<dt class="sig sig-object rst" id="directive-option-synopsis">
+<span class="sig-name descname"><span class="pre">:synopsis:</span></span><a class="headerlink" href="#directive-option-synopsis" title="Link to this definition">¶</a></dt>
+<dd><p>Allows adding a small description that’s reflected
+in the <a class="reference internal" href="#directive-lua-autoindex" title="lua:autoindex directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoindex</span></code></a> output.</p>
+</dd></dl>
+
+<dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-module">
-<span class="sig-name descname"><span class="pre">:module:</span></span><a class="headerlink" href="#directive-option-module" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:module:</span></span><a class="headerlink" href="#directive-option-module" title="Link to this definition">¶</a></dt>
 <dd><p>Allows overriding current module for a single object. This is useful
 for documenting global variables that are declared in a module.</p>
 <p>This option should not be used inside of a class or an alias.</p>
@@ -670,10 +648,10 @@ for documenting global variables that are declared in a module.</p>
 
 </section>
 <section id="cross-referencing-objects">
-<h2>Cross-referencing objects<a class="headerlink" href="#cross-referencing-objects" title="Link to this heading">#</a></h2>
+<h2>Cross-referencing objects<a class="headerlink" href="#cross-referencing-objects" title="Link to this heading">¶</a></h2>
 <dl class="rst role">
 <dt class="sig sig-object rst" id="role-lua-obj">
-<span class="sig-name descname"><span class="pre">:lua:obj:</span></span><a class="headerlink" href="#role-lua-obj" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:lua:obj:</span></span><a class="headerlink" href="#role-lua-obj" title="Link to this definition">¶</a></dt>
 <dd><p>You can reference any documented object through the <a class="reference internal" href="#role-lua-obj" title="lua:obj role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:obj</span></code></a> role.</p>
 <p>Given an object path, Lua domain will first search for an object with this path
 in the outer-most class, then in the current module, and finally
@@ -690,27 +668,27 @@ you can add a tilde (<code class="docutils literal notranslate"><span class="pre
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Example output</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">Reference to a <a class="reference internal" href="#lua:logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Logger</span></code></a>.</p>
+<p class="sd-card-text">Reference to a <a class="reference internal" href="#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Logger</span></code></a>.</p>
 </div>
 </details></dd></dl>
 
 <dl class="rst role">
 <dt class="sig sig-object rst" id="role-lua-func">
-<span class="sig-name descname"><span class="pre">:lua:func:</span></span><a class="headerlink" href="#role-lua-func" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:lua:func:</span></span><a class="headerlink" href="#role-lua-func" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="role-lua-data">
-<span class="sig-name descname"><span class="pre">:lua:data:</span></span><a class="headerlink" href="#role-lua-data" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:lua:data:</span></span><a class="headerlink" href="#role-lua-data" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="role-lua-const">
-<span class="sig-name descname"><span class="pre">:lua:const:</span></span><a class="headerlink" href="#role-lua-const" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:lua:const:</span></span><a class="headerlink" href="#role-lua-const" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="role-lua-class">
-<span class="sig-name descname"><span class="pre">:lua:class:</span></span><a class="headerlink" href="#role-lua-class" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:lua:class:</span></span><a class="headerlink" href="#role-lua-class" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="role-lua-alias">
-<span class="sig-name descname"><span class="pre">:lua:alias:</span></span><a class="headerlink" href="#role-lua-alias" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:lua:alias:</span></span><a class="headerlink" href="#role-lua-alias" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="role-lua-meth">
-<span class="sig-name descname"><span class="pre">:lua:meth:</span></span><a class="headerlink" href="#role-lua-meth" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:lua:meth:</span></span><a class="headerlink" href="#role-lua-meth" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="role-lua-attr">
-<span class="sig-name descname"><span class="pre">:lua:attr:</span></span><a class="headerlink" href="#role-lua-attr" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:lua:attr:</span></span><a class="headerlink" href="#role-lua-attr" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="role-lua-mod">
-<span class="sig-name descname"><span class="pre">:lua:mod:</span></span><a class="headerlink" href="#role-lua-mod" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:lua:mod:</span></span><a class="headerlink" href="#role-lua-mod" title="Link to this definition">¶</a></dt>
 <dd><p>These are additional roles that you can use to reference a Lua object.</p>
 <p>Lua domain does not allow having multiple objects with the same full name.
 Thus, all of these roles work exactly the same as <a class="reference internal" href="#role-lua-obj" title="lua:obj role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:obj</span></code></a>.
@@ -735,35 +713,40 @@ role can reduce boilerplate in documentation.</p>
 <details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
 <summary class="sd-summary-title sd-card-header">
 <span class="sd-summary-text">Example output</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
-<p class="sd-card-text">Reference to a <a class="reference internal" href="#lua:logging.Logger.info" title="logging.Logger.info"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger:info()</span></code></a>.</p>
+<p class="sd-card-text">Reference to a <a class="reference internal" href="#lua-logging.Logger.info" title="logging.Logger.info"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger:info()</span></code></a>.</p>
 </div>
 </details></div>
 </section>
-<section id="autodoc-directive">
-<h2>Autodoc directive<a class="headerlink" href="#autodoc-directive" title="Link to this heading">#</a></h2>
+<section id="autodoc-directives">
+<h2>Autodoc directives<a class="headerlink" href="#autodoc-directives" title="Link to this heading">¶</a></h2>
 <dl class="rst directive">
 <dt class="sig sig-object rst" id="directive-lua-autoobject">
-<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:autoobject::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#directive-lua-autoobject" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:autoobject::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#directive-lua-autoobject" title="Link to this definition">¶</a></dt>
 <dd><p>You can automatically generate documentation for any object by invoking
 the <a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> directive.</p>
 <p>Tables are exported as <code class="xref rst rst-dir docutils literal notranslate"><span class="pre">data</span></code> by default, meaning that their contents
 are not documented.</p>
-<p>To enable documentation within a table, document is as a class.
-If you inherit it from <code class="xref lua lua-obj docutils literal notranslate"><span class="pre">table</span></code>, autodoc will treat it as a module.
-Thus, a typical Lua module will look like this:</p>
+<p>To enable documentation within a table, annotate is as a class.
+You can change how autodoc infers its type by adding a <code class="docutils literal notranslate"><span class="pre">!doctype</span></code> comment.</p>
+<p>Thus, a typical Lua module will look like this:</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">--- This is a module. Notice that we&#39;ve declared it as a class</span>
-<span class="c1">--- inherited from :lua:obj:`table`.</span>
+<span class="c1">--- and added a `doctype`.</span>
 <span class="c1">---</span>
-<span class="c1">--- @class library: table</span>
+<span class="c1">--- !doctype module</span>
+<span class="c1">--- @class library</span>
 <span class="kd">local</span><span class="w"> </span><span class="nv">library</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
 
-<span class="c1">--- Submodules should also be declared as classes.</span>
+<span class="c1">--- Nested namespaces should also be declared as classes.</span>
 <span class="c1">---</span>
-<span class="c1">--- @class library.submodule: table</span>
-<span class="nv">library</span><span class="p">.</span><span class="py">submodule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
+<span class="c1">--- !doctype table</span>
+<span class="c1">--- @class library.namespace</span>
+<span class="nv">library</span><span class="p">.</span><span class="py">namespace</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
 
 <span class="c1">--- Other objects are documented as usual.</span>
 <span class="kr">function</span><span class="w"> </span><span class="nc">library</span><span class="p">.</span><span class="nf">foo</span><span class="p">()</span><span class="w"> </span><span class="kr">end</span>
+
+<span class="c1">--- And so on...</span>
+<span class="kr">function</span><span class="w"> </span><span class="nc">library</span><span class="p">.</span><span class="nc">namespace</span><span class="p">.</span><span class="nf">bar</span><span class="p">()</span><span class="w"> </span><span class="kr">end</span>
 
 <span class="kr">return</span><span class="w"> </span><span class="nv">library</span>
 </pre></div>
@@ -774,7 +757,7 @@ Thus, a typical Lua module will look like this:</p>
 not as MarkDown. If you plan to use Markdown in code comments,
 install the <a class="reference external" href="https://myst-parser.readthedocs.io/en/latest/index.html">MySt</a> plugin for Sphinx and invoke include
 <a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> from a markdown file.</p>
-<p>Make sure you separate separate comment markers from documentation by a space.
+<p>Make sure to separate comment markers from documentation with a space.
 Otherwise, autodoc will not be able to tell your comments apart from content
 automatically generated by Lua Language Server:</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">--- This is OK: separated by a space.</span>
@@ -793,19 +776,23 @@ automatically generated by Lua Language Server:</p>
 the <code class="xref rst rst-dir docutils literal notranslate"><span class="pre">seealso</span></code> directive instead.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&#64;deprecated</span></code> markers do not add any note to the documentation.
 We recommend providing an explicit message
-with the <code class="xref lua lua-obj docutils literal notranslate"><span class="pre">deprecated</span></code> directive.</p></li>
+with the <code class="docutils literal notranslate"><span class="pre">deprecated</span></code> directive.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">&#64;nodiscard</span></code> and <code class="docutils literal notranslate"><span class="pre">&#64;operator</span></code> markers are not exported.</p></li>
 <li><p>Export of enums (<code class="docutils literal notranslate"><span class="pre">&#64;enum</span></code>) is completely broken.
 We recommend using <code class="docutils literal notranslate"><span class="pre">&#64;alias</span></code> instead:</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">--- Instead of enums, we use aliases.</span>
 <span class="c1">---</span>
-<span class="c1">--- @alias LogLevel integer</span>
-<span class="nv">LogLevel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
-
-<span class="c1">--- Alias members are declared as usual.</span>
-<span class="nv">LogLevel</span><span class="p">.</span><span class="py">Debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
-
+<span class="c1">--- .. lua:data:: Debug</span>
+<span class="c1">---</span>
+<span class="c1">---    Document alias members in its body.</span>
+<span class="c1">---</span>
 <span class="c1">--- And so on...</span>
+<span class="c1">---</span>
+<span class="c1">--- @alias LogLevel integer</span>
+<span class="nv">LogLevel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">   </span><span class="nv">Debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">   </span><span class="c1">-- ...</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </li>
@@ -815,64 +802,77 @@ We recommend using <code class="docutils literal notranslate"><span class="pre">
 as well as some additional ones:</p>
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-members">
-<span class="sig-name descname"><span class="pre">:members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-members" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-members" title="Link to this definition">¶</a></dt>
 <dd><p>If enabled, autodoc will also document object’s members. You can pass a list
-of coma-separated names to specify which members should be documented.
+of comma-separated names to specify which members should be documented.
 Otherwise, this option will document all public non-special members
 which have a description.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-undoc-members">
-<span class="sig-name descname"><span class="pre">:undoc-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-undoc-members" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:undoc-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-undoc-members" title="Link to this definition">¶</a></dt>
 <dd><p>Include undocumented members to the object’s description. By default,
 they are skipped even if <code class="xref rst rst-dir docutils literal notranslate"><span class="pre">members</span></code> is passed.</p>
+<p>Accepts a comma-separated list of names; if list is empty,
+adds all undoc members.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-private-members">
-<span class="sig-name descname"><span class="pre">:private-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-private-members" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:private-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-private-members" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-protected-members">
-<span class="sig-name descname"><span class="pre">:protected-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-protected-members" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:protected-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-protected-members" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-package-members">
-<span class="sig-name descname"><span class="pre">:package-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-package-members" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:package-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-package-members" title="Link to this definition">¶</a></dt>
 <dd><p>Include non-public members to the object’s description.</p>
+<p>Accepts a comma-separated list of names; if list is empty,
+adds all non-public members.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-special-members">
-<span class="sig-name descname"><span class="pre">:special-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-special-members" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:special-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-special-members" title="Link to this definition">¶</a></dt>
 <dd><p>Include special members to the object’s description. That is, generate
 documentation for members whose names start with double underscore.</p>
+<p>Accepts a comma-separated list of names; if list is empty,
+adds all special members.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-inherited-members">
-<span class="sig-name descname"><span class="pre">:inherited-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-inherited-members" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:inherited-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-inherited-members" title="Link to this definition">¶</a></dt>
 <dd><p>For classes, includes members inherited from base classes.</p>
+<p>Accepts a comma-separated list of names; if list is empty,
+adds all inherited members.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-exclude-members">
-<span class="sig-name descname"><span class="pre">:exclude-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-exclude-members" title="Link to this definition">#</a></dt>
-<dd><p>A coma-separated list of members that should not be documented.</p>
+<span class="sig-name descname"><span class="pre">:exclude-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-exclude-members" title="Link to this definition">¶</a></dt>
+<dd><p>A comma-separated list of members that should not be documented.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-recursive">
-<span class="sig-name descname"><span class="pre">:recursive:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-recursive" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">:recursive:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-recursive" title="Link to this definition">¶</a></dt>
 <dd><p>If enabled, autodoc will recursively generate documentation
 for all objects nested within the root. That is, object’s members,
 their members, and so on.</p>
-<p>Settings for :rst:dir:undoc-members, :rst:dir:private-members,
-:rst:dir:special-members, and :rst:dir:inherited-members are applied
-to all documented objects.</p>
+<p>If <a class="reference internal" href="#directive-option-lua-autoobject-undoc-members" title="lua:autoobject:undoc-members directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:undoc-members</span></code></a>,
+<a class="reference internal" href="#directive-option-lua-autoobject-private-members" title="lua:autoobject:private-members directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:private-members</span></code></a>,
+<a class="reference internal" href="#directive-option-lua-autoobject-special-members" title="lua:autoobject:special-members directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:special-members</span></code></a>,
+or <a class="reference internal" href="#directive-option-lua-autoobject-inherited-members" title="lua:autoobject:inherited-members directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:inherited-members</span></code></a>
+are given as flags, they are propagated to all documented objects.</p>
+<p>If they’re given as list, they are not propagated.</p>
+<p>Options from <code class="xref py py-data docutils literal notranslate"><span class="pre">lua_ls_default_options</span></code> are applied to all recursively
+documented objects.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-member-order">
-<span class="sig-name descname"><span class="pre">:member-order:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-member-order" title="Link to this definition">#</a></dt>
-<dd><p>Controls how items are sorted. There are three options available:</p>
+<span class="sig-name descname"><span class="pre">:member-order:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-member-order" title="Link to this definition">¶</a></dt>
+<dd><p>Controls how members are sorted. There are three options available:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">alphabetical</span></code>: members are sorted in lexicographical order of their names;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">groupwise</span></code>: members are grouped by their type. Within each group, they are
@@ -888,11 +888,45 @@ at the end of the documentation.</p>
 </div>
 </dd></dl>
 
+<dl class="rst directive:option">
+<dt class="sig sig-object rst" id="directive-option-lua-autoobject-module-member-order">
+<span class="sig-name descname"><span class="pre">:module-member-order:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-module-member-order" title="Link to this definition">¶</a></dt>
+<dd><p>Overrides <a class="reference internal" href="#directive-option-lua-autoobject-member-order" title="lua:autoobject:member-order directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:member-order</span></code></a> for modules.</p>
+</dd></dl>
+
+<dl class="rst directive:option">
+<dt class="sig sig-object rst" id="directive-option-lua-autoobject-title">
+<span class="sig-name descname"><span class="pre">:title:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-title" title="Link to this definition">¶</a></dt>
+<dd><p>For modules, controls whether a title is inserted between module description
+and documentation of its members.</p>
+</dd></dl>
+
+<dl class="rst directive:option">
+<dt class="sig sig-object rst" id="directive-option-lua-autoobject-index-table">
+<span class="sig-name descname"><span class="pre">:index-table:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-index-table" title="Link to this definition">¶</a></dt>
+<dd><p>Adds <a class="reference internal" href="#directive-lua-autoindex" title="lua:autoindex directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoindex</span></code></a> to the toplevel module.</p>
+</dd></dl>
+
+<dl class="rst directive:option">
+<dt class="sig sig-object rst" id="directive-option-lua-autoobject-index-title">
+<span class="sig-name descname"><span class="pre">:index-title:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-index-title" title="Link to this definition">¶</a></dt>
+<dd><p>Allows overriding title of the <a class="reference internal" href="#directive-lua-autoindex" title="lua:autoindex directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoindex</span></code></a> section.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="rst directive">
+<dt class="sig sig-object rst" id="directive-lua-autoindex">
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:autoindex::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#directive-lua-autoindex" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a table that references all documented objects in the module <code class="docutils literal notranslate"><span class="pre">name</span></code>.
+This is useful for creating module’s table of contents.</p>
+<p>Module name must be absolute, even if this directive appears after
+<a class="reference internal" href="#directive-lua-module" title="lua:module directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:module</span></code></a>.</p>
 </dd></dl>
 
 </section>
 <section id="controlling-generation-from-code-comments">
-<h2>Controlling generation from code comments<a class="headerlink" href="#controlling-generation-from-code-comments" title="Link to this heading">#</a></h2>
+<h2>Controlling generation from code comments<a class="headerlink" href="#controlling-generation-from-code-comments" title="Link to this heading">¶</a></h2>
 <p>When using <a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> in recursive mode, it is sometimes necessary
 to override its options for some objects. To do this, you can include specially
 formatted comments to your documentation.</p>
@@ -917,8 +951,35 @@ that a certain variable should be documented as <a class="reference internal" hr
 </pre></div>
 </div>
 </section>
+<section id="automatic-api-reference-generation">
+<span id="apidoc"></span><h2>Automatic API reference generation<a class="headerlink" href="#automatic-api-reference-generation" title="Link to this heading">¶</a></h2>
+<p><a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> allows recursively generating documentation,
+however it all ends up on a single page. If you want to give a separate page
+for every module, you’ll need to create multiple <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files.
+Fortunately, Lua autodoc can do this for you.</p>
+<p>Add <code class="xref py py-data docutils literal notranslate"><span class="pre">lua_ls_apidoc_roots</span></code> option to the <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>, and provide a mapping
+from module names to directories (relative to the location of <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>)
+where generated <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files should be placed.</p>
+<p>For example, to generate API reference for module <code class="docutils literal notranslate"><span class="pre">moduleName</span></code>
+in directory <code class="docutils literal notranslate"><span class="pre">moduleDirectory</span></code>, add the following:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lua_ls_apidoc_roots</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;moduleName&quot;</span><span class="p">:</span> <span class="s2">&quot;moduleDirectory&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Upon start, autodoc will recursively create <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files in <code class="docutils literal notranslate"><span class="pre">moduleDirectory</span></code>.
+<code class="docutils literal notranslate"><span class="pre">moduleDirectory/index.rst</span></code> will contain reference for <code class="docutils literal notranslate"><span class="pre">moduleName</span></code>.
+Then, for every submodule of <code class="docutils literal notranslate"><span class="pre">moduleName</span></code>, there will be another <code class="docutils literal notranslate"><span class="pre">.rst</span></code> generated.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not add any other files to <code class="docutils literal notranslate"><span class="pre">moduleDirectory</span></code>, otherwise they will be deleted.</p>
+<p>It is best to add <code class="docutils literal notranslate"><span class="pre">moduleDirectory</span></code> to your <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file.</p>
+</div>
+<p>Don’t forget to include <code class="docutils literal notranslate"><span class="pre">moduleDirectory/index.rst</span></code> into a table of contents
+in your main <code class="docutils literal notranslate"><span class="pre">index.rst</span></code>.</p>
+</section>
 <section id="settings">
-<h2>Settings<a class="headerlink" href="#settings" title="Link to this heading">#</a></h2>
+<h2>Settings<a class="headerlink" href="#settings" title="Link to this heading">¶</a></h2>
 <dl class="py data">
 <dt class="sig sig-object py">
 <span class="sig-name descname"><span class="pre">lua_ls_project_root:</span> <span class="pre">str</span></span></dt>
@@ -964,12 +1025,12 @@ For unix, it is <code class="docutils literal notranslate"><span class="pre">/tm
 or enable documentation for undocumented or private members from here.
 For example:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lua_ls_default_options</span> <span class="o">=</span> <span class="p">{</span>
-   <span class="c1"># Enable documentation for object&#39;s members.</span>
-   <span class="c1"># Empty string means documenting all members with non-empty description.</span>
-   <span class="s2">&quot;members&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
-   <span class="c1"># Set ordering of automatically generated content to alphabetical.</span>
-   <span class="s2">&quot;member-order&quot;</span><span class="p">:</span> <span class="s2">&quot;alphabetical&quot;</span><span class="p">,</span>
-   <span class="c1"># And so on...</span>
+    <span class="c1"># Enable documentation for object&#39;s members.</span>
+    <span class="c1"># Empty string means documenting all members with non-empty description.</span>
+    <span class="s2">&quot;members&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="c1"># Set ordering of automatically generated content to alphabetical.</span>
+    <span class="s2">&quot;member-order&quot;</span><span class="p">:</span> <span class="s2">&quot;alphabetical&quot;</span><span class="p">,</span>
+    <span class="c1"># And so on...</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -982,75 +1043,101 @@ For example:</p>
 to standard library functions. Does not otherwise affect parsing or generation.</p>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">lua_ls_apidoc_roots:</span> <span class="pre">dict[str,</span> <span class="pre">str</span> <span class="pre">|</span> <span class="pre">dict[str,</span> <span class="pre">Any]]</span></span></dt>
+<dd><p>Roots for <a class="reference external" href="automaticgenerationofAPIfiles">apidoc</a>. Keys are full module names
+that should be generated, and values are directories (relative to the location
+of <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>) where <code class="docutils literal notranslate"><span class="pre">.rst</span></code> files are placed.</p>
+<p>Additionally, you can override other apidoc settings for each root. For this,
+make root’s value a dictionary with keys <code class="docutils literal notranslate"><span class="pre">path</span></code>,
+<code class="xref py py-data docutils literal notranslate"><span class="pre">max_depth</span></code>,
+<code class="xref py py-data docutils literal notranslate"><span class="pre">options</span></code>,
+and <code class="xref py py-data docutils literal notranslate"><span class="pre">ignored_modules</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lua_ls_apidoc_roots</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;moduleName&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;moduleDirectory&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;max_depth&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;options&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;undoc-members&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">lua_ls_apidoc_default_options:</span> <span class="pre">dict[str,</span> <span class="pre">str]</span></span></dt>
+<dd><p>Default options for objects documented via apidoc. Override
+<code class="xref py py-data docutils literal notranslate"><span class="pre">lua_ls_default_options</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">lua_ls_apidoc_max_depth:</span> <span class="pre">int</span></span></dt>
+<dd><p>Maximum nesting level for files. Submodules that are deeper than this level
+will not get their own file, and instead will be generated inline.</p>
+<p>Default value is <code class="docutils literal notranslate"><span class="pre">4</span></code>.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">lua_ls_apidoc_ignored_modules:</span> <span class="pre">list[str]</span></span></dt>
+<dd><p>List of full submodule names that should be ignored while generating APIs.
+Submodules can contain <code class="xref py py-mod docutils literal notranslate"><span class="pre">fnmatch</span></code> style globs.</p>
+<p>For example, the following setting</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lua_ls_apidoc_roots</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;moduleName&quot;</span><span class="p">:</span> <span class="s2">&quot;moduleDirectory&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">lua_ls_apidoc_ignored_modules</span> <span class="o">=</span> <span class="p">[</span>
+   <span class="s2">&quot;moduleName.submoduleName&quot;</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>will generate API for module <code class="docutils literal notranslate"><span class="pre">moduleName</span></code>, but will not include
+<code class="docutils literal notranslate"><span class="pre">moduleName.submoduleName</span></code>.</p>
+</dd></dl>
+
 </section>
 <section id="example-output">
-<h2>Example output<a class="headerlink" href="#example-output" title="Link to this heading">#</a></h2>
+<h2>Example output<a class="headerlink" href="#example-output" title="Link to this heading">¶</a></h2>
 <p>This output is generated with the following directive:</p>
 <div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:autoobject</span><span class="p">::</span> logging
    <span class="nc">:members:</span>
    <span class="nc">:recursive:</span>
 </pre></div>
 </div>
-<div class="docutils container" id="lua:logging">
-<p>A generic logging module, just to demonstrate you documentation.</p>
+<p id="lua-logging">A generic logging module, just to demonstrate you documentation.</p>
 <dl class="lua data">
-<dt class="sig sig-object lua" id="lua:LOG_LEVEL">
-<em class="property"><span class="k"><span class="pre">global</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua:LOG_LEVEL" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object lua" id="lua-LOG_LEVEL">
+<em class="property"><span class="k"><span class="pre">global</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-LOG_LEVEL" title="Link to this definition">¶</a></dt>
 <dd><p>Default log level.</p>
 </dd></dl>
 
-</div>
-<dl class="lua alias">
-<dt class="sig sig-object lua" id="lua:logging.Level">
-<em class="property"><span class="k"><span class="pre">alias</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Level</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua:logging.Level" title="Link to this definition">#</a></dt>
-<dd><p>Represents message severity.</p>
-<dl class="lua data">
-<dt class="sig sig-object lua" id="lua:logging.Level.Debug">
-<span class="sig-name descname"><span class="pre">Debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua:logging.Level.Debug" title="Link to this definition">#</a></dt>
-<dd><p>For debug messages, hidden by default.</p>
-</dd></dl>
-
-<dl class="lua data">
-<dt class="sig sig-object lua" id="lua:logging.Level.Info">
-<span class="sig-name descname"><span class="pre">Info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua:logging.Level.Info" title="Link to this definition">#</a></dt>
-<dd><p>For info messages.</p>
-</dd></dl>
-
-<dl class="lua data">
-<dt class="sig sig-object lua" id="lua:logging.Level.Warning">
-<span class="sig-name descname"><span class="pre">Warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua:logging.Level.Warning" title="Link to this definition">#</a></dt>
-<dd><p>For warnings, when behavior may be different from what users expect.</p>
-</dd></dl>
-
-<dl class="lua data">
-<dt class="sig sig-object lua" id="lua:logging.Level.Error">
-<span class="sig-name descname"><span class="pre">Error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua:logging.Level.Error" title="Link to this definition">#</a></dt>
-<dd><p>For errors, when the system stops working.</p>
-</dd></dl>
-
-</dd></dl>
-
 <dl class="lua class">
-<dt class="sig sig-object lua" id="lua:logging.Logger">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><a class="headerlink" href="#lua:logging.Logger" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object lua" id="lua-logging.Logger">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><a class="headerlink" href="#lua-logging.Logger" title="Link to this definition">¶</a></dt>
 <dd><p>An object for logging messages.</p>
 <dl class="lua staticmethod">
-<dt class="sig sig-object lua" id="lua:logging.Logger.new">
-<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua:logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></span></span><a class="headerlink" href="#lua:logging.Logger.new" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object lua" id="lua-logging.Logger.new">
+<em class="property"><span class="k"><span class="pre">staticmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">new</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></span></span><a class="headerlink" href="#lua-logging.Logger.new" title="Link to this definition">¶</a></dt>
 <dd><p>Create a new logger.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – name of the logger, will be added to every message.</p></li>
-<li><p><strong>level?</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code>) – level of the logger, equals to <a class="reference internal" href="#lua:LOG_LEVEL" title="LOG_LEVEL"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code></a> by default.</p></li>
+<li><p><strong>level?</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code>) – level of the logger, equals to <a class="reference internal" href="#lua-LOG_LEVEL" title="LOG_LEVEL"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code></a> by default.</p></li>
 </ul>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="lua method">
-<dt class="sig sig-object lua" id="lua:logging.Logger.debug">
-<span class="sig-name descname"><span class="pre">debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua:logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua:logging.Logger.debug" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object lua" id="lua-logging.Logger.debug">
+<span class="sig-name descname"><span class="pre">debug</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua-logging.Logger.debug" title="Link to this definition">¶</a></dt>
 <dd><p>Print a debug message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1063,8 +1150,8 @@ to standard library functions. Does not otherwise affect parsing or generation.<
 </dd></dl>
 
 <dl class="lua method">
-<dt class="sig sig-object lua" id="lua:logging.Logger.info">
-<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua:logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua:logging.Logger.info" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object lua" id="lua-logging.Logger.info">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua-logging.Logger.info" title="Link to this definition">¶</a></dt>
 <dd><p>Print an info message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1077,8 +1164,8 @@ to standard library functions. Does not otherwise affect parsing or generation.<
 </dd></dl>
 
 <dl class="lua method">
-<dt class="sig sig-object lua" id="lua:logging.Logger.warning">
-<span class="sig-name descname"><span class="pre">warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua:logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua:logging.Logger.warning" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object lua" id="lua-logging.Logger.warning">
+<span class="sig-name descname"><span class="pre">warning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua-logging.Logger.warning" title="Link to this definition">¶</a></dt>
 <dd><p>Print a warning message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1091,8 +1178,8 @@ to standard library functions. Does not otherwise affect parsing or generation.<
 </dd></dl>
 
 <dl class="lua method">
-<dt class="sig sig-object lua" id="lua:logging.Logger.error">
-<span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua:logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua:logging.Logger.error" title="Link to this definition">#</a></dt>
+<dt class="sig sig-object lua" id="lua-logging.Logger.error">
+<span class="sig-name descname"><span class="pre">error</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Logger</span></code></a></em>, <em class="sig-param"><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code></em>, <em class="sig-param"><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code></em><span class="sig-paren">)</span><a class="headerlink" href="#lua-logging.Logger.error" title="Link to this definition">¶</a></dt>
 <dd><p>Print an error message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -1106,9 +1193,39 @@ to standard library functions. Does not otherwise affect parsing or generation.<
 
 </dd></dl>
 
+<dl class="lua alias">
+<dt class="sig sig-object lua" id="lua-logging.Level">
+<em class="property"><span class="k"><span class="pre">alias</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Level</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level" title="Link to this definition">¶</a></dt>
+<dd><p>Represents message severity.</p>
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-logging.Level.Debug">
+<span class="sig-name descname"><span class="pre">Debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Debug" title="Link to this definition">¶</a></dt>
+<dd><p>For debug messages, hidden by default.</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-logging.Level.Info">
+<span class="sig-name descname"><span class="pre">Info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Info" title="Link to this definition">¶</a></dt>
+<dd><p>For info messages.</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-logging.Level.Warning">
+<span class="sig-name descname"><span class="pre">Warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Warning" title="Link to this definition">¶</a></dt>
+<dd><p>For warnings, when behavior may be different from what users expect.</p>
+</dd></dl>
+
+<dl class="lua data">
+<dt class="sig sig-object lua" id="lua-logging.Level.Error">
+<span class="sig-name descname"><span class="pre">Error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Error" title="Link to this definition">¶</a></dt>
+<dd><p>For errors, when the system stops working.</p>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 <section id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">#</a></h2>
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h2>
 <ul class="simple">
 <li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
 <li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
@@ -1116,177 +1233,151 @@ to standard library functions. Does not otherwise affect parsing or generation.<
 </section>
 </section>
 
-
-                </article>
-              
-              
-              
-              
-              
-                <footer class="prev-next-footer d-print-none">
-                  
-<div class="prev-next-area">
-</div>
-                </footer>
-              
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Tamika Nomara
             </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
             
-            
-              
-                <dialog id="pst-secondary-sidebar-modal"></dialog>
-                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
-
-
-  <div class="sidebar-secondary-item">
-<div
-    id="pst-page-navigation-heading-2"
-    class="page-toc tocsection onthispage">
-    <i class="fa-solid fa-list"></i> On this page
-  </div>
-  <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
-    <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation">Installation</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quickstart">Quickstart</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#declaring-objects">Declaring objects</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-data"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:data::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-const"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:const::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-attribute"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:attribute::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-function"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:function::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-method"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:method::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-classmethod"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:classmethod::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-staticmethod"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:staticmethod::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-class"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:class::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-alias"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:alias::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-module"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:module::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-currentmodule"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:currentmodule::</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-no-index"><code class="docutils literal notranslate"><span class="pre">:no-index:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-private"><code class="docutils literal notranslate"><span class="pre">:private:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-protected"><code class="docutils literal notranslate"><span class="pre">:protected:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-package"><code class="docutils literal notranslate"><span class="pre">:package:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-virtual"><code class="docutils literal notranslate"><span class="pre">:virtual:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-abstract"><code class="docutils literal notranslate"><span class="pre">:abstract:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-async"><code class="docutils literal notranslate"><span class="pre">:async:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-global"><code class="docutils literal notranslate"><span class="pre">:global:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-annotation"><code class="docutils literal notranslate"><span class="pre">:annotation:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-deprecated"><code class="docutils literal notranslate"><span class="pre">:deprecated:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-module"><code class="docutils literal notranslate"><span class="pre">:module:</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cross-referencing-objects">Cross-referencing objects</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-lua-obj"><code class="docutils literal notranslate"><span class="pre">:lua:obj:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-lua-func"><code class="docutils literal notranslate"><span class="pre">:lua:func:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-lua-data"><code class="docutils literal notranslate"><span class="pre">:lua:data:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-lua-const"><code class="docutils literal notranslate"><span class="pre">:lua:const:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-lua-class"><code class="docutils literal notranslate"><span class="pre">:lua:class:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-lua-alias"><code class="docutils literal notranslate"><span class="pre">:lua:alias:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-lua-meth"><code class="docutils literal notranslate"><span class="pre">:lua:meth:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-lua-attr"><code class="docutils literal notranslate"><span class="pre">:lua:attr:</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#role-lua-mod"><code class="docutils literal notranslate"><span class="pre">:lua:mod:</span></code></a></li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#autodoc-directive">Autodoc directive</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-lua-autoobject"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:autoobject::</span></code></a><ul class="nav section-nav flex-column">
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-members"><code class="docutils literal notranslate"><span class="pre">:members:</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-undoc-members"><code class="docutils literal notranslate"><span class="pre">:undoc-members:</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-private-members"><code class="docutils literal notranslate"><span class="pre">:private-members:</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-protected-members"><code class="docutils literal notranslate"><span class="pre">:protected-members:</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-package-members"><code class="docutils literal notranslate"><span class="pre">:package-members:</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-special-members"><code class="docutils literal notranslate"><span class="pre">:special-members:</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-inherited-members"><code class="docutils literal notranslate"><span class="pre">:inherited-members:</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-exclude-members"><code class="docutils literal notranslate"><span class="pre">:exclude-members:</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-recursive"><code class="docutils literal notranslate"><span class="pre">:recursive:</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#directive-option-lua-autoobject-member-order"><code class="docutils literal notranslate"><span class="pre">:member-order:</span></code></a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#controlling-generation-from-code-comments">Controlling generation from code comments</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#settings">Settings</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#example-output">Example output</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-  </nav></div>
-
-  <div class="sidebar-secondary-item">
-
-  
-  <div class="tocsection editthispage">
-    <a href="https://github.com/taminomara/sphinx-lua-ls/edit/main/docs/source/index.rst">
-      <i class="fa-solid fa-pencil"></i>
-      
-      
-        
-          Edit on GitHub
-        
-      
-    </a>
-  </div>
-</div>
-
-  <div class="sidebar-secondary-item">
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/index.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div></div>
-
-</div></div>
-              
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
             
           </div>
-          <footer class="bd-footer-content">
+          <div class="right-details">
             
-          </footer>
+          </div>
+        </div>
         
-      </main>
+      </footer>
     </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Sphinx-LuaLS</a><ul>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#quickstart">Quickstart</a><ul>
+<li><a class="reference internal" href="#lua-soundboard.Sound"><code class="docutils literal notranslate"><span class="pre">soundboard.Sound</span></code></a><ul>
+<li><a class="reference internal" href="#lua-soundboard.Sound.new"><code class="docutils literal notranslate"><span class="pre">new()</span></code></a></li>
+<li><a class="reference internal" href="#lua-soundboard.Sound.play"><code class="docutils literal notranslate"><span class="pre">play()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#declaring-objects">Declaring objects</a><ul>
+<li><a class="reference internal" href="#directive-lua-data"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:data::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-const"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:const::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-attribute"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:attribute::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-table"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:table::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-function"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:function::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-method"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:method::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-classmethod"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:classmethod::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-staticmethod"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:staticmethod::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-class"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:class::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-alias"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:alias::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-module"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:module::</span></code></a></li>
+<li><a class="reference internal" href="#directive-lua-currentmodule"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:currentmodule::</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-no-index"><code class="docutils literal notranslate"><span class="pre">:no-index:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-private"><code class="docutils literal notranslate"><span class="pre">:private:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-protected"><code class="docutils literal notranslate"><span class="pre">:protected:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-package"><code class="docutils literal notranslate"><span class="pre">:package:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-virtual"><code class="docutils literal notranslate"><span class="pre">:virtual:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-abstract"><code class="docutils literal notranslate"><span class="pre">:abstract:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-async"><code class="docutils literal notranslate"><span class="pre">:async:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-global"><code class="docutils literal notranslate"><span class="pre">:global:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-annotation"><code class="docutils literal notranslate"><span class="pre">:annotation:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-deprecated"><code class="docutils literal notranslate"><span class="pre">:deprecated:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-synopsis"><code class="docutils literal notranslate"><span class="pre">:synopsis:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-module"><code class="docutils literal notranslate"><span class="pre">:module:</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cross-referencing-objects">Cross-referencing objects</a><ul>
+<li><a class="reference internal" href="#role-lua-obj"><code class="docutils literal notranslate"><span class="pre">:lua:obj:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-func"><code class="docutils literal notranslate"><span class="pre">:lua:func:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-data"><code class="docutils literal notranslate"><span class="pre">:lua:data:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-const"><code class="docutils literal notranslate"><span class="pre">:lua:const:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-class"><code class="docutils literal notranslate"><span class="pre">:lua:class:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-alias"><code class="docutils literal notranslate"><span class="pre">:lua:alias:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-meth"><code class="docutils literal notranslate"><span class="pre">:lua:meth:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-attr"><code class="docutils literal notranslate"><span class="pre">:lua:attr:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-mod"><code class="docutils literal notranslate"><span class="pre">:lua:mod:</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#autodoc-directives">Autodoc directives</a><ul>
+<li><a class="reference internal" href="#directive-lua-autoobject"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:autoobject::</span></code></a><ul>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-members"><code class="docutils literal notranslate"><span class="pre">:members:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-undoc-members"><code class="docutils literal notranslate"><span class="pre">:undoc-members:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-private-members"><code class="docutils literal notranslate"><span class="pre">:private-members:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-protected-members"><code class="docutils literal notranslate"><span class="pre">:protected-members:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-package-members"><code class="docutils literal notranslate"><span class="pre">:package-members:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-special-members"><code class="docutils literal notranslate"><span class="pre">:special-members:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-inherited-members"><code class="docutils literal notranslate"><span class="pre">:inherited-members:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-exclude-members"><code class="docutils literal notranslate"><span class="pre">:exclude-members:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-recursive"><code class="docutils literal notranslate"><span class="pre">:recursive:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-member-order"><code class="docutils literal notranslate"><span class="pre">:member-order:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-module-member-order"><code class="docutils literal notranslate"><span class="pre">:module-member-order:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-title"><code class="docutils literal notranslate"><span class="pre">:title:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-index-table"><code class="docutils literal notranslate"><span class="pre">:index-table:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-lua-autoobject-index-title"><code class="docutils literal notranslate"><span class="pre">:index-title:</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#directive-lua-autoindex"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:autoindex::</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#controlling-generation-from-code-comments">Controlling generation from code comments</a></li>
+<li><a class="reference internal" href="#automatic-api-reference-generation">Automatic API reference generation</a></li>
+<li><a class="reference internal" href="#settings">Settings</a></li>
+<li><a class="reference internal" href="#example-output">Example output</a><ul>
+<li><a class="reference internal" href="#lua-LOG_LEVEL"><code class="docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code></a></li>
+<li><a class="reference internal" href="#lua-logging.Logger"><code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code></a><ul>
+<li><a class="reference internal" href="#lua-logging.Logger.new"><code class="docutils literal notranslate"><span class="pre">new()</span></code></a></li>
+<li><a class="reference internal" href="#lua-logging.Logger.debug"><code class="docutils literal notranslate"><span class="pre">debug()</span></code></a></li>
+<li><a class="reference internal" href="#lua-logging.Logger.info"><code class="docutils literal notranslate"><span class="pre">info()</span></code></a></li>
+<li><a class="reference internal" href="#lua-logging.Logger.warning"><code class="docutils literal notranslate"><span class="pre">warning()</span></code></a></li>
+<li><a class="reference internal" href="#lua-logging.Logger.error"><code class="docutils literal notranslate"><span class="pre">error()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#lua-logging.Level"><code class="docutils literal notranslate"><span class="pre">logging.Level</span></code></a><ul>
+<li><a class="reference internal" href="#lua-logging.Level.Debug"><code class="docutils literal notranslate"><span class="pre">Debug</span></code></a></li>
+<li><a class="reference internal" href="#lua-logging.Level.Info"><code class="docutils literal notranslate"><span class="pre">Info</span></code></a></li>
+<li><a class="reference internal" href="#lua-logging.Level.Warning"><code class="docutils literal notranslate"><span class="pre">Warning</span></code></a></li>
+<li><a class="reference internal" href="#lua-logging.Level.Error"><code class="docutils literal notranslate"><span class="pre">Error</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
   </div>
-  
-  <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
-<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
-
-  <footer class="bd-footer">
-<div class="bd-footer__inner bd-page-width">
-  
-    <div class="footer-items__start">
-      
-        <div class="footer-item">
-
-  <p class="copyright">
-    
-      © Copyright 2025, Tamika Nomara.
-      <br/>
-    
-  </p>
-</div>
-      
-        <div class="footer-item">
-
-  <p class="sphinx-version">
-    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
-    <br/>
-  </p>
-</div>
-      
-    </div>
-  
-  
-  
-    <div class="footer-items__end">
-      
-        <div class="footer-item">
-<p class="theme-version">
-  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.16.1.
-</p></div>
-      
-    </div>
-  
-</div>
-
-  </footer>
-  </body>
+</div><script src="_static/documentation_options.js?v=9d675db7"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    </body>
 </html>
