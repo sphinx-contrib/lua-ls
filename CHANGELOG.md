@@ -9,6 +9,25 @@
 - Added `apidoc` functionality.
 - Improved test coverage and fixed found bugs.
 
+**Migrating to 2.0.0:**
+
+In your Lua code base, perform global replace by regexp:
+
+```
+^(\s*)---\s*@class\s*(.+): table$
+```
+
+to
+
+```
+$1--- !doctype module
+$1--- @class $2
+```
+
+Make sure that you only use `!doctype module` on the top-level
+tables that can be imported via `require`. On other objects,
+use `!doctype table` instead, otherwise you'll get errors that modules are not allowed within other objects.
+
 ## v1.1.0
 
 - Added support for `!doc` and `!doctype` comments.
