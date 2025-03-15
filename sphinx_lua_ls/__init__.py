@@ -11,6 +11,7 @@ import sphinx.errors
 import sphinx.ext.intersphinx
 from sphinx.errors import ConfigError
 from sphinx.util.display import progress_message
+from sphinx.util.fileutil import copy_asset_file
 
 import sphinx_lua_ls.apidoc
 import sphinx_lua_ls.autodoc
@@ -274,6 +275,13 @@ def run_apidoc(
             )
 
 
+def copy_asset_files(app: sphinx.application.Sphinx, exc: Exception | None):
+    if app.builder.format == "html" and not exc:
+        custom_file = pathlib.Path(__file__).parent / "static/lua.css"
+        static_dir = app.outdir / "_static"
+        copy_asset_file(custom_file, static_dir)
+
+
 def setup(app: sphinx.application.Sphinx):
     app.add_domain(sphinx_lua_ls.domain.LuaDomain)
 
@@ -300,8 +308,11 @@ def setup(app: sphinx.application.Sphinx):
     app.connect("builder-inited", run_lua_ls)
     app.connect("builder-inited", run_apidoc)
     app.connect("missing-reference", sphinx_lua_ls.intersphinx.resolve_std_reference)
+    app.connect("build-finished", copy_asset_files)
 
     app.add_post_transform(sphinx_lua_ls.autoindex.AutoIndexTransform)
+
+    app.add_css_file("lua.css")
 
     return {
         "version": __version__,

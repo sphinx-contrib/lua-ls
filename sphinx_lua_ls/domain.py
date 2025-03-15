@@ -1138,8 +1138,8 @@ class LuaDomain(Domain):
                     contnode = contnode.deepcopy()
                     contnode.clear()
                     contnode += nodes.Text(new_title)
-                if deprecated:
-                    contnode["classes"] += ["deprecated", "lua-deprecated"]
+            if isinstance(contnode, nodes.Element) and deprecated:
+                contnode["classes"] += ["deprecated", "lua-deprecated"]
             return make_refnode(
                 builder, fromdocname, docname, "lua-" + name, contnode, name
             )
