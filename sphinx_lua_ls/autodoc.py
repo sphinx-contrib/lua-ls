@@ -175,17 +175,6 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
     """
 
     option_spec: ClassVar[dict[str, Callable[[str], Any]]] = {  # type: ignore
-        "no-index": directives.flag,
-        "annotation": directives.unchanged,
-        "virtual": directives.flag,
-        "private": directives.flag,
-        "protected": directives.flag,
-        "package": directives.flag,
-        "abstract": directives.flag,
-        "async": directives.flag,
-        "global": directives.flag,
-        "deprecated": directives.flag,
-        "synopsis": directives.unchanged,
         "members": _parse_members,
         "undoc-members": _parse_members,
         "private-members": _parse_members,
@@ -204,6 +193,7 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         "module-member-order": lambda x: directives.choice(
             x, ("alphabetical", "groupwise", "bysource")
         ),
+        **sphinx_lua_ls.domain.LuaObject.option_spec,
     }
 
     def render(self, root: Object, name: str, top_level: bool = False):

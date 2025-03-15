@@ -13,6 +13,7 @@ import re
 from collections.abc import Set
 from typing import Any, Callable, ClassVar, Generic, Iterator, TypeVar
 
+import sphinx.config
 from docutils import nodes
 from docutils.parsers.rst import directives
 from docutils.parsers.rst.states import Inliner
@@ -61,6 +62,26 @@ def _handle_signature_errors(handler):
             raise
 
     return fn
+
+
+def _make_ref_title(fullname: str, objtype: str, config: sphinx.config.Config):
+    if (
+        config.add_function_parentheses
+        and objtype
+        in (
+            "function",
+            "method",
+            "classmethod",
+            "staticmethod",
+        )
+        and not fullname.endswith("()")
+    ):
+        fullname += "()"
+    if objtype in ("method", "classmethod"):
+        i = fullname.rfind(".")
+        if i != -1:
+            fullname = fullname[:i] + ":" + fullname[i + 1 :]
+    return fullname
 
 
 def _separate_paren_prefix(sig: str) -> tuple[str, str]:
@@ -356,7 +377,6 @@ class LuaObject(
     """
 
     option_spec: ClassVar[dict[str, Callable[[str], Any]]] = {  # type: ignore
-        "no-index": directives.flag,
         "module": directives.unchanged,
         "annotation": directives.unchanged,
         "virtual": directives.flag,
@@ -368,6 +388,7 @@ class LuaObject(
         "global": directives.flag,
         "deprecated": directives.flag,
         "synopsis": directives.unchanged,
+        **ObjectDescription.option_spec,
     }
 
     doc_field_types = [
@@ -522,9 +543,33 @@ class LuaObject(
                 self.options.get("synopsis", None),
             )
 
-        indextext = self.get_index_text(fullname, modname, classname, objname)
-        if indextext:
-            self.indexnode["entries"].append(("single", indextext, anchor, "", None))
+        if "no-index-entry" not in self.options:
+            indextext = self.get_index_text(fullname, modname, classname, objname)
+            if indextext:
+                self.indexnode["entries"].append(
+                    ("single", indextext, anchor, "", None)
+                )
+
+    def _object_hierarchy_parts(
+        self, sig_node: addnodes.desc_signature
+    ) -> tuple[str, ...]:
+        if "fullname" not in sig_node:
+            return ()
+        else:
+            return tuple(sig_node["fullname"].split("."))
+
+    def _toc_entry_name(self, sig_node: addnodes.desc_signature) -> str:
+        if not sig_node.get("_toc_parts"):
+            return ""
+
+        *parents, name = sig_node["_toc_parts"]
+
+        if self.config.toc_object_entries_show_parents in ("hide", "domain"):
+            fullname = name
+        else:
+            fullname = ".".join([*parents, name])
+
+        return _make_ref_title(fullname, self.objtype, self.config)
 
     def before_content(self) -> None:
         if self.names and self.allow_nesting:
@@ -1085,18 +1130,7 @@ class LuaDomain(Domain):
                 and isinstance(contnode.children[0], nodes.Text)
             ):
                 title = contnode.astext()
-                new_title = title
-                if objtype in (
-                    "function",
-                    "method",
-                    "classmethod",
-                    "staticmethod",
-                ) and not new_title.endswith("()"):
-                    new_title += "()"
-                if objtype in ("method", "classmethod"):
-                    i = new_title.rfind(".")
-                    if i != -1:
-                        new_title = new_title[:i] + ":" + new_title[i + 1 :]
+                new_title = _make_ref_title(title, objtype, env.config)
                 if new_title != title:
                     contnode = contnode.deepcopy()
                     contnode.clear()
