@@ -77,7 +77,7 @@ def _make_ref_title(fullname: str, objtype: str, config: sphinx.config.Config):
         and not fullname.endswith("()")
     ):
         fullname += "()"
-    if objtype in ("method", "classmethod"):
+    if objtype in ("method", "classmethod") and ":" not in fullname:
         i = fullname.rfind(".")
         if i != -1:
             fullname = fullname[:i] + ":" + fullname[i + 1 :]
@@ -459,6 +459,7 @@ class LuaObject(
         signode["module"] = modname
         signode["class"] = classname
         signode["fullname"] = fullname
+        signode["lua:domain_name"] = prefix + descname
 
         sig_prefix = self.get_signature_prefix(sig)
         if sig_prefix:
@@ -564,8 +565,10 @@ class LuaObject(
 
         *parents, name = sig_node["_toc_parts"]
 
-        if self.config.toc_object_entries_show_parents in ("hide", "domain"):
+        if self.config.toc_object_entries_show_parents == "hide":
             fullname = name
+        elif self.config.toc_object_entries_show_parents == "domain":
+            fullname = sig_node["lua:domain_name"]
         else:
             fullname = ".".join([*parents, name])
 
