@@ -521,7 +521,7 @@ class LuaObject(
         signode: addnodes.desc_signature,
     ) -> None:
         fullname, modname, classname, objname = name
-        anchor = "lua:" + fullname
+        anchor = "lua-" + fullname
         if anchor not in self.state.document.ids:
             signode["names"].append(anchor)
             signode["ids"].append(anchor)
@@ -937,14 +937,14 @@ class LuaModule(SphinxDirective):
                 "deprecated" in self.options,
                 self.options.get("synopsis", None),
             )
-            target_node = nodes.target("", "", ids=["lua:" + modname], ismod=True)
+            target_node = nodes.target("", "", ids=["lua-" + modname], ismod=True)
             self.state.document.note_explicit_target(target_node)
             # the platform and synopsis aren't printed; in fact, they are only
             # used in the modindex currently
             ret.append(target_node)
             indextext = _("%s (module)") % modname
             inode = addnodes.index(
-                entries=[("single", indextext, "lua:" + modname, "", None)]
+                entries=[("single", indextext, "lua-" + modname, "", None)]
             )
             ret.append(inode)
         return ret
@@ -1138,7 +1138,7 @@ class LuaDomain(Domain):
                 if deprecated:
                     contnode["classes"] += ["deprecated", "lua-deprecated"]
             return make_refnode(
-                builder, fromdocname, docname, "lua:" + name, contnode, name
+                builder, fromdocname, docname, "lua-" + name, contnode, name
             )
 
     def resolve_any_xref(
@@ -1159,7 +1159,7 @@ class LuaDomain(Domain):
                 (
                     role,
                     make_refnode(
-                        builder, fromdocname, docname, "lua:" + name, contnode, name
+                        builder, fromdocname, docname, "lua-" + name, contnode, name
                     ),
                 )
             ]
