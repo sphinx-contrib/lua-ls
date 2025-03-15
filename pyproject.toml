@@ -47,7 +47,7 @@ test = [
 ]
 doc = [
     "sybil~=6.1",
-    "pydata-sphinx-theme>=0.15",
+    "furo>=2024",
     "sphinx_design>=0.6"
 ]
 

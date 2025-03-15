@@ -27,22 +27,10 @@ lua_ls_project_root = "../example"
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "pydata_sphinx_theme"
+html_theme = "furo"
 html_extra_path = ["_extra/robots.txt"]
 html_theme_options = {
-    "use_edit_page_button": True,
-    "icon_links": [
-        {
-            "name": "GitHub",
-            "url": "https://github.com/taminomara/sphinx-lua-ls",
-            "icon": "fa-brands fa-square-github",
-            "type": "fontawesome",
-        }
-   ]
-}
-html_context = {
-    "github_user": "taminomara",
-    "github_repo": "sphinx-lua-ls",
-    "github_version": "main",
-    "doc_path": "docs/source",
+    "source_repository": "https://github.com/taminomara/sphinx-lua-ls",
+    "source_branch": "main",
+    "source_directory": "docs",
 }
