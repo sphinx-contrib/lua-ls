@@ -32,5 +32,5 @@ html_extra_path = ["_extra/robots.txt"]
 html_theme_options = {
     "source_repository": "https://github.com/taminomara/sphinx-lua-ls",
     "source_branch": "main",
-    "source_directory": "docs",
+    "source_directory": "docs/source",
 }
