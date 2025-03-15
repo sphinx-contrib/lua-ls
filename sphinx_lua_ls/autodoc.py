@@ -365,17 +365,17 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         if root.is_deprecated:
             options["deprecated"] = ""
 
-        for name, value in root.parsed_options.items():
-            if name in AutoObjectDirective.option_spec:
+        for option, value in root.parsed_options.items():
+            if option in AutoObjectDirective.option_spec:
                 try:
-                    options[name] = AutoObjectDirective.option_spec[name](value)
+                    options[option] = AutoObjectDirective.option_spec[option](value)
                 except ValueError as e:
                     raise self.error(
-                        f"invalid !doc option {name} in object {self.arguments[0]}: {e}"
+                        f"invalid !doc option {option} in object {self.arguments[0]}: {e}"
                     ) from None
             else:
                 raise self.error(
-                    f"unknown !doc option {name} in object {self.arguments[0]}"
+                    f"unknown !doc option {option} in object {self.arguments[0]}"
                 )
 
         return cls(
@@ -479,6 +479,8 @@ class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
             content_node += field_list
 
         for i, param in enumerate(self.root.params):
+            if param.docstring and "\n" in param.docstring:
+                continue
             if param.parsed_docstring and not (i == 0 and param.name == "self"):
                 if param.type:
                     obj = self.objtree.find(param.type)
@@ -509,6 +511,8 @@ class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
                 )
 
         for i, param in enumerate(self.root.returns):
+            if param.docstring and "\n" in param.docstring:
+                continue
             if param.parsed_docstring:
                 if param.type:
                     obj = self.objtree.find(param.type)
