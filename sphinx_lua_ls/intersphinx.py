@@ -7,8 +7,6 @@ import docutils.nodes
 import sphinx.addnodes
 import sphinx.application
 import sphinx.environment
-import sphinx.errors
-import sphinx.ext.intersphinx
 
 targets = {
     "_G": "pdf-_G",

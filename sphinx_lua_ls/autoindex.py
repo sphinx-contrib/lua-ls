@@ -2,11 +2,9 @@ from collections import defaultdict
 
 import docutils.nodes
 import sphinx.addnodes
-import sphinx.environment
 from sphinx.transforms import SphinxTransform
 from sphinx.util.docutils import SphinxDirective
 
-import sphinx_lua_ls.autodoc
 import sphinx_lua_ls.domain
 from sphinx_lua_ls.objtree import Kind
 

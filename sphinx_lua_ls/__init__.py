@@ -3,12 +3,8 @@ import pathlib
 import re
 from typing import Any, Type, TypeVar
 
-import sphinx.addnodes
 import sphinx.application
-import sphinx.config
-import sphinx.environment
 import sphinx.errors
-import sphinx.ext.intersphinx
 from sphinx.errors import ConfigError
 from sphinx.util.display import progress_message
 from sphinx.util.fileutil import copy_asset_file

@@ -12,9 +12,7 @@ from typing import Any, Callable, ClassVar, Type
 
 import docutils.nodes
 import docutils.statemachine
-import docutils.transforms
 import sphinx.addnodes
-import sphinx.util.docutils
 import sphinx.util.nodes
 from docutils.parsers.rst import directives
 from sphinx.util.docutils import SphinxDirective
