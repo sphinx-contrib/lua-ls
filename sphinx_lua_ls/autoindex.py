@@ -52,6 +52,7 @@ class AutoIndexTransform(SphinxTransform):
             for fullname, (docname, objtype, _, synopsis) in self.env.domaindata["lua"][
                 "objects"
             ].items():
+                objtype: str
                 if not fullname.startswith(prefix):
                     continue
                 name = fullname[len(prefix) :]
