@@ -1,5 +1,9 @@
 # Changelog
 
+## v2.0.1
+
+- Fixed documentation not being rebuilt after changing lua source code.
+
 ## v2.0.0
 
 - Breaking change: don't implicitly convert classes that're derived from `table`
