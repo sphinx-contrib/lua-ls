@@ -438,8 +438,8 @@ class LuaObject(
     ) -> tuple[str, str, str, str, T]:
         name, sigdata = self.parse_signature(sig)
 
-        modname = self.options.get("module", self.env.ref_context.get("lua:module"))
-        classname = self.env.ref_context.get("lua:class", None)
+        modname = self.options.get("module", self.env.ref_context.get("lua:module", ""))
+        classname = self.env.ref_context.get("lua:class", "")
         fullname = ".".join(filter(None, [modname, classname, name]))
 
         if classname and "module" in self.options:
