@@ -442,7 +442,7 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
             content_node += nodes
 
 
-class AutodocObjectMixin(sphinx_lua_ls.domain.LuaObject[Any], AutodocDirectiveMixin):
+class AutodocObjectMixin(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaObject[Any]):
     def transform_content(self, content_node: sphinx.addnodes.desc_content) -> None:
         fullname = self.names[-1][0] if self.names else None
         self.render_root_docstring(content_node, fullname)
@@ -453,7 +453,7 @@ class AutodocObjectMixin(sphinx_lua_ls.domain.LuaObject[Any], AutodocDirectiveMi
                 content_node += self.render(child, name)
 
 
-class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
+class LuaFunction(AutodocObjectMixin, sphinx_lua_ls.domain.LuaFunction):
     def parse_signature(self, sig):
         assert isinstance(self.root, sphinx_lua_ls.objtree.Function)
         return (
@@ -545,7 +545,7 @@ class LuaFunction(sphinx_lua_ls.domain.LuaFunction, AutodocObjectMixin):
                 )
 
 
-class LuaData(sphinx_lua_ls.domain.LuaData, AutodocObjectMixin):
+class LuaData(AutodocObjectMixin, sphinx_lua_ls.domain.LuaData):
     def parse_signature(self, sig):
         return (
             self.arguments[0],
@@ -553,12 +553,12 @@ class LuaData(sphinx_lua_ls.domain.LuaData, AutodocObjectMixin):
         )
 
 
-class LuaTable(sphinx_lua_ls.domain.LuaTable, AutodocObjectMixin):
+class LuaTable(AutodocObjectMixin, sphinx_lua_ls.domain.LuaTable):
     def parse_signature(self, sig):
         return (self.arguments[0], None)
 
 
-class LuaAlias(sphinx_lua_ls.domain.LuaAlias, AutodocObjectMixin):
+class LuaAlias(AutodocObjectMixin, sphinx_lua_ls.domain.LuaAlias):
     def parse_signature(self, sig):
         assert isinstance(self.root, sphinx_lua_ls.objtree.Alias)
         if _FIX_FLAKY_ALIAS_TESTS:
@@ -566,13 +566,15 @@ class LuaAlias(sphinx_lua_ls.domain.LuaAlias, AutodocObjectMixin):
         return self.arguments[0], self.root.type
 
 
-class LuaClass(sphinx_lua_ls.domain.LuaClass, AutodocObjectMixin):
+class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
     def parse_signature(self, sig):
         assert isinstance(self.root, sphinx_lua_ls.objtree.Class)
         return self.arguments[0], self.root.bases
 
 
-class LuaModule(sphinx_lua_ls.domain.LuaModule, AutodocDirectiveMixin):
+class LuaModule(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaModule):
+    option_spec: ClassVar[dict[str, Callable[[str], Any]]]
+
     def run(self) -> list[docutils.nodes.Node]:
         nodes = super().run()
 
