@@ -33,6 +33,8 @@ class Kind(enum.Enum):
 
     Alias = "alias"
 
+    Enum = "enum"
+
     @property
     def order(self) -> int:
         return _GROUPWISE_ORDER[self]
@@ -44,7 +46,8 @@ _GROUPWISE_ORDER = {
     Kind.Function: 2,
     Kind.Class: 3,
     Kind.Alias: 4,
-    Kind.Module: 5,
+    Kind.Enum: 5,
+    Kind.Module: 6,
 }
 
 
@@ -489,6 +492,35 @@ class Alias(Object):
 
     def _print_object(self) -> str:
         return f" = {self.type}"
+
+    def _print_object_tail(self) -> str:
+        return ""
+
+
+@dataclass(kw_only=True, repr=False)
+class Enum(Object):
+    """
+    A lua enum.
+
+    """
+
+    priority = 2
+
+    @functools.cached_property
+    def kind(self) -> Kind | None:
+        if self.parsed_doctype in [None, "enum"]:
+            return Kind.Enum
+        elif self.parsed_doctype in ["data", "const", "attribute"]:
+            return Kind.Data
+        elif self.parsed_doctype in ["table"]:
+            return Kind.Table
+        elif self.parsed_doctype in ["module"]:
+            return Kind.Module
+        else:
+            return None
+
+    def _print_object(self) -> str:
+        return ""
 
     def _print_object_tail(self) -> str:
         return ""

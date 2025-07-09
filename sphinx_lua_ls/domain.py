@@ -886,7 +886,7 @@ class LuaTable(LuaObject[None]):
 
     def get_signature_prefix(self, signature: str) -> list[nodes.Node]:
         prefix = super().get_signature_prefix(signature)
-        if self.objtype not in ("table"):
+        if self.objtype not in ("table",):
             prefix.extend(
                 [
                     addnodes.desc_sig_keyword("", self.objtype),
@@ -1025,6 +1025,7 @@ class LuaDomain(Domain):
         "staticmethod": ObjType(_("static method"), "meth", "obj"),
         "attribute": ObjType(_("attribute"), "attr", "obj"),
         "table": ObjType(_("data"), "attr", "data", "obj"),
+        "enum": ObjType(_("enum"), "enum", "obj"),
         "module": ObjType(_("module"), "mod", "obj"),
     }
 
@@ -1039,6 +1040,7 @@ class LuaDomain(Domain):
         "staticmethod": LuaFunction,
         "attribute": LuaData,
         "table": LuaTable,
+        "enum": LuaTable,
         "module": LuaModule,
         "currentmodule": LuaCurrentModule,
     }
@@ -1050,6 +1052,7 @@ class LuaDomain(Domain):
         "alias": LuaXRefRole(),
         "meth": LuaXRefRole(),
         "attr": LuaXRefRole(),
+        "enum": LuaXRefRole(),
         "mod": LuaXRefRole(),
         "obj": LuaXRefRole(),
     }

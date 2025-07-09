@@ -222,6 +222,8 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
                 return self.render_class(root, name, top_level)
             elif root.kind == Kind.Alias:
                 return self.render_alias(root, name, top_level)
+            elif root.kind == Kind.Enum:
+                return self.render_enum(root, name, top_level)
             else:
                 raise RuntimeError(f"unknown lua object kind {root.kind}")
 
@@ -301,6 +303,15 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
             name,
             LuaAlias,
             "lua:" + (root.parsed_doctype or "alias"),
+            root,
+            top_level,
+        ).run()
+
+    def render_enum(self, root: Object, name: str, top_level: bool = False):
+        return self._create_directive(
+            name,
+            LuaTable,
+            "lua:" + (root.parsed_doctype or "enum"),
             root,
             top_level,
         ).run()

@@ -32,6 +32,7 @@ class AutoIndexTransform(SphinxTransform):
         "const": "data",
         "class": "class",
         "alias": "alias",
+        "enum": "enum",
         "method": "function",
         "classmethod": "function",
         "staticmethod": "function",
