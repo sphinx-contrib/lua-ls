@@ -1276,18 +1276,18 @@ class LuaDomain(Domain):
     name = "lua"
     label = "Lua"
     object_types: dict[str, ObjType] = {
-        "function": ObjType(_("function"), "func", "obj"),
-        "data": ObjType(_("data"), "data", "obj"),
-        "const": ObjType(_("const"), "attr", "const", "obj"),
-        "class": ObjType(_("class"), "class", "obj"),
-        "alias": ObjType(_("alias"), "alias", "obj"),
-        "method": ObjType(_("method"), "meth", "obj"),
-        "classmethod": ObjType(_("class method"), "meth", "obj"),
-        "staticmethod": ObjType(_("static method"), "meth", "obj"),
-        "attribute": ObjType(_("attribute"), "attr", "obj"),
-        "table": ObjType(_("data"), "attr", "data", "obj"),
-        "enum": ObjType(_("enum"), "enum", "obj"),
-        "module": ObjType(_("module"), "mod", "obj"),
+        "function": ObjType(_("function"), "func", "obj", "lua"),
+        "data": ObjType(_("data"), "data", "obj", "lua"),
+        "const": ObjType(_("const"), "attr", "const", "obj", "lua"),
+        "class": ObjType(_("class"), "class", "obj", "lua"),
+        "alias": ObjType(_("alias"), "alias", "obj", "lua"),
+        "enum": ObjType(_("enum"), "enum", "obj", "lua"),
+        "method": ObjType(_("method"), "meth", "obj", "lua"),
+        "classmethod": ObjType(_("class method"), "meth", "obj", "lua"),
+        "staticmethod": ObjType(_("static method"), "meth", "obj", "lua"),
+        "attribute": ObjType(_("attribute"), "attr", "obj", "lua"),
+        "table": ObjType(_("data"), "attr", "data", "obj", "lua"),
+        "module": ObjType(_("module"), "mod", "obj", "lua"),
     }
 
     directives = {
@@ -1296,6 +1296,7 @@ class LuaDomain(Domain):
         "const": LuaData,
         "class": LuaClass,
         "alias": LuaAlias,
+        "enum": LuaAlias,
         "method": LuaFunction,
         "classmethod": LuaFunction,
         "staticmethod": LuaFunction,
@@ -1311,11 +1312,12 @@ class LuaDomain(Domain):
         "const": LuaXRefRole(),
         "class": LuaXRefRole(),
         "alias": LuaXRefRole(),
+        "enum": LuaXRefRole(),
         "meth": LuaXRefRole(),
         "attr": LuaXRefRole(),
-        "enum": LuaXRefRole(),
         "mod": LuaXRefRole(),
         "obj": LuaXRefRole(),
+        "lua": LuaXRefRole(),
     }
     initial_data: dict[str, dict[str, tuple[Any]]] = {
         "objects": {},  # fullname -> docname, objtype, deprecated, synopsis
