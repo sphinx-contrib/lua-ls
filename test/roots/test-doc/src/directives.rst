@@ -51,6 +51,18 @@ Directives
 
       Description
 
+   .. lua:function:: function_generics<T>
+
+      Description
+
+   .. lua:function:: function_generics_return<T> -> T[]
+
+      Description
+
+   .. lua:function:: function_generics_args_and_return<T>(...: T) -> T[]
+
+      Description
+
    .. lua:function:: function_complex_types(T: integer, b: table<T, target_module.T>, c: fun(T: T, ...): (T: T, ...)) -> a: table<string, string>, ...: fun(a: integer, ...): (a: integer, ...)
 
       Description
@@ -134,6 +146,18 @@ Directives
 
       Description
 
+   .. lua:class:: class_generic<T>
+
+      Description
+
+   .. lua:class:: class_generic_multiple_types<U, V>
+
+      Description
+
+   .. lua:class:: class_generic_with_base<T>: T[]
+
+      Description
+
    .. lua:class:: class_members
 
       .. lua:data:: class_data
@@ -150,6 +174,8 @@ Directives
 
    .. lua:alias:: alias_type T
 
+   .. lua:alias:: alias_generic<T> T[]
+
    .. lua:alias:: alias_strings = "a|b" | "c" | "d"
 
    .. lua:alias:: alias_members
@@ -159,6 +185,18 @@ Directives
       .. lua:function:: alias_function
 
       .. lua:method:: alias_method
+
+   .. lua:enum:: enum_simple
+
+   .. lua:enum:: enum_generic<T>
+
+   .. lua:enum:: enum_members
+
+      .. lua:data:: enum_data
+
+      .. lua:function:: enum_function
+
+      .. lua:method:: enum_method
 
    .. lua:table:: table_simple
 

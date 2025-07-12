@@ -393,6 +393,130 @@ def _normalize_name(name: str) -> str:
         return name
 
 
+class _SigWriter:
+    def __init__(self, signode: addnodes.desc_signature) -> None:
+        self._signode = signode
+        signode["is_multiline"] = True
+
+        self._line = addnodes.desc_signature_line(add_permalink=True)
+        signode += self._line
+
+    def br(self):
+        self._line["add_permalink"] = False
+        self._line = addnodes.desc_signature_line(add_permalink=True)
+        self._signode += self._line
+
+    def ident(self):
+        self._line += addnodes.desc_sig_space("    ", "    ")
+
+    def name(self, txt: str):
+        self._line += addnodes.desc_sig_name(txt, txt)
+
+    def space(self):
+        self._line += addnodes.desc_sig_space()
+
+    def operator(self, txt: str):
+        self._line += addnodes.desc_sig_operator(txt, txt)
+
+    def punctuation(self, txt: str):
+        self._line += addnodes.desc_sig_punctuation(txt, txt)
+
+    def keyword(self, txt: str):
+        self._line += addnodes.desc_sig_keyword(txt, txt)
+
+    def keyword_type(self, txt: str):
+        self._line += addnodes.desc_sig_keyword_type(txt, txt)
+
+    def literal_number(self, txt: str):
+        self._line += addnodes.desc_sig_literal_number(txt, txt)
+
+    def literal_string(self, txt: str):
+        self._line += addnodes.desc_sig_literal_string(txt, txt)
+
+    def literal_char(self, txt: str):
+        self._line += addnodes.desc_sig_literal_char(txt, txt)
+
+    def typ(self, txt: str, inliner):
+        self._line += addnodes.desc_type("", "", *_type_to_nodes(txt, inliner))
+
+    def params(
+        self,
+        params: list[tuple[str, str]],
+        parens: tuple[str, str] | None,
+        handle_optionals: bool,
+        inliner,
+    ):
+        estimated_len = sum(
+            len(p[0]) + len(p[1]) + (1 if p[0] and p[1] else 0) for p in params
+        ) + len(params)
+        multiline = estimated_len > 50
+
+        if multiline and not parens:
+            parens = ("(", ")")
+
+        if parens:
+            self.punctuation(parens[0])
+
+        for i, (arg, typ) in enumerate(params):
+            if multiline:
+                self.br()
+                self.ident()
+
+            if handle_optionals and arg and typ and typ.endswith("?"):
+                arg, typ = arg + "?", typ[:-1]
+                if typ.startswith("(") and typ.endswith(")"):
+                    typ = typ[1:-1]
+
+            if arg:
+                self.name(arg or "_")
+            if arg and typ:
+                self.punctuation(":")
+                self.space()
+            if typ:
+                self.typ(typ, inliner)
+            if i + 1 < len(params):
+                self.punctuation(",")
+                self.space()
+
+        if multiline:
+            self.br()
+
+        if parens:
+            self.punctuation(parens[1])
+
+    def list(
+        self,
+        params: list[str],
+        parens: tuple[str, str] | None,
+        inliner,
+    ):
+        estimated_len = sum(len(p) for p in params) + len(params)
+        multiline = estimated_len > 50
+
+        if multiline and not parens:
+            parens = ("(", ")")
+
+        if parens:
+            self.punctuation(parens[0])
+
+        for i, typ in enumerate(params):
+            if multiline:
+                self.br()
+                self.ident()
+
+            if typ:
+                self.typ(typ, inliner)
+            if i + 1 < len(params):
+                self.punctuation(",")
+                self.space()
+
+        if multiline:
+            self.br()
+
+        if parens:
+            self.punctuation(parens[1])
+
+
 class LuaTypedField(TypedField):
     def make_field(
         self,
@@ -566,7 +690,7 @@ class LuaObject(
         signode["fullname"] = fullname
         signode["lua:domain_name"] = prefix + descname
 
-        sig_prefix = self.get_signature_prefix(sig)
+        sig_prefix = self.get_signature_prefix(sig, sigdata)
         if sig_prefix:
             signode += addnodes.desc_annotation("", "", *sig_prefix)
 
@@ -576,7 +700,7 @@ class LuaObject(
 
         return fullname, modname, classname, name, sigdata
 
-    def get_signature_prefix(self, signature: str) -> list[nodes.Node]:
+    def get_signature_prefix(self, signature: str, sigdata: T, filter_options: set[str] | None = None) -> list[nodes.Node]:
         prefix = []
 
         annotation = self.options.get("annotation")
@@ -597,6 +721,8 @@ class LuaObject(
             "virtual",
             "async",
         ]:
+            if filter_options and option in filter_options:
+                continue
             if option in self.options:
                 prefix.extend(
                     [
@@ -696,7 +822,11 @@ class LuaObject(
             self.pop_context()
 
 
-class LuaFunction(LuaObject[tuple[list[tuple[str, str]], list[tuple[str, str]]]]):
+class LuaFunction(
+    LuaObject[
+        tuple[list[tuple[str, str]], list[tuple[str, str]], list[tuple[str, str]]]
+    ]
+):
     """
     Everything that looks like a function: functions, methods, static and class methods.
 
@@ -706,17 +836,21 @@ class LuaFunction(LuaObject[tuple[list[tuple[str, str]], list[tuple[str, str]]]]
 
     def parse_signature(self, sig):
         name, sig = _separate_name_prefix(sig)
+        generics, sig = _separate_paren_prefix(sig, ("<", ">"))
         params, returns = _separate_paren_prefix(sig)
 
         if returns and returns.startswith("->"):
             returns = returns[2:].lstrip()
+        if returns and returns.startswith(":"):
+            returns = returns[1:].lstrip()
         elif returns:
-            raise self.error("incorrect function return type")
+            raise ValueError("incorrect function return type")
 
         if returns.startswith("(") and returns.endswith(")"):
             returns = returns[1:-1]
 
         return name, (
+            _parse_types(generics, parsingFunctionParams=True),
             _parse_types(params, parsingFunctionParams=True),
             _parse_types(returns),
         )
@@ -730,49 +864,25 @@ class LuaFunction(LuaObject[tuple[list[tuple[str, str]], list[tuple[str, str]]]]
             modname,
             classname,
             name,
-            (args, returns),
+            (generics, args, returns),
         ) = self.handle_signature_prefix(sig, signode)
 
-        if not args:
-            if self.needs_arg_list():
-                signode += addnodes.desc_parameterlist()
-        else:
-            parameterslist = addnodes.desc_parameterlist()
-            signode += parameterslist
-            for arg, typ in args:
-                if arg and typ and typ.endswith("?"):
-                    arg, typ = arg + "?", typ[:-1]
-                    if typ.startswith("(") and typ.endswith(")"):
-                        typ = typ[1:-1]
+        sw = _SigWriter(signode)
 
-                parameter = addnodes.desc_parameter()
+        if generics:
+            sw.params(generics, ("<", ">"), False, self.state.inliner)
 
-                parameter += addnodes.desc_sig_name(arg, arg)
-                if typ:
-                    parameter += addnodes.desc_sig_punctuation(":", ":")
-                    parameter += addnodes.desc_sig_space()
-                    parameter += _type_to_nodes(typ, self.state.inliner)
-
-                parameterslist += parameter
+        sw.params(args, ("(", ")"), True, self.state.inliner)
 
         if returns:
-            retnode = addnodes.desc_returns()
-            signode += retnode
-
-            for i, (arg, typ) in enumerate(returns):
-                if arg and typ and typ.endswith("?"):
-                    arg, typ = arg + "?", typ[:-1]
-                    if typ.startswith("(") and typ.endswith(")"):
-                        typ = typ[1:-1]
-
-                if arg:
-                    retnode += addnodes.desc_sig_name("", arg or "_")
-                    retnode += addnodes.desc_sig_punctuation(":", ":")
-                    retnode += addnodes.desc_sig_space()
-                retnode += _type_to_nodes(typ, self.state.inliner)
-                if i + 1 < len(returns):
-                    retnode += addnodes.desc_sig_punctuation(",", ",")
-                    retnode += addnodes.desc_sig_space()
+            sw.punctuation(":")
+            sw.space()
+            sw.params(
+                returns,
+                ("(", ")") if any(n for (n, _) in returns) else None,
+                True,
+                self.state.inliner,
+            )
 
         return fullname, modname, classname, name
 
@@ -782,8 +892,8 @@ class LuaFunction(LuaObject[tuple[list[tuple[str, str]], list[tuple[str, str]]]]
     def use_semicolon_path(self) -> bool:
         return self.objtype in ("method", "classmethod")
 
-    def get_signature_prefix(self, signature: str) -> list[nodes.Node]:
-        prefix = super().get_signature_prefix(signature)
+    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+        prefix = super().get_signature_prefix(signature, sigdata, filter_options)
         if self.objtype not in ("function", "method"):
             prefix.extend(
                 [
@@ -818,17 +928,17 @@ class LuaData(LuaObject[str]):
             sig, signode
         )
 
+        sw = _SigWriter(signode)
+
         if typ:
-            signode += addnodes.desc_sig_punctuation(":", ":")
-            signode += addnodes.desc_sig_space()
-            signode += addnodes.desc_type(
-                "", "", *_type_to_nodes(typ, self.state.inliner)
-            )
+            sw.punctuation(":")
+            sw.space()
+            sw.typ(typ, self.state.inliner)
 
         return fullname, modname, classname, name
 
-    def get_signature_prefix(self, signature: str) -> list[nodes.Node]:
-        prefix = super().get_signature_prefix(signature)
+    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+        prefix = super().get_signature_prefix(signature, sigdata, filter_options)
         if self.objtype not in ("data", "attribute"):
             prefix.extend(
                 [
@@ -839,7 +949,7 @@ class LuaData(LuaObject[str]):
         return prefix
 
 
-class LuaAlias(LuaObject[str]):
+class LuaAlias(LuaObject[tuple[list[tuple[str, str]], str]]):
     """
     Type aliases and other things that have type assignments in their signature.
 
@@ -851,31 +961,40 @@ class LuaAlias(LuaObject[str]):
 
     def parse_signature(self, sig):
         name, sig = _separate_name_prefix(sig)
+
+        generics, sig = _separate_paren_prefix(sig, ("<", ">"))
         if sig.startswith("=") or sig.startswith(":"):
             sig = sig[1:]
 
-        return name, sig.strip()
+        return name, (_parse_types(generics, parsingFunctionParams=True), sig.strip())
 
     @_handle_signature_errors
     def handle_signature(
         self, sig: str, signode: addnodes.desc_signature
     ) -> tuple[str, str, str, str]:
-        fullname, modname, classname, name, typ = self.handle_signature_prefix(
-            sig, signode
-        )
+        (
+            fullname,
+            modname,
+            classname,
+            name,
+            (generics, typ),
+        ) = self.handle_signature_prefix(sig, signode)
+
+        sw = _SigWriter(signode)
+
+        if generics:
+            sw.params(generics, ("<", ">"), False, self.state.inliner)
 
         if typ:
-            signode += addnodes.desc_sig_space()
-            signode += addnodes.desc_sig_punctuation("=", "=")
-            signode += addnodes.desc_sig_space()
-            signode += addnodes.desc_type(
-                "", "", *_type_to_nodes(typ, self.state.inliner)
-            )
+            sw.space()
+            sw.punctuation("=")
+            sw.space()
+            sw.typ(typ, self.state.inliner)
 
         return fullname, modname, classname, name
 
-    def get_signature_prefix(self, signature: str) -> list[nodes.Node]:
-        prefix = super().get_signature_prefix(signature)
+    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+        prefix = super().get_signature_prefix(signature, sigdata, filter_options)
         prefix.extend(
             [
                 addnodes.desc_sig_keyword("", self.objtype),
@@ -885,7 +1004,7 @@ class LuaAlias(LuaObject[str]):
         return prefix
 
 
-class LuaClass(LuaObject[list[str]]):
+class LuaClass(LuaObject[tuple[list[tuple[str, str]], list[str] | None, list[tuple[str, str]] | None, list[tuple[str, str]] | None]]):
     """
     Classes and other things that have base types in their signature.
 
@@ -900,44 +1019,96 @@ class LuaClass(LuaObject[list[str]]):
     def parse_signature(self, sig):
         name, sig = _separate_name_prefix(sig)
 
+        generics, sig = _separate_paren_prefix(sig, ("<", ">"))
+
+        if sig.startswith("("):
+            # This is a constructor.
+
+            params, returns = _separate_paren_prefix(sig)
+
+            if returns and returns.startswith("->"):
+                returns = returns[2:].lstrip()
+            if returns and returns.startswith(":"):
+                returns = returns[1:].lstrip()
+            elif returns:
+                raise ValueError("incorrect function return type")
+
+            if returns.startswith("(") and returns.endswith(")"):
+                returns = returns[1:-1]
+
+            return name, (
+                _parse_types(generics, parsingFunctionParams=True),
+                None,
+                _parse_types(params, parsingFunctionParams=True),
+                _parse_types(returns),
+            )
+
         if sig.startswith("=") or sig.startswith(":"):
             sig = sig[1:]
 
-        return name, _separate_sig(sig)
+        return name, (
+            _parse_types(generics, parsingFunctionParams=True),
+            _separate_sig(sig),
+            None,
+            None
+        )
 
     @_handle_signature_errors
     def handle_signature(
         self, sig: str, signode: addnodes.desc_signature
     ) -> tuple[str, str, str, str]:
-        fullname, modname, classname, name, bases = self.handle_signature_prefix(
-            sig, signode
-        )
+        (
+            fullname,
+            modname,
+            classname,
+            name,
+            (generics, bases, params, returns),
+        ) = self.handle_signature_prefix(sig, signode)
+
+        sw = _SigWriter(signode)
+
+        if generics:
+            sw.params(generics, ("<", ">"), False, self.state.inliner)
 
         if bases:
-            signode += addnodes.desc_sig_space()
-            signode += addnodes.desc_sig_punctuation(":", ":")
-            signode += addnodes.desc_sig_space()
+            sw.punctuation(":")
+            sw.space()
+            sw.list(bases, None, self.state.inliner)
 
-            sep = False
-            for typ in bases:
-                if sep:
-                    signode += addnodes.desc_sig_punctuation(",", ",")
-                    signode += addnodes.desc_sig_space()
-                signode += addnodes.desc_type(
-                    "", "", *_type_to_nodes(typ, self.state.inliner)
-                )
-                sep = True
+        if params is not None:
+            sw.params(params, ("(", ")"), True, self.state.inliner)
+
+        if returns:
+            sw.punctuation(":")
+            sw.space()
+            sw.params(
+                returns,
+                ("(", ")") if any(n for (n, _) in returns) else None,
+                True,
+                self.state.inliner,
+            )
 
         return fullname, modname, classname, name
 
-    def get_signature_prefix(self, signature: str) -> list[nodes.Node]:
-        prefix = super().get_signature_prefix(signature)
-        prefix.extend(
-            [
-                addnodes.desc_sig_keyword("", self.objtype),
-                addnodes.desc_sig_space(),
-            ]
-        )
+    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+        if sigdata[2] is not None:
+            # This is a constructor.
+            prefix = super().get_signature_prefix(signature, sigdata, set())
+            prefix.extend(
+                [
+                    addnodes.desc_sig_keyword("", "constructor"),
+                    addnodes.desc_sig_space(),
+                ]
+            )
+        else:
+            # This is a class.
+            prefix = super().get_signature_prefix(signature, sigdata, {"async", "abstract", "virtual"})
+            prefix.extend(
+                [
+                    addnodes.desc_sig_keyword("", self.objtype),
+                    addnodes.desc_sig_space(),
+                ]
+            )
         return prefix
 
 
@@ -968,8 +1139,8 @@ class LuaTable(LuaObject[None]):
 
         return fullname, modname, classname, name
 
-    def get_signature_prefix(self, signature: str) -> list[nodes.Node]:
-        prefix = super().get_signature_prefix(signature)
+    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+        prefix = super().get_signature_prefix(signature, sigdata, filter_options)
         if self.objtype not in ("table",):
             prefix.extend(
                 [
