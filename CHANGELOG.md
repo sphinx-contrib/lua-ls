@@ -17,11 +17,30 @@
 
 - Long object signatures are now broken into multiple lines.
 
-- Supported documenting non-string table fields, i.e. `[integer]: string`.
+- Supported using arbitrary types as object names, i.e.:
 
-- Supported generic parameters for functions, classes, aliases and enums.
+  ```rst
+  .. lua:data:: [integer]: string
+  ```
+
+- Added `:globals:` flag for the `lua:autoobject` directive. It will allow
+  automatically documenting global variables defined in a module.
+
+- The `lua:autoindex` directive now lists globals defined in a module.
+
+- Added support for documenting class constructors:
+
+  ```rst
+  .. lua:class:: Foo(a, b, ...)
+  ```
 
 - Added directive for enums.
+
+- Supported generic parameters for functions, classes, aliases and enums:
+
+  ```rst
+  .. lua:class:: Foo<T>
+  ```
 
 - Improved linking to Lua language documentation to take into account
   whether an item is supported for the given Lua version.
