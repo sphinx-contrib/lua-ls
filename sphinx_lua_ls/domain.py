@@ -12,6 +12,7 @@ import functools
 import re
 from collections.abc import Set
 from typing import Any, Callable, ClassVar, Generic, Iterator, TypeVar
+import urllib.parse
 
 import sphinx.config
 from docutils import nodes
@@ -39,7 +40,7 @@ logger = logging.getLogger("sphinx_lua_ls")
 
 
 #: Regexp for parsing a single Lua identifier.
-_OBJECT_NAME_RE = re.compile(r"^\s*[\w-]+(\s*\.\s*[\w-]+)*\s*")
+_OBJECT_NAME_RE = re.compile(r"^\s*(?P<name>[\w-]+)")
 
 #: A single function parameter name.
 _PARAM_NAME_RE = re.compile(r"^\s*[\w-]+\s*$")
@@ -64,7 +65,51 @@ def _handle_signature_errors(handler):
     return fn
 
 
+def _separate_name_prefix(sig: str) -> tuple[str, str]:
+    name_components = []
+    sig = sig.lstrip()
+    while sig:
+        seen_dot_prefix = False
+        if name_components and sig.startswith("."):
+            sig = sig[1:]
+            seen_dot_prefix = True
+        if sig.startswith("["):
+            name, sig = _separate_paren_prefix(sig, ("[", "]"))
+            name_components.append(f"[{_normalize_type(name)}]")
+        elif match := _OBJECT_NAME_RE.match(sig):
+            name_components.append(match.group("name"))
+            sig = sig[match.span()[1] :]
+        else:
+            if seen_dot_prefix:
+                raise ValueError("incorrect object name")
+            break
+    if not name_components:
+        raise ValueError("incorrect object name")
+    return ".".join(name_components), sig
+
+
 def _make_ref_title(fullname: str, objtype: str, config: sphinx.config.Config):
+    if "[" in fullname:
+        components = [
+            "[" + _normalize_type(c[1:-1]) + "]"
+            if c.startswith("[") and c.endswith("]")
+            else c
+            for c in
+            _separate_sig(fullname, ".")
+        ]
+
+        if objtype in ("method", "classmethod"):
+            fullname = ".".join(components[:-1])
+            if fullname:
+                fullname += ":"
+            fullname += components[-1]
+        else:
+            fullname = ".".join(components)
+    elif objtype in ("method", "classmethod") and ":" not in fullname:
+        i = fullname.rfind(".")
+        if i != -1:
+            fullname = fullname[:i] + ":" + fullname[i + 1 :]
+
     if (
         config.add_function_parentheses
         and objtype
@@ -77,20 +122,19 @@ def _make_ref_title(fullname: str, objtype: str, config: sphinx.config.Config):
         and not fullname.endswith("()")
     ):
         fullname += "()"
-    if objtype in ("method", "classmethod") and ":" not in fullname:
-        i = fullname.rfind(".")
-        if i != -1:
-            fullname = fullname[:i] + ":" + fullname[i + 1 :]
+
     return fullname
 
 
-def _separate_paren_prefix(sig: str) -> tuple[str, str]:
+def _separate_paren_prefix(
+    sig: str, parens: tuple[str, str] = ("(", ")")
+) -> tuple[str, str]:
     """
     If string starts with a brace sequence, separate it out from the string.
 
     """
 
-    if not sig.startswith("("):
+    if not sig.startswith(parens[0]):
         return "", sig.strip()
     else:
         sig = sig[1:]
@@ -109,7 +153,7 @@ def _separate_paren_prefix(sig: str) -> tuple[str, str]:
                 esc = True
         elif c in "([{<":
             depth += 1
-        elif depth == 0 and c == ")":
+        elif depth == 0 and c == parens[1]:
             return sig[:i].strip(), sig[i + 1 :].strip()
         elif c in ")]}>":
             depth = max(depth - 1, 0)
@@ -193,6 +237,54 @@ def _parse_types(
             res.append((elems[0].strip(), ":".join(elems[1:]).strip()))
     return res
 
+_TYPE_PARSE_RE = re.compile(
+    r"""
+    # Skip spaces, they're not meaningful in this context.
+    \s+
+    |
+    (?P<dots>[.]{3})
+    |
+    # Literal string with escapes.
+    # Example: `"foo"`, `"foo-\"-bar"`.
+    (?P<string>(?P<string_q>['"`])(?:\\.|[^\\])*?(?P=string_q))
+    |
+    # Number with optional exponent.
+    # Example: `1.0`, `.1`, `1.`, `1e+5`.
+    (?P<number>(?:\d+(?:\.\d*)|\.\d+)(?:[eE][+-]?\d+)?)
+    |
+    # Function type followed by an opening brace.
+    # Example: `fun( ...`.
+    (?P<kwd>fun)\s*(?=\()
+    |
+    # Ident not followed by an open brace, semicolon, etc.
+    # Example: `module.Type`.
+    # Doesn't match: `name?: ...`, `name( ...`, etc.
+    (?P<ident>[\w-]+(?:\.[\w-]+)*)
+    \s*(?P<ident_qm>\??)\s*
+    (?![:(\w.?-])
+    |
+    # Built-in type not followed by an open brace, semicolon, etc.
+    # Example: `string`, `string?`.
+    # Doesn't match: `string?: ...`, `string( ...`, etc.
+    (?P<type>nil|any|boolean|string|number|integer|function|table|thread|userdata|lightuserdata)
+    \s*(?P<type_qm>\??)\s*
+    (?![:(\w.?-])
+    |
+    # Name component, only matches when `ident` and `type` didn't match.
+    # Example: `string: ...`.
+    (?P<name>[\w.-]+)
+    |
+    # Punctuation that we separate with spaces.
+    (?P<punct>[=:,|])
+    |
+    # Punctuation that we copy as-is, without adding spaces.
+    (?P<other_punct>[-!"#$%&'()*+/;<>?@[\]^_`{}~]+)
+    |
+    # Anything else is copied as-is.
+    (?P<other>.)
+    """,
+    re.VERBOSE,
+)
 
 def _type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
     """
@@ -207,55 +299,7 @@ def _type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
 
     res = []
 
-    for match in re.finditer(
-        r"""
-            # Skip spaces, they're not meaningful in this context.
-            \s+
-            |
-            (?P<dots>[.]{3})
-            |
-            # Literal string with escapes.
-            # Example: `"foo"`, `"foo-\"-bar"`.
-            (?P<string>(?P<string_q>['"`])(?:\\.|[^\\])*?(?P=string_q))
-            |
-            # Number with optional exponent.
-            # Example: `1.0`, `.1`, `1.`, `1e+5`.
-            (?P<number>(?:\d+(?:\.\d*)|\.\d+)(?:[eE][+-]?\d+)?)
-            |
-            # Function type followed by an opening brace.
-            # Example: `fun( ...`.
-            (?P<kwd>fun)\s*(?=\()
-            |
-            # Ident not followed by an open brace, semicolon, etc.
-            # Example: `module.Type`.
-            # Doesn't match: `name?: ...`, `name( ...`, etc.
-            (?P<ident>[\w-]+(?:\.[\w-]+)*)
-            \s*(?P<ident_qm>\??)\s*
-            (?![:(\w.?-])
-            |
-            # Built-in type not followed by an open brace, semicolon, etc.
-            # Example: `string`, `string?`.
-            # Doesn't match: `string?: ...`, `string( ...`, etc.
-            (?P<type>nil|any|boolean|string|number|integer|function|table|thread|userdata|lightuserdata)
-            \s*(?P<type_qm>\??)\s*
-            (?![:(\w.?-])
-            |
-            # Name component, only matches when `ident` and `type` didn't match.
-            # Example: `string: ...`.
-            (?P<name>[\w.-]+)
-            |
-            # Punctuation that we separate with spaces.
-            (?P<punct>[=:,|])
-            |
-            # Punctuation that we copy as-is, without adding spaces.
-            (?P<other_punct>[-!"#$%&'()*+/;<>?@[\]^_`{}~]+)
-            |
-            # Anything else is copied as-is.
-            (?P<other>.)
-        """,
-        typ,
-        re.VERBOSE,
-    ):
+    for match in _TYPE_PARSE_RE.finditer(typ):
         if text := match.group("dots"):
             res.append(addnodes.desc_sig_name(text, text))
         elif text := match.group("kwd"):
@@ -287,6 +331,66 @@ def _type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
             res.append(nodes.Text(text))
 
     return res
+
+
+def _normalize_type(typ: str) -> str:
+    """
+    Loosely parse a type definition and normalize spaces.
+
+    :param typ:
+        string with lua type declaration.
+
+    """
+
+    res = ""
+
+    for match in _TYPE_PARSE_RE.finditer(typ):
+        if text := match.group("dots"):
+            res += text
+        elif text := match.group("kwd"):
+            res += text
+        elif text := match.group("type"):
+            res += text
+            if qm := match.group("type_qm"):
+                res += qm
+        elif text := match.group("string"):
+            res += text
+        elif text := match.group("number"):
+            res += text
+        elif text := match.group("ident"):
+            res += text
+            if qm := match.group("ident_qm"):
+                res += qm
+        elif text := match.group("name"):
+            res += text
+        elif text := match.group("punct"):
+            if text in "=|":
+                res += " "
+            res += text
+            res += " "
+        elif text := match.group("other_punct"):
+            res += text
+        elif text := match.group("other"):
+            res += text
+
+    return res
+
+
+def _make_anchor(name: str) -> str:
+    return f"lua-{urllib.parse.quote(name)}"
+
+
+def _normalize_name(name: str) -> str:
+    if "[" in name:
+        return ".".join([
+            "[" + _normalize_type(c[1:-1]) + "]"
+            if c.startswith("[") and c.endswith("]")
+            else c
+            for c in
+            _separate_sig(name, ".")
+        ])
+    else:
+        return name
 
 
 class LuaTypedField(TypedField):
@@ -449,8 +553,9 @@ class LuaObject(
         prefix = "" if classname else ".".join(filter(None, [modname, classname]))
         descname = name
         if self.use_semicolon_path():
-            if (dot_index := descname.rfind(".")) != -1:
-                descname = descname[:dot_index] + ":" + descname[dot_index + 1 :]
+            descname_components = _separate_sig(descname, ".")
+            if len(descname_components) > 1:
+                descname = f"{".".join(descname_components[:-1])}:{descname_components[-1]}"
             elif prefix:
                 prefix += ":"
         if prefix and not prefix.endswith((".", ":")):
@@ -522,7 +627,7 @@ class LuaObject(
         signode: addnodes.desc_signature,
     ) -> None:
         fullname, modname, classname, objname = name
-        anchor = "lua-" + fullname
+        anchor = _make_anchor(fullname)
         if anchor not in self.state.document.ids:
             signode["names"].append(anchor)
             signode["ids"].append(anchor)
@@ -600,12 +705,7 @@ class LuaFunction(LuaObject[tuple[list[tuple[str, str]], list[tuple[str, str]]]]
     """
 
     def parse_signature(self, sig):
-        if match := _OBJECT_NAME_RE.match(sig):
-            name = re.sub(r"\s", "", match.group())
-            sig = sig[match.span()[1] :]
-        else:
-            raise self.error("incorrect function name")
-
+        name, sig = _separate_name_prefix(sig)
         params, returns = _separate_paren_prefix(sig)
 
         if returns and returns.startswith("->"):
@@ -703,11 +803,7 @@ class LuaData(LuaObject[str]):
     """
 
     def parse_signature(self, sig):
-        if match := _OBJECT_NAME_RE.match(sig):
-            name = re.sub(r"\s", "", match.group())
-            sig = sig[match.span()[1] :]
-        else:
-            raise self.error("incorrect data name")
+        name, sig = _separate_name_prefix(sig)
 
         if sig.startswith("=") or sig.startswith(":"):
             sig = sig[1:]
@@ -754,12 +850,7 @@ class LuaAlias(LuaObject[str]):
     allow_nesting = True
 
     def parse_signature(self, sig):
-        if match := _OBJECT_NAME_RE.match(sig):
-            name = re.sub(r"\s", "", match.group())
-            sig = sig[match.span()[1] :]
-        else:
-            raise self.error("incorrect alias name")
-
+        name, sig = _separate_name_prefix(sig)
         if sig.startswith("=") or sig.startswith(":"):
             sig = sig[1:]
 
@@ -807,11 +898,7 @@ class LuaClass(LuaObject[list[str]]):
     allow_nesting = True
 
     def parse_signature(self, sig):
-        if match := _OBJECT_NAME_RE.match(sig):
-            name = re.sub(r"\s", "", match.group())
-            sig = sig[match.span()[1] :]
-        else:
-            raise self.error("incorrect data name")
+        name, sig = _separate_name_prefix(sig)
 
         if sig.startswith("=") or sig.startswith(":"):
             sig = sig[1:]
@@ -864,13 +951,10 @@ class LuaTable(LuaObject[None]):
 
     def parse_signature(self, sig):
         sig = self.arguments[0]
-        if match := _OBJECT_NAME_RE.match(sig):
-            name = re.sub(r"\s", "", match.group())
-            sig = sig[match.span()[1] :]
-            if sig:
-                raise self.error("unexpected symbols after table name")
-        else:
-            raise self.error("incorrect table name")
+
+        name, sig = _separate_name_prefix(sig)
+        if sig:
+            raise ValueError("unexpected symbols after table name")
 
         return name, None
 
@@ -923,13 +1007,12 @@ class LuaModule(SphinxDirective):
             raise self.severe("lua:module only available on top level")
 
         sig = self.arguments[0]
-        if match := _OBJECT_NAME_RE.match(sig):
-            modname = re.sub(r"\s", "", match.group())
-            sig = sig[match.span()[1] :]
-            if sig:
-                raise self.error("unexpected symbols after module name")
-        else:
-            raise self.error("incorrect module name")
+        try:
+            modname, sig = _separate_name_prefix(sig)
+        except ValueError as e:
+            raise self.error(str(e))
+        if sig:
+            raise self.error("unexpected symbols after module name")
 
         self.env.ref_context["lua:module"] = modname
         ret = []
@@ -940,14 +1023,14 @@ class LuaModule(SphinxDirective):
                 "deprecated" in self.options,
                 self.options.get("synopsis", None),
             )
-            target_node = nodes.target("", "", ids=["lua-" + modname], ismod=True)
+            target_node = nodes.target("", "", ids=[_make_anchor(modname)], ismod=True)
             self.state.document.note_explicit_target(target_node)
             # the platform and synopsis aren't printed; in fact, they are only
             # used in the modindex currently
             ret.append(target_node)
             indextext = _("%s (module)") % modname
             inode = addnodes.index(
-                entries=[("single", indextext, "lua-" + modname, "", None)]
+                entries=[("single", indextext, _make_anchor(modname), "", None)]
             )
             ret.append(inode)
         return ret
@@ -970,13 +1053,12 @@ class LuaCurrentModule(SphinxDirective):
             raise self.severe("lua:currentmodule only available on top level")
 
         sig = self.arguments[0]
-        if match := _OBJECT_NAME_RE.match(sig):
-            modname = re.sub(r"\s", "", match.group())
-            sig = sig[match.span()[1] :]
-            if sig:
-                raise self.error("unexpected symbols after module name")
-        else:
-            raise self.error("incorrect module name")
+        try:
+            modname, sig = _separate_name_prefix(sig)
+        except ValueError as e:
+            raise self.error(str(e))
+        if sig:
+            raise self.error("unexpected symbols after module name")
 
         if modname == "None":
             self.env.ref_context.pop("lua:module", None)
@@ -1081,6 +1163,8 @@ class LuaDomain(Domain):
         if name[-2:] == "()":
             name = name[:-2]
 
+        name = _normalize_name(name.strip())
+
         if not name:
             return None
 
@@ -1144,7 +1228,7 @@ class LuaDomain(Domain):
             if isinstance(contnode, nodes.Element) and deprecated:
                 contnode["classes"] += ["deprecated", "lua-deprecated"]
             return make_refnode(
-                builder, fromdocname, docname, "lua-" + name, contnode, name
+                builder, fromdocname, docname, _make_anchor(name), contnode, name
             )
 
     def resolve_any_xref(
@@ -1165,7 +1249,7 @@ class LuaDomain(Domain):
                 (
                     role,
                     make_refnode(
-                        builder, fromdocname, docname, "lua-" + name, contnode, name
+                        builder, fromdocname, docname, _make_anchor(name), contnode, name
                     ),
                 )
             ]

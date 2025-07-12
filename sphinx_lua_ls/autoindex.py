@@ -20,7 +20,11 @@ class AutoIndexDirective(SphinxDirective):
     final_argument_whitespace = False
 
     def run(self) -> list[docutils.nodes.Node]:
-        return [AutoIndexNode("", target=self.arguments[0])]
+        return [
+            AutoIndexNode(
+                "", target=sphinx_lua_ls.domain._normalize_name(self.arguments[0])
+            )
+        ]
 
 
 class AutoIndexTransform(SphinxTransform):
@@ -57,7 +61,11 @@ class AutoIndexTransform(SphinxTransform):
                 if not fullname.startswith(prefix):
                     continue
                 name = fullname[len(prefix) :]
-                if "." in name:
+                if (
+                    len(sphinx_lua_ls.domain._separate_sig(name, ".")) > 1
+                    if "[" in name else
+                    "." in name
+                ):
                     continue
                 objects[self._CANON_OBJTYPE.get(objtype, objtype)].append(
                     (name, fullname, docname, synopsis)
