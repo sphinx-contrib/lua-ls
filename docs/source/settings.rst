@@ -5,7 +5,15 @@ Settings
    :type: str
 
    Path to a directory with ``.luarc.json`` file, relative to the location
-   of ``conf.py``. Lua Language Server will be launched from here.
+   of ``conf.py``. Lua analyzer will be launched from here.
+
+.. py:data:: lua_ls_project_directories
+   :type: list[str]
+
+   List of directories where lua analyzer will run,
+   relative to :py:data:`lua_ls_project_root`.
+
+   By default, consists of a single :py:data:`lua_ls_project_root`.
 
 .. py:data:: lua_ls_backend
    :type: str
@@ -129,20 +137,3 @@ Settings
    :type: str
 
    Format for generated files. Can be either ``"rst"`` or ``"md"``.
-
-.. py:data:: lua_ls_project_directories
-   :type: list[str]
-
-   By default, Lua Language Server documents all files
-   from :py:data:`lua_ls_project_root`. You can change that by providing
-   a list or directories that should be documented. Autodoc will launch
-   Lua Language Server using each of these directories as a target. The path
-   is relative to :py:data:`lua_ls_project_root`.
-
-   .. deprecated:: 2.1.0
-
-      This option will be removed in *3.0.0*.
-
-   .. note::
-
-      This option does nothing when using EmmyLua.

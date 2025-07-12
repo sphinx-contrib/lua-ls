@@ -104,6 +104,7 @@ class LuaLs:
         quiet: bool | None = None,
         env: dict[str, str] | None = None,
         cwd: _PathLike | None = None,
+        configs: list[_PathLike] | None = None,
     ) -> _t.Any:
         """
         Renter the given VHS file.
@@ -149,10 +150,11 @@ class LuaLs:
                     "json",
                     "-o",
                     output_path,
-                    # "-c",
-                    # pathlib.Path(cwd, ".emmyrc.json"),
-                    input_path,
                 ]
+                if configs:
+                    args.append("-c")
+                    args.extend(configs)
+                args.append(input_path)
             else:
                 args = [
                     self._bin_path,

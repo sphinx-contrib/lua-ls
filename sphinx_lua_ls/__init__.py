@@ -234,12 +234,7 @@ def run_lua_ls(app: sphinx.application.Sphinx):
     domain: sphinx_lua_ls.domain.LuaDomain = app.env.get_domain("lua")  # type: ignore
 
     root_dir = domain.config["project_root"]
-    if domain.config["backend"] == "luals":
-        project_directories = sorted(
-            domain.config.get("project_directories", [root_dir])
-        )
-    else:
-        project_directories = [root_dir]
+    project_directories = sorted(domain.config.get("project_directories", [root_dir]))
 
     modified = (
         "objtree" not in domain.data
@@ -280,14 +275,22 @@ def run_lua_ls(app: sphinx.application.Sphinx):
         parser = sphinx_lua_ls.objtree.LuaLsParser()
     else:
         parser = sphinx_lua_ls.objtree.EmmyLuaParser()
+
+    configs = []
+    if (path := pathlib.Path(root_dir, ".emmyrc.json")).exists():
+        configs.append(path)
+    if (path := pathlib.Path(root_dir, ".luarc.json")).exists():
+        configs.append(path)
+    parser.files.update(configs)
+
     for dir in project_directories:
         try:
             relpath = dir.relative_to(cwd, walk_up=True)
         except ValueError:
             relpath = dir
         with progress_message(f"running lua language server in {relpath or '.'}"):
-            parser.parse(runner.run(dir), dir)
-            parser.files.update(dir.rglob("*.lua"))
+            parser.parse(runner.run(dir, configs=configs), dir)
+            parser.files.update(map(pathlib.Path, dir.rglob("*.lua")))
 
     domain.data["objtree"] = parser.root
     domain.data["objtree_roots"] = project_directories
