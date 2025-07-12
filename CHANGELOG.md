@@ -53,7 +53,14 @@
   Reference to a {lua}`logging.Logger.info`.
   ```
 
+- Added the `lua:other-inherited-members` directive and `:inherited-members-table:`
+  flag for the `lua:autoobject` directive.
+
+  These allow listing all members that were inherited by a class but weren't
+  documented within the class body (see [#3]).
+
 [EmmyLua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
+[#3]: https://github.com/taminomara/sphinx-lua-ls/issues/3
 
 ## v2.0.1
 

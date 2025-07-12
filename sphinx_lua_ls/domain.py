@@ -7,10 +7,12 @@ See the original code here: https://github.com/boolangery/sphinx-luadomain
 
 """
 
+import dataclasses
 import functools
 import re
 import urllib.parse
 from collections.abc import Set
+from dataclasses import dataclass
 from typing import Any, Callable, ClassVar, Generic, Iterator, TypeVar
 
 import sphinx.config
@@ -440,6 +442,10 @@ class _SigWriter:
     def typ(self, txt: str, inliner):
         self._line += addnodes.desc_type("", "", *_type_to_nodes(txt, inliner))
 
+    def ref(self, txt: str, inliner):
+        ref_nodes, warn_nodes = LuaXRefRole()("lua:obj", txt, txt, 0, inliner)
+        self._line += addnodes.desc_type("", "", *ref_nodes, *warn_nodes)
+
     def params(
         self,
         params: list[tuple[str, str]],
@@ -646,6 +652,8 @@ class LuaObject(
 
     force_prefix_only = False
 
+    collected_bases: list[str] | None = None
+
     def run(self) -> list[nodes.Node]:
         for name, option in self.env.domaindata["lua"]["config"][
             "default_options"
@@ -681,7 +689,10 @@ class LuaObject(
 
         descname = name
         if self.use_semicolon_path():
-            descname_components = _separate_sig(descname, ".")
+            if "[" in descname:
+                descname_components = _separate_sig(descname, ".")
+            else:
+                descname_components = descname.split(".")
             if len(descname_components) > 1:
                 descname = (
                     f"{'.'.join(descname_components[:-1])}:{descname_components[-1]}"
@@ -773,32 +784,74 @@ class LuaObject(
             signode["ids"].append(anchor)
             signode["first"] = not self.names
             self.state.document.note_explicit_target(signode)
-            objects = self.env.domaindata["lua"]["objects"]
-            if fullname in objects and self.env.docname != objects[fullname][0]:
+
+            domaindata = self.env.domaindata["lua"]
+            objects: dict[str, LuaDomain.ObjectEntry] = domaindata["objects"]
+            globals: dict[str, LuaDomain.GlobalEntry] = domaindata["globals"]
+            members: dict[str, LuaDomain.MemberEntry] = domaindata["members"]
+
+            if fullname in objects and self.env.docname != objects[fullname].docname:
                 self.state_machine.reporter.warning(
                     "duplicate object description of %s, " % fullname
                     + "other instance in "
-                    + self.env.doc2path(objects[fullname][0])
+                    + self.env.doc2path(objects[fullname].docname)
                     + ", use :no-index: for one of them",
                     line=self.lineno,
                 )
-            objects[fullname] = (
-                self.env.docname,
-                self.objtype,
-                "deprecated" in self.options,
-                self.options.get("synopsis", None),
+            objects[fullname] = LuaDomain.ObjectEntry(
+                docname=self.env.docname,
+                objtype=self.objtype,
+                deprecated="deprecated" in self.options,
+                synopsis=self.options.get("synopsis", None),
             )
 
-            if self.options.get("module", None) == "" and not modname and not classname:
+            if fullname not in globals:
+                globals[fullname] = LuaDomain.GlobalEntry(
+                    docname=self.env.docname, entries=[]
+                )
+            else:
+                globals[fullname] = dataclasses.replace(
+                    globals[fullname], docname=self.env.docname
+                )
+
+            if fullname not in members:
+                members[fullname] = LuaDomain.MemberEntry(
+                    docname=self.env.docname, entries=[], bases=[]
+                )
+            else:
+                members[fullname] = dataclasses.replace(
+                    members[fullname], docname=self.env.docname
+                )
+            if self.collected_bases:
+                members[fullname].bases = self.collected_bases
+                members[fullname].base_lookup_modname = modname
+                members[fullname].base_lookup_classname = classname
+
+            if "[" in fullname:
+                name_components = _separate_sig(fullname, ".")
+            else:
+                name_components = fullname.split(".")
+
+            if self.options.get("module", None) == "" and len(name_components) == 1:
                 parent_module = self.env.ref_context.get("lua:module", "")
                 parent_class = self.env.ref_context.get("lua:class", "")
                 if parent_module and not parent_class:
-                    globals: dict[
-                        str, tuple[str, list[tuple[str, str]]]
-                    ] = self.env.domaindata["lua"]["globals"]
-                    globals.setdefault(parent_module, (self.env.docname, []))[1].append(
-                        (fullname, self.env.docname)
+                    if parent_module not in globals:
+                        globals[parent_module] = LuaDomain.GlobalEntry(
+                            docname=self.env.docname, entries=[]
+                        )
+                    globals[parent_module].entries.append(
+                        LuaDomain.Entry(fullname=fullname, docname=self.env.docname)
                     )
+            elif len(name_components) > 1:
+                parent = ".".join(name_components[:-1])
+                if parent not in members:
+                    members[parent] = LuaDomain.MemberEntry(
+                        docname=self.env.docname, entries=[], bases=[]
+                    )
+                members[parent].entries.append(
+                    LuaDomain.Entry(fullname=fullname, docname=self.env.docname)
+                )
 
         if "no-index-entry" not in self.options:
             indextext = self.get_index_text(fullname, modname, classname, objname)
@@ -866,7 +919,7 @@ class LuaFunction(
 
         if returns and returns.startswith("->"):
             returns = returns[2:].lstrip()
-        if returns and returns.startswith(":"):
+        elif returns and returns.startswith(":"):
             returns = returns[1:].lstrip()
         elif returns:
             raise ValueError("incorrect function return type")
@@ -1111,6 +1164,10 @@ class LuaClass(
             sw.params(generics, ("<", ">"), False, self.state.inliner)
 
         if bases:
+            if self.collected_bases is None:
+                self.collected_bases = []
+            self.collected_bases.extend(map(_normalize_name, bases))
+
             sw.punctuation(":")
             sw.space()
             sw.list(bases, None, self.state.inliner)
@@ -1225,29 +1282,76 @@ class LuaModule(SphinxDirective):
 
         sig = self.arguments[0]
         try:
-            modname, sig = _separate_name_prefix(sig)
+            fullname, sig = _separate_name_prefix(sig)
         except ValueError as e:
             raise self.error(str(e))
         if sig:
             raise self.error("unexpected symbols after module name")
 
-        self.env.ref_context["lua:module"] = modname
+        self.env.ref_context["lua:module"] = fullname
         ret = []
         if "no-index" not in self.options:
-            self.env.domaindata["lua"]["objects"][modname] = (
-                self.env.docname,
-                "module",
-                "deprecated" in self.options,
-                self.options.get("synopsis", None),
+            domaindata = self.env.domaindata["lua"]
+            objects: dict[str, LuaDomain.ObjectEntry] = domaindata["objects"]
+            globals: dict[str, LuaDomain.GlobalEntry] = domaindata["globals"]
+            members: dict[str, LuaDomain.MemberEntry] = domaindata["members"]
+
+            if fullname in objects and self.env.docname != objects[fullname].docname:
+                self.state_machine.reporter.warning(
+                    f"duplicate object description of {fullname}, "
+                    "other instance in "
+                    f"{self.env.doc2path(objects[fullname].docname)}, "
+                    "use :no-index: for one of them",
+                    line=self.lineno,
+                )
+            objects[fullname] = LuaDomain.ObjectEntry(
+                docname=self.env.docname,
+                objtype="module",
+                deprecated="deprecated" in self.options,
+                synopsis=self.options.get("synopsis", None),
             )
-            target_node = nodes.target("", "", ids=[_make_anchor(modname)], ismod=True)
+
+            if fullname not in globals:
+                globals[fullname] = LuaDomain.GlobalEntry(
+                    docname=self.env.docname, entries=[]
+                )
+            else:
+                globals[fullname] = dataclasses.replace(
+                    globals[fullname], docname=self.env.docname
+                )
+
+            if fullname not in members:
+                members[fullname] = LuaDomain.MemberEntry(
+                    docname=self.env.docname, entries=[], bases=[]
+                )
+            else:
+                members[fullname] = dataclasses.replace(
+                    members[fullname], docname=self.env.docname
+                )
+
+            if "[" in fullname:
+                name_components = _separate_sig(fullname, ".")
+            else:
+                name_components = fullname.split(".")
+
+            if len(name_components) > 1:
+                parent = ".".join(name_components[:-1])
+                if parent not in members:
+                    members[parent] = LuaDomain.MemberEntry(
+                        docname=self.env.docname, entries=[], bases=[]
+                    )
+                members[parent].entries.append(
+                    LuaDomain.Entry(fullname=fullname, docname=self.env.docname)
+                )
+
+            target_node = nodes.target("", "", ids=[_make_anchor(fullname)], ismod=True)
             self.state.document.note_explicit_target(target_node)
             # the platform and synopsis aren't printed; in fact, they are only
             # used in the modindex currently
             ret.append(target_node)
-            indextext = _("%s (module)") % modname
+            indextext = _("%s (module)") % fullname
             inode = addnodes.index(
-                entries=[("single", indextext, _make_anchor(modname), "", None)]
+                entries=[("single", indextext, _make_anchor(fullname), "", None)]
             )
             ret.append(inode)
         return ret
@@ -1356,44 +1460,127 @@ class LuaDomain(Domain):
         "obj": LuaXRefRole(),
         "lua": LuaXRefRole(),
     }
+
+    @dataclass(slots=True)
+    class ObjectEntry:
+        docname: str
+        objtype: str
+        deprecated: bool
+        synopsis: str | None
+
+    @dataclass(slots=True)
+    class Entry:
+        docname: str
+        fullname: str
+
+    @dataclass(slots=True)
+    class GlobalEntry:
+        docname: str
+        entries: list["LuaDomain.Entry"]
+
+    @dataclass(slots=True)
+    class MemberEntry:
+        docname: str
+        entries: list["LuaDomain.Entry"]
+        bases: list[str]
+        base_lookup_modname: str | None = None
+        base_lookup_classname: str | None = None
+
     initial_data: dict[str, dict[str, tuple[Any]]] = {
-        "objects": {},  # fullname -> docname, objtype, deprecated, synopsis
-        "globals": {},  # modname -> (docname, [fullname, docname])
+        "objects": {},  # fullname -> ObjectEntry
+        "globals": {},  # modname -> GlobalEntry
+        "members": {},  # modname -> MemberEntry
     }
 
     @property
     def config(self) -> dict[str, Any]:
         return self.data.setdefault("config", {})
 
+    @property
+    def objects(self) -> dict[str, "LuaDomain.ObjectEntry"]:
+        return self.data["objects"]
+
+    @property
+    def globals(self) -> dict[str, "LuaDomain.GlobalEntry"]:
+        return self.data["globals"]
+
+    @property
+    def members(self) -> dict[str, "LuaDomain.MemberEntry"]:
+        return self.data["members"]
+
     def clear_doc(self, docname: str) -> None:
-        for fullname, (fn, *_) in list(self.data["objects"].items()):
-            if fn == docname:
-                del self.data["objects"][fullname]
-        for modname, (fn, globals) in list(self.data["globals"].items()):
-            if fn == docname:
-                del self.data["globals"][modname]
+        for fullname, data in list(self.objects.items()):
+            if data.docname == docname:
+                del self.objects[fullname]
+
+        for modname, data in list(self.globals.items()):
+            if data.docname == docname:
+                del self.globals[modname]
             else:
-                self.data["globals"][modname] = (
-                    fn,
-                    [g for g in globals if g[1] != docname],
+                self.globals[modname] = self.GlobalEntry(
+                    docname=data.docname,
+                    entries=[g for g in data.entries if g.docname != docname],
+                )
+
+        for modname, data in list(self.members.items()):
+            if data.docname == docname:
+                del self.members[modname]
+            else:
+                self.members[modname] = self.MemberEntry(
+                    docname=data.docname,
+                    entries=[g for g in data.entries if g.docname != docname],
+                    bases=data.bases,
+                    base_lookup_modname=data.base_lookup_modname,
+                    base_lookup_classname=data.base_lookup_classname,
                 )
 
     def merge_domaindata(self, docnames: Set[str], otherdata: dict[Any, Any]) -> None:
-        # XXX check duplicates?
-        for fullname, (fn, *rest) in otherdata["objects"].items():
-            if fn in docnames:
-                self.data["objects"][fullname] = (fn,) + tuple(rest)
-        for modname, (fn, globals) in otherdata["globals"].items():
-            if fn not in docnames:
+        other_objects: dict[str, LuaDomain.ObjectEntry] = otherdata["objects"]
+        for fullname, data in other_objects.items():
+            if data.docname in docnames:
+                if fullname in self.objects:
+                    logger.warning(
+                        "duplicate description for object %s found in files %s and %s",
+                        fullname,
+                        self.env.doc2path(data.docname),
+                        self.env.doc2path(self.objects[fullname].docname),
+                    )
+                self.objects[fullname] = data
+
+        other_globals: dict[str, LuaDomain.GlobalEntry] = otherdata["globals"]
+        for modname, data in other_globals.items():
+            if data.docname not in docnames:
                 continue
-            self.data["globals"][modname] = (
-                fn,
-                [g for g in globals if g[1] in docnames],
-            )
+            if modname not in self.globals:
+                self.globals[modname] = self.GlobalEntry(
+                    docname=data.docname,
+                    entries=[g for g in data.entries if g.docname in docnames],
+                )
+            else:
+                self.globals[modname].entries.extend(
+                    g for g in data.entries if g.docname in docnames
+                )
+
+        other_members: dict[str, LuaDomain.MemberEntry] = otherdata["members"]
+        for modname, data in other_members.items():
+            if data.docname not in docnames:
+                continue
+            if modname not in self.members:
+                self.members[modname] = self.MemberEntry(
+                    docname=data.docname,
+                    entries=[g for g in data.entries if g.docname in docnames],
+                    bases=data.bases,
+                    base_lookup_modname=data.base_lookup_modname,
+                    base_lookup_classname=data.base_lookup_classname,
+                )
+            else:
+                self.members[modname].entries.extend(
+                    g for g in data.entries if g.docname in docnames
+                )
 
     def _find_obj(
         self, modname: str, classname: str, name: str, typ: str | None
-    ) -> tuple[str, Any] | None:
+    ) -> tuple[str, "LuaDomain.ObjectEntry"] | None:
         if name[-2:] == "()":
             name = name[:-2]
 
@@ -1402,7 +1589,7 @@ class LuaDomain(Domain):
         if not name:
             return None
 
-        objects = self.data["objects"]
+        objects = self.objects
 
         if typ == "mod":
             candidates = [[name]]
@@ -1436,14 +1623,14 @@ class LuaDomain(Domain):
         modname = node.get("lua:module")
         classname = node.get("lua:class")
         if match := self._find_obj(modname, classname, target, typ):
-            name, (docname, objtype, deprecated, *_) = match
-            allowed_typs = self.object_types[objtype].roles
+            name, data = match
+            allowed_typs = self.object_types[data.objtype].roles
             if typ != "any" and typ not in allowed_typs:
                 logger.warning(
                     "reference :lua:%s:`%s` resolved to an object of unexpected type %r",
                     typ,
                     target,
-                    objtype,
+                    data.objtype,
                     type="lua-ls",
                     location=(node.source, node.line),
                 )
@@ -1454,15 +1641,15 @@ class LuaDomain(Domain):
                 and isinstance(contnode.children[0], nodes.Text)
             ):
                 title = contnode.astext()
-                new_title = _make_ref_title(title, objtype, env.config)
+                new_title = _make_ref_title(title, data.objtype, env.config)
                 if new_title != title:
                     contnode = contnode.deepcopy()
                     contnode.clear()
                     contnode += nodes.Text(new_title)
-            if isinstance(contnode, nodes.Element) and deprecated:
+            if isinstance(contnode, nodes.Element) and data.deprecated:
                 contnode["classes"] += ["deprecated", "lua-deprecated"]
             return make_refnode(
-                builder, fromdocname, docname, _make_anchor(name), contnode, name
+                builder, fromdocname, data.docname, _make_anchor(name), contnode, name
             )
 
     def resolve_any_xref(
@@ -1477,15 +1664,15 @@ class LuaDomain(Domain):
         modname = node.get("lua:module")
         classname = node.get("lua:class")
         if match := self._find_obj(modname, classname, target, None):
-            name, (docname, objtype, *_) = match
-            role = "lua:" + (self.role_for_objtype(objtype, None) or "obj")
+            name, data = match
+            role = "lua:" + (self.role_for_objtype(data.objtype, None) or "obj")
             return [
                 (
                     role,
                     make_refnode(
                         builder,
                         fromdocname,
-                        docname,
+                        data.docname,
                         _make_anchor(name),
                         contnode,
                         name,
@@ -1496,8 +1683,8 @@ class LuaDomain(Domain):
         return []
 
     def get_objects(self) -> Iterator[tuple[str, str, str, str, str, int]]:
-        for refname, (docname, objtype, *_) in self.data["objects"].items():
-            yield (refname, refname, objtype, docname, refname, 1)
+        for refname, data in self.objects.items():
+            yield (refname, refname, data.objtype, data.docname, refname, 1)
 
     def get_full_qualified_name(self, node: nodes.Element) -> str | None:
         modname = node.get("lua:module")

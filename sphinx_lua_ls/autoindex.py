@@ -15,16 +15,19 @@ class AutoIndexNode(docutils.nodes.Element):
 
 class AutoIndexDirective(SphinxDirective):
     has_content = False
-    required_arguments = 1
-    optional_arguments = 0
+    required_arguments = 0
+    optional_arguments = 1
     final_argument_whitespace = False
 
     def run(self) -> list[docutils.nodes.Node]:
-        return [
-            AutoIndexNode(
-                "", target=sphinx_lua_ls.domain._normalize_name(self.arguments[0])
-            )
-        ]
+        module = (
+            self.arguments[0]
+            if self.arguments
+            else self.env.ref_context.get("lua:module", "")
+        )
+        if not module:
+            raise self.error("module name is required")
+        return [AutoIndexNode("", target=sphinx_lua_ls.domain._normalize_name(module))]
 
 
 class AutoIndexTransform(SphinxTransform):
@@ -52,35 +55,26 @@ class AutoIndexTransform(SphinxTransform):
     def apply(self, **kwargs):
         node: AutoIndexNode
         for node in list(self.document.findall(AutoIndexNode)):
-            target = node["target"]
+            target: str = node["target"]
             objects: dict[str, list[tuple[str, str, str, str]]] = defaultdict(list)
 
-            if globals := self.env.domaindata["lua"]["globals"].get(target, None):
-                for (fullname, _) in globals[1]:
-                    data = self.env.domaindata["lua"]["objects"].get(fullname)
-                    if data:
-                        (docname, objtype, _, synopsis) = data
+            if globals := self.domain.globals.get(target, None):
+                for data in globals.entries:
+                    fullname = data.fullname
+                    if data := self.domain.objects.get(fullname, None):
                         objects["global"].append(
-                            (fullname, fullname, docname, synopsis)
+                            (fullname, fullname, data.docname, data.synopsis or "")
                         )
 
             prefix = target + "."
-            for fullname, (docname, objtype, _, synopsis) in self.env.domaindata["lua"][
-                "objects"
-            ].items():
-                objtype: str
-                if not fullname.startswith(prefix):
-                    continue
-                name = fullname[len(prefix) :]
-                if (
-                    len(sphinx_lua_ls.domain._separate_sig(name, ".")) > 1
-                    if "[" in name else
-                    "." in name
-                ):
-                    continue
-                objects[self._CANON_OBJTYPE.get(objtype, objtype)].append(
-                    (name, fullname, docname, synopsis)
-                )
+            if members := self.domain.members.get(target, None):
+                for data in members.entries:
+                    fullname = data.fullname
+                    if data := self.domain.objects.get(fullname, None):
+                        name = fullname[len(prefix) :]
+                        objects[
+                            self._CANON_OBJTYPE.get(data.objtype, data.objtype)
+                        ].append((name, fullname, data.docname, data.synopsis or ""))
 
             node.replace_self(
                 docutils.nodes.container(

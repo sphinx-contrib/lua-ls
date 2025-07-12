@@ -6,6 +6,6 @@ Test documentation
    src/annotations.rst
    src/autoindex.rst
    src/directives.rst
-   src/intersphinx.rst
+   src/inherited.rst
    src/modules.rst
    src/refs.rst

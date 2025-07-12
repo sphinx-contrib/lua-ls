@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
         "src/annotations.html",
         "src/autoindex.html",
         "src/directives.html",
+        "src/inherited.html",
         "src/modules.html",
         "src/refs.html",
     ],

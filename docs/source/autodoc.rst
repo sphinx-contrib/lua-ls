@@ -274,12 +274,30 @@ Autodoc directive
 
       Allows overriding title of the :rst:dir:`lua:autoindex` section.
 
-.. rst:directive:: .. lua:autoindex:: name
+   .. rst:directive:option:: inherited-members-table
 
-   Creates a table that references all documented objects in the module ``name``.
+      Adds :rst:dir:`lua:other-inherited-members` to all classes.
+
+.. rst:directive:: .. lua:autoindex:: module-name
+
+   Creates a table that references all documented objects in the module ``module-name``.
    This is useful for creating module's table of contents.
 
-   Module name must be absolute, even if this directive appears after
+   If ``module-name`` is not give, :rst:dir:`lua:autoindex` will use current module.
+
+   If given, module name must be absolute, even if this directive appears after
+   :rst:dir:`lua:module`.
+
+.. rst:directive:: .. lua:other-inherited-members:: class-name
+
+   Creates a list of all members that class ``class-name``
+   inherited from its bases but didn't document
+   with :rst:dir:`lua:autoobject:inherited-members`.
+
+   If ``class-name`` is not give, :rst:dir:`lua:other-inherited-members`
+   will use current class.
+
+   If given, class name must be absolute, even if this directive appears after
    :rst:dir:`lua:module`.
 
 

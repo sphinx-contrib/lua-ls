@@ -5,6 +5,7 @@ Autodoc directives for lua.
 
 from __future__ import annotations
 
+import dataclasses
 import functools
 import math
 import os
@@ -20,6 +21,7 @@ from sphinx.util.parsing import nested_parse_to_nodes
 
 import sphinx_lua_ls.autoindex
 import sphinx_lua_ls.domain
+import sphinx_lua_ls.inherited
 import sphinx_lua_ls.objtree
 from sphinx_lua_ls.objtree import Kind, Object, Visibility
 
@@ -219,6 +221,7 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         "index-title": directives.unchanged,
         "recursive": directives.flag,
         "index-table": directives.flag,
+        "inherited-members-table": directives.flag,
         "member-order": lambda x: directives.choice(
             x, ("alphabetical", "groupwise", "bysource")
         ),
@@ -379,6 +382,7 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
                 "module-member-order",
                 "recursive",
                 "no-index",
+                "inherited-members-table",
             ]:
                 if key in self.options:
                     options[key] = self.options[key]
@@ -480,12 +484,15 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
                 and nodes
                 and isinstance(nodes[0], docutils.nodes.paragraph)
             ):
-                objects = self.env.domaindata["lua"]["objects"]
+                objects: dict[
+                    str, sphinx_lua_ls.domain.LuaDomain.ObjectEntry
+                ] = self.env.domaindata["lua"]["objects"]
                 if fullname in objects:
-                    docname, objtype, deprecated, prev_synopsis = objects[fullname]
-                    if not prev_synopsis:
-                        synopsis = nodes[0].astext()
-                        objects[fullname] = docname, objtype, deprecated, synopsis
+                    data = objects[fullname]
+                    if not data.synopsis:
+                        objects[fullname] = dataclasses.replace(
+                            data, synopsis=nodes[0].astext()
+                        )
 
             content_node += nodes
 
@@ -698,6 +705,11 @@ class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
                 self.root, self.objtree, self.parent, self.options
             ):
                 content_node += self.render(child, name)
+
+        if "inherited-members-table" in self.options:
+            content_node += sphinx_lua_ls.inherited.InheritedMethodsNode(
+                target=fullname
+            )
 
 
 class LuaModule(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaModule):

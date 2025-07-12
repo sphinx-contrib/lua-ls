@@ -14,6 +14,7 @@ import sphinx_lua_ls.apidoc
 import sphinx_lua_ls.autodoc
 import sphinx_lua_ls.autoindex
 import sphinx_lua_ls.domain
+import sphinx_lua_ls.inherited
 import sphinx_lua_ls.intersphinx
 import sphinx_lua_ls.lua_ls
 import sphinx_lua_ls.objtree
@@ -360,6 +361,11 @@ def setup(app: sphinx.application.Sphinx):
     app.add_directive_to_domain(
         "lua", "autoindex", sphinx_lua_ls.autoindex.AutoIndexDirective
     )
+    app.add_directive_to_domain(
+        "lua",
+        "other-inherited-members",
+        sphinx_lua_ls.inherited.InheritedMembersDirective,
+    )
 
     app.connect("builder-inited", check_options)
     app.connect("builder-inited", run_lua_ls)
@@ -368,6 +374,7 @@ def setup(app: sphinx.application.Sphinx):
     app.connect("build-finished", copy_asset_files)
 
     app.add_post_transform(sphinx_lua_ls.autoindex.AutoIndexTransform)
+    app.add_post_transform(sphinx_lua_ls.inherited.InheritedMembersTransform)
 
     app.add_css_file("lua.css")
 
