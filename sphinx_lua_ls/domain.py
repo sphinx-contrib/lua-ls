@@ -7,12 +7,11 @@ See the original code here: https://github.com/boolangery/sphinx-luadomain
 
 """
 
-import contextlib
 import functools
 import re
+import urllib.parse
 from collections.abc import Set
 from typing import Any, Callable, ClassVar, Generic, Iterator, TypeVar
-import urllib.parse
 
 import sphinx.config
 from docutils import nodes
@@ -94,8 +93,7 @@ def _make_ref_title(fullname: str, objtype: str, config: sphinx.config.Config):
             "[" + _normalize_type(c[1:-1]) + "]"
             if c.startswith("[") and c.endswith("]")
             else c
-            for c in
-            _separate_sig(fullname, ".")
+            for c in _separate_sig(fullname, ".")
         ]
 
         if objtype in ("method", "classmethod"):
@@ -237,6 +235,7 @@ def _parse_types(
             res.append((elems[0].strip(), ":".join(elems[1:]).strip()))
     return res
 
+
 _TYPE_PARSE_RE = re.compile(
     r"""
     # Skip spaces, they're not meaningful in this context.
@@ -285,6 +284,7 @@ _TYPE_PARSE_RE = re.compile(
     """,
     re.VERBOSE,
 )
+
 
 def _type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
     """
@@ -382,13 +382,14 @@ def _make_anchor(name: str) -> str:
 
 def _normalize_name(name: str) -> str:
     if "[" in name:
-        return ".".join([
-            "[" + _normalize_type(c[1:-1]) + "]"
-            if c.startswith("[") and c.endswith("]")
-            else c
-            for c in
-            _separate_sig(name, ".")
-        ])
+        return ".".join(
+            [
+                "[" + _normalize_type(c[1:-1]) + "]"
+                if c.startswith("[") and c.endswith("]")
+                else c
+                for c in _separate_sig(name, ".")
+            ]
+        )
     else:
         return name
 
@@ -643,6 +644,8 @@ class LuaObject(
 
     allow_nesting = False
 
+    force_prefix_only = False
+
     def run(self) -> list[nodes.Node]:
         for name, option in self.env.domaindata["lua"]["config"][
             "default_options"
@@ -669,16 +672,20 @@ class LuaObject(
             classname = self.env.ref_context.get("lua:class", "")
         fullname = ".".join(filter(None, [modname, classname, name]))
 
-        if classname and "module" in self.options:
-            raise self.error("you can only use :module: while on a module level")
-
         # Only display full path if we're not inside of a class.
-        prefix = "" if classname else ".".join(filter(None, [modname, classname]))
+        prefix = (
+            ""
+            if classname and not self.force_prefix_only
+            else ".".join(filter(None, [modname, classname]))
+        )
+
         descname = name
         if self.use_semicolon_path():
             descname_components = _separate_sig(descname, ".")
             if len(descname_components) > 1:
-                descname = f"{".".join(descname_components[:-1])}:{descname_components[-1]}"
+                descname = (
+                    f"{'.'.join(descname_components[:-1])}:{descname_components[-1]}"
+                )
             elif prefix:
                 prefix += ":"
         if prefix and not prefix.endswith((".", ":")):
@@ -693,13 +700,21 @@ class LuaObject(
         if sig_prefix:
             signode += addnodes.desc_annotation("", "", *sig_prefix)
 
+        if self.force_prefix_only and prefix:
+            prefix_components = _separate_sig(prefix, ".")
+            if len(prefix_components) > 1:
+                descname = prefix_components[-1]
+                prefix = prefix[: -len(descname) - 1]
+
         if prefix:
             signode += addnodes.desc_addname(prefix, prefix)
         signode += addnodes.desc_name(descname, descname)
 
         return fullname, modname, classname, name, sigdata
 
-    def get_signature_prefix(self, signature: str, sigdata: T, filter_options: set[str] | None = None) -> list[nodes.Node]:
+    def get_signature_prefix(
+        self, signature: str, sigdata: T, filter_options: set[str] | None = None
+    ) -> list[nodes.Node]:
         prefix = []
 
         annotation = self.options.get("annotation")
@@ -778,7 +793,9 @@ class LuaObject(
                 parent_module = self.env.ref_context.get("lua:module", "")
                 parent_class = self.env.ref_context.get("lua:class", "")
                 if parent_module and not parent_class:
-                    globals: dict[str, tuple[str, list[tuple[str, str]]]] = self.env.domaindata["lua"]["globals"]
+                    globals: dict[
+                        str, tuple[str, list[tuple[str, str]]]
+                    ] = self.env.domaindata["lua"]["globals"]
                     globals.setdefault(parent_module, (self.env.docname, []))[1].append(
                         (fullname, self.env.docname)
                     )
@@ -900,7 +917,9 @@ class LuaFunction(
     def use_semicolon_path(self) -> bool:
         return self.objtype in ("method", "classmethod")
 
-    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+    def get_signature_prefix(
+        self, signature: str, sigdata, filter_options=None
+    ) -> list[nodes.Node]:
         prefix = super().get_signature_prefix(signature, sigdata, filter_options)
         if self.objtype not in ("function", "method"):
             prefix.extend(
@@ -945,7 +964,9 @@ class LuaData(LuaObject[str]):
 
         return fullname, modname, classname, name
 
-    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+    def get_signature_prefix(
+        self, signature: str, sigdata, filter_options=None
+    ) -> list[nodes.Node]:
         prefix = super().get_signature_prefix(signature, sigdata, filter_options)
         if self.objtype not in ("data", "attribute"):
             prefix.extend(
@@ -1001,7 +1022,9 @@ class LuaAlias(LuaObject[tuple[list[tuple[str, str]], str]]):
 
         return fullname, modname, classname, name
 
-    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+    def get_signature_prefix(
+        self, signature: str, sigdata, filter_options=None
+    ) -> list[nodes.Node]:
         prefix = super().get_signature_prefix(signature, sigdata, filter_options)
         prefix.extend(
             [
@@ -1012,7 +1035,16 @@ class LuaAlias(LuaObject[tuple[list[tuple[str, str]], str]]):
         return prefix
 
 
-class LuaClass(LuaObject[tuple[list[tuple[str, str]], list[str] | None, list[tuple[str, str]] | None, list[tuple[str, str]] | None]]):
+class LuaClass(
+    LuaObject[
+        tuple[
+            list[tuple[str, str]],
+            list[str] | None,
+            list[tuple[str, str]] | None,
+            list[tuple[str, str]] | None,
+        ]
+    ]
+):
     """
     Classes and other things that have base types in their signature.
 
@@ -1058,7 +1090,7 @@ class LuaClass(LuaObject[tuple[list[tuple[str, str]], list[str] | None, list[tup
             _parse_types(generics, parsingFunctionParams=True),
             _separate_sig(sig),
             None,
-            None
+            None,
         )
 
     @_handle_signature_errors
@@ -1098,7 +1130,9 @@ class LuaClass(LuaObject[tuple[list[tuple[str, str]], list[str] | None, list[tup
 
         return fullname, modname, classname, name
 
-    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+    def get_signature_prefix(
+        self, signature: str, sigdata, filter_options=None
+    ) -> list[nodes.Node]:
         if sigdata[2] is not None:
             # This is a constructor.
             prefix = super().get_signature_prefix(signature, sigdata, set())
@@ -1110,7 +1144,9 @@ class LuaClass(LuaObject[tuple[list[tuple[str, str]], list[str] | None, list[tup
             )
         else:
             # This is a class.
-            prefix = super().get_signature_prefix(signature, sigdata, {"async", "abstract", "virtual"})
+            prefix = super().get_signature_prefix(
+                signature, sigdata, {"async", "abstract", "virtual"}
+            )
             prefix.extend(
                 [
                     addnodes.desc_sig_keyword("", self.objtype),
@@ -1147,7 +1183,9 @@ class LuaTable(LuaObject[None]):
 
         return fullname, modname, classname, name
 
-    def get_signature_prefix(self, signature: str, sigdata, filter_options=None) -> list[nodes.Node]:
+    def get_signature_prefix(
+        self, signature: str, sigdata, filter_options=None
+    ) -> list[nodes.Node]:
         prefix = super().get_signature_prefix(signature, sigdata, filter_options)
         if self.objtype not in ("table",):
             prefix.extend(
@@ -1302,7 +1340,6 @@ class LuaDomain(Domain):
         "staticmethod": LuaFunction,
         "attribute": LuaData,
         "table": LuaTable,
-        "enum": LuaTable,
         "module": LuaModule,
         "currentmodule": LuaCurrentModule,
     }
@@ -1336,7 +1373,10 @@ class LuaDomain(Domain):
             if fn == docname:
                 del self.data["globals"][modname]
             else:
-                self.data["globals"][modname] = (fn, [g for g in globals if g[1] != docname])
+                self.data["globals"][modname] = (
+                    fn,
+                    [g for g in globals if g[1] != docname],
+                )
 
     def merge_domaindata(self, docnames: Set[str], otherdata: dict[Any, Any]) -> None:
         # XXX check duplicates?
@@ -1346,7 +1386,10 @@ class LuaDomain(Domain):
         for modname, (fn, globals) in otherdata["globals"].items():
             if fn not in docnames:
                 continue
-            self.data["globals"][modname] = (fn, [g for g in globals if g[1] in docnames])
+            self.data["globals"][modname] = (
+                fn,
+                [g for g in globals if g[1] in docnames],
+            )
 
     def _find_obj(
         self, modname: str, classname: str, name: str, typ: str | None
@@ -1440,7 +1483,12 @@ class LuaDomain(Domain):
                 (
                     role,
                     make_refnode(
-                        builder, fromdocname, docname, _make_anchor(name), contnode, name
+                        builder,
+                        fromdocname,
+                        docname,
+                        _make_anchor(name),
+                        contnode,
+                        name,
                     ),
                 )
             ]
