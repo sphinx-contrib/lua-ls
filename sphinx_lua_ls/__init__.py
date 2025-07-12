@@ -6,6 +6,7 @@ from typing import Any, Type, TypeVar
 import sphinx.application
 import sphinx.errors
 from sphinx.errors import ConfigError
+from sphinx.util import logging
 from sphinx.util.display import progress_message
 from sphinx.util.fileutil import copy_asset_file
 
@@ -17,6 +18,8 @@ import sphinx_lua_ls.intersphinx
 import sphinx_lua_ls.lua_ls
 import sphinx_lua_ls.objtree
 from sphinx_lua_ls._version import __version__, __version_tuple__
+
+_logger = logging.getLogger("sphinx_lua_ls")
 
 T = TypeVar("T")
 
@@ -152,6 +155,17 @@ def check_options(app: sphinx.application.Sphinx):
     domain.config["project_root"] = _path(
         "lua_ls_project_root", config["lua_ls_project_root"], app.srcdir
     )
+    if config["lua_ls_backend"] is not None:
+        domain.config["backend"] = _str_choices(
+            "lua_ls_backend", config["lua_ls_backend"], ["luals", "emmylua"]
+        )
+    else:
+        domain.config["backend"] = "luals"
+        _logger.warning(
+            "Sphinx-LuaLs will use EmmyLua as the default language server since v3.0. "
+            "To keep using LuaLs, set `lua_ls_backend='luals' in your conf.py`",
+            type="lua-ls",
+        )
     if config["lua_ls_project_directories"] is not None:
         domain.config["project_directories"] = _paths(
             "lua_ls_project_directories",
@@ -171,12 +185,22 @@ def check_options(app: sphinx.application.Sphinx):
         )
     else:
         domain.config["auto_install_location"] = None
-    domain.config["min_version"] = _version(
-        "lua_ls_min_version", config["lua_ls_min_version"]
-    )
-    domain.config["lua_version"] = _version(
-        "lua_ls_lua_version", config["lua_ls_lua_version"]
-    )
+    if config["lua_ls_min_version"] is not None:
+        domain.config["min_version"] = _version(
+            "lua_ls_min_version", config["lua_ls_min_version"]
+        )
+    elif config["lua_ls_backend"] == "luals":
+        domain.config["min_version"] = "3.0.0"
+    else:
+        domain.config["min_version"] = "0.8.2"  # TODO: specify an actual version
+    if config["lua_ls_lua_version"]:
+        domain.config["lua_version"] = _str_choices(
+            "lua_ls_lua_version",
+            config["lua_ls_lua_version"],
+            ["jit", "5.1", "5.2", "5.3", "5.4", "5.5"],
+        )
+    else:
+        domain.config["lua_version"] = None
     domain.config["default_options"] = _options(
         "lua_ls_default_options", config["lua_ls_default_options"]
     )
@@ -210,7 +234,12 @@ def run_lua_ls(app: sphinx.application.Sphinx):
     domain: sphinx_lua_ls.domain.LuaDomain = app.env.get_domain("lua")  # type: ignore
 
     root_dir = domain.config["project_root"]
-    project_directories = sorted(domain.config.get("project_directories", [root_dir]))
+    if domain.config["backend"] == "luals":
+        project_directories = sorted(
+            domain.config.get("project_directories", [root_dir])
+        )
+    else:
+        project_directories = [root_dir]
 
     modified = (
         "objtree" not in domain.data
@@ -235,6 +264,7 @@ def run_lua_ls(app: sphinx.application.Sphinx):
     cwd = pathlib.Path.cwd()
     try:
         runner = sphinx_lua_ls.lua_ls.resolve(
+            backend=domain.config["backend"],
             min_version=domain.config["min_version"],
             cwd=root_dir,
             reporter=sphinx_lua_ls.lua_ls.SphinxProgressReporter(app.verbosity),
@@ -242,9 +272,14 @@ def run_lua_ls(app: sphinx.application.Sphinx):
             cache_path=domain.config["auto_install_location"],
         )
     except sphinx_lua_ls.lua_ls.LuaLsError as e:
-        raise sphinx.errors.ExtensionError(str(e))
+        raise
+    except Exception as e:
+        raise sphinx.errors.ExtensionError(str(e)) from e
 
-    parser = sphinx_lua_ls.objtree.Parser()
+    if domain.config["backend"] == "luals":
+        parser = sphinx_lua_ls.objtree.LuaLsParser()
+    else:
+        parser = sphinx_lua_ls.objtree.EmmyLuaParser()
     for dir in project_directories:
         try:
             relpath = dir.relative_to(cwd, walk_up=True)
@@ -257,6 +292,9 @@ def run_lua_ls(app: sphinx.application.Sphinx):
     domain.data["objtree"] = parser.root
     domain.data["objtree_roots"] = project_directories
     domain.data["objtree_paths"] = {p: p.stat().st_mtime_ns for p in parser.files}
+
+    if parser.runtime_version and not domain.config["lua_version"]:
+        domain.config["lua_version"] = parser.runtime_version
 
 
 def run_apidoc(
@@ -299,12 +337,13 @@ def copy_asset_files(app: sphinx.application.Sphinx, exc: Exception | None):
 def setup(app: sphinx.application.Sphinx):
     app.add_domain(sphinx_lua_ls.domain.LuaDomain)
 
+    app.add_config_value("lua_ls_backend", None, rebuild="env")
     app.add_config_value("lua_ls_project_root", None, rebuild="env")
     app.add_config_value("lua_ls_project_directories", None, rebuild="env")
     app.add_config_value("lua_ls_auto_install", True, rebuild="")
     app.add_config_value("lua_ls_auto_install_location", None, rebuild="")
-    app.add_config_value("lua_ls_min_version", "3.0.0", rebuild="env")
-    app.add_config_value("lua_ls_lua_version", "5.4", rebuild="html")
+    app.add_config_value("lua_ls_min_version", None, rebuild="env")
+    app.add_config_value("lua_ls_lua_version", None, rebuild="html")
     app.add_config_value("lua_ls_default_options", None, rebuild="env")
     app.add_config_value("lua_ls_apidoc_roots", {}, rebuild="")
     app.add_config_value("lua_ls_apidoc_default_options", None, rebuild="")
