@@ -14,7 +14,7 @@ _ENV.filters["h2"] = lambda title: f"{title}\n{'-' * len(title)}"  # type: ignor
 _ENV.filters["h3"] = lambda title: f"{title}\n{'~' * len(title)}"  # type: ignore
 
 
-_TEMPLATE = _ENV.from_string(
+_TEMPLATE_RST = _ENV.from_string(
     """{{ title | h1 }}
 
 {% if submodules %}
@@ -32,6 +32,26 @@ _TEMPLATE = _ENV.from_string(
 """.lstrip()
 )
 
+_TEMPLATE_MD = _ENV.from_string(
+    """# {{ title }}
+
+{% if submodules %}
+```{toctree}
+:hidden:
+
+{% for _, child_filename in submodules.items() %}
+{{ child_filename }}.md
+{% endfor %}
+```
+{% endif %}
+
+```{lua:autoobject} {{ fullname }}
+{% for option, value in options.items() %}:{{ option }}: {{ value }}
+{% endfor %}
+```
+""".lstrip()
+)
+
 
 def generate(
     dir: pathlib.Path,
@@ -40,6 +60,7 @@ def generate(
     options: dict[str, Any],
     depth: int,
     mod_filter: Callable[[str], Any],
+    format: str,
 ):
     dir.mkdir(parents=True, exist_ok=True)
 
@@ -57,9 +78,10 @@ def generate(
         options,
         mod_filter,
         files,
+        format,
     )
 
-    removed: set[pathlib.Path] = set(dir.glob("*.rst"))
+    removed: set[pathlib.Path] = set(dir.glob("*.rst")) | set(dir.glob("*.md"))
     removed -= files
 
     for file in removed:
@@ -75,6 +97,7 @@ def _generate(
     options: dict[str, Any],
     mod_filter: Callable[[str], Any],
     files: set[pathlib.Path],
+    format: str,
 ):
     obj = objtree.find(fullname)
     if not obj:
@@ -126,14 +149,24 @@ def _generate(
                 sorted(autodoc_options[option_name])
             )
 
-    page = _TEMPLATE.render(
-        title=f"Module ``{fullname}``",
+    match format:
+        case "rst":
+            template = _TEMPLATE_RST
+            title = f"Module ``{fullname}``"
+        case "md":
+            template = _TEMPLATE_MD
+            title = f"Module `{fullname}`"
+        case _:
+            raise sphinx.errors.ConfigError(f"unknown apidoc format {format}")
+
+    page = template.render(
+        title=title,
         fullname=fullname,
         options=autodoc_options,
         submodules=submodules,
     )
 
-    filepath = dir / f"{filename or 'index'}.rst"
+    filepath = dir / f"{filename or 'index'}.{format}"
     if not filepath.exists() or filepath.read_text() != page:
         filepath.write_text(page)
     files.add(filepath)
@@ -148,4 +181,5 @@ def _generate(
             options,
             mod_filter,
             files,
+            format,
         )

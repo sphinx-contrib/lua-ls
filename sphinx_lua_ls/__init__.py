@@ -31,6 +31,15 @@ def _type(name: str, value, types: Type[T] | tuple[Type[T], ...]) -> T:
     return value
 
 
+def _str_choices(name: str, value, choices: list[str]) -> str:
+    value = _type(name, value, str)
+    if value not in choices:
+        raise ConfigError(
+            f"{name} should be one of {', '.join(map(repr, choices))}, got {value!r} instead"
+        )
+    return value
+
+
 def _version(name: str, value) -> str:
     _type(name, value, str)
     if not re.match(r"\d+(\.\d+)*", value):
@@ -79,6 +88,7 @@ def _api_roots(
     max_depth: int,
     options: dict[str, Any],
     excludes: set[str],
+    format: str,
 ) -> dict[str, dict[str, Any]]:
     if value is None:
         value = []
@@ -108,6 +118,9 @@ def _api_roots(
         new_api_root["ignored_modules"] = _excludes(
             f"{name}[{mod!r}]['ignored_modules']",
             api_root.pop("ignored_modules", excludes),
+        )
+        new_api_root["format"] = _str_choices(
+            f"{name}[{mod!r}]['format']", api_root.pop("format", format), ["rst", "md"]
         )
         if api_root:
             raise ConfigError(
@@ -179,6 +192,9 @@ def check_options(app: sphinx.application.Sphinx):
     domain.config["apidoc_ignored_modules"] = _excludes(
         "lua_ls_apidoc_ignored_modules", config["lua_ls_apidoc_ignored_modules"]
     )
+    domain.config["apidoc_format"] = _str_choices(
+        "lua_ls_apidoc_format", config["lua_ls_apidoc_format"], ["rst", "md"]
+    )
     domain.config["apidoc_roots"] = _api_roots(
         "lua_ls_apidoc_roots",
         config["lua_ls_apidoc_roots"],
@@ -186,6 +202,7 @@ def check_options(app: sphinx.application.Sphinx):
         domain.config["apidoc_max_depth"],
         domain.config["apidoc_default_options"],
         domain.config["apidoc_ignored_modules"],
+        domain.config["apidoc_format"],
     )
 
 
@@ -268,6 +285,7 @@ def run_apidoc(
                 params["options"],
                 params["max_depth"],
                 mod_filter,
+                params["format"],
             )
 
 
@@ -292,6 +310,7 @@ def setup(app: sphinx.application.Sphinx):
     app.add_config_value("lua_ls_apidoc_default_options", None, rebuild="")
     app.add_config_value("lua_ls_apidoc_max_depth", 4, rebuild="")
     app.add_config_value("lua_ls_apidoc_ignored_modules", None, rebuild="")
+    app.add_config_value("lua_ls_apidoc_format", "rst", rebuild="")
 
     app.add_directive_to_domain(
         "lua", "autoobject", sphinx_lua_ls.autodoc.AutoObjectDirective
