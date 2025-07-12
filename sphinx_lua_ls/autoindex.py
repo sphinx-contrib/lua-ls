@@ -52,8 +52,19 @@ class AutoIndexTransform(SphinxTransform):
     def apply(self, **kwargs):
         node: AutoIndexNode
         for node in list(self.document.findall(AutoIndexNode)):
-            prefix = node["target"] + "."
+            target = node["target"]
             objects: dict[str, list[tuple[str, str, str, str]]] = defaultdict(list)
+
+            if globals := self.env.domaindata["lua"]["globals"].get(target, None):
+                for (fullname, _) in globals[1]:
+                    data = self.env.domaindata["lua"]["objects"].get(fullname)
+                    if data:
+                        (docname, objtype, _, synopsis) = data
+                        objects["global"].append(
+                            (fullname, fullname, docname, synopsis)
+                        )
+
+            prefix = target + "."
             for fullname, (docname, objtype, _, synopsis) in self.env.domaindata["lua"][
                 "objects"
             ].items():
@@ -82,6 +93,8 @@ class AutoIndexTransform(SphinxTransform):
     ) -> list[docutils.nodes.Node]:
         nodes: list[docutils.nodes.Node] = []
 
+        if "global" in objects:
+            nodes.extend(self.render_type("global", objects.pop("global")))
         for kind in Kind:
             objtype = kind.value
             if objtype in objects:

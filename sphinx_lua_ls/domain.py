@@ -556,34 +556,30 @@ class LuaContextManagerMixin(SphinxDirective):
     def push_context(self, modname: str, classname: str):
         classes = self.env.ref_context.setdefault("lua:classes", [])
         classes.append(self.env.ref_context.get("lua:class"))
-        self.env.ref_context["lua:class"] = classname
+        if classname:
+            self.env.ref_context["lua:class"] = classname
+        else:
+            self.env.ref_context.pop("lua:class", None)
 
         modules = self.env.ref_context.setdefault("lua:modules", [])
         modules.append(self.env.ref_context.get("lua:module"))
-        self.env.ref_context["lua:module"] = modname
+        if modname:
+            self.env.ref_context["lua:module"] = modname
+        else:
+            self.env.ref_context.pop("lua:module", None)
 
     def pop_context(self):
         classes = self.env.ref_context.setdefault("lua:classes", [])
         if classes:
             self.env.ref_context["lua:class"] = classes.pop()
         else:
-            self.env.ref_context.pop("lua:class")
+            self.env.ref_context.pop("lua:class", None)
 
         modules = self.env.ref_context.setdefault("lua:modules", [])
         if modules:
             self.env.ref_context["lua:module"] = modules.pop()
         else:
-            self.env.ref_context.pop("lua:module")
-
-    @contextlib.contextmanager
-    def save_context(self):
-        modname = self.env.ref_context.get("lua:module")
-        classname = self.env.ref_context.get("lua:classname")
-        try:
-            yield
-        finally:
-            self.env.ref_context["lua:module"] = modname
-            self.env.ref_context["lua:classname"] = classname
+            self.env.ref_context.pop("lua:module", None)
 
 
 class LuaObject(
@@ -667,7 +663,10 @@ class LuaObject(
         name, sigdata = self.parse_signature(sig)
 
         modname = self.options.get("module", self.env.ref_context.get("lua:module", ""))
-        classname = self.env.ref_context.get("lua:class", "")
+        if "module" in self.options:
+            classname = ""
+        else:
+            classname = self.env.ref_context.get("lua:class", "")
         fullname = ".".join(filter(None, [modname, classname, name]))
 
         if classname and "module" in self.options:
@@ -774,6 +773,15 @@ class LuaObject(
                 "deprecated" in self.options,
                 self.options.get("synopsis", None),
             )
+
+            if self.options.get("module", None) == "" and not modname and not classname:
+                parent_module = self.env.ref_context.get("lua:module", "")
+                parent_class = self.env.ref_context.get("lua:class", "")
+                if parent_module and not parent_class:
+                    globals: dict[str, tuple[str, list[tuple[str, str]]]] = self.env.domaindata["lua"]["globals"]
+                    globals.setdefault(parent_module, (self.env.docname, []))[1].append(
+                        (fullname, self.env.docname)
+                    )
 
         if "no-index-entry" not in self.options:
             indextext = self.get_index_text(fullname, modname, classname, objname)
@@ -1311,6 +1319,7 @@ class LuaDomain(Domain):
     }
     initial_data: dict[str, dict[str, tuple[Any]]] = {
         "objects": {},  # fullname -> docname, objtype, deprecated, synopsis
+        "globals": {},  # modname -> (docname, [fullname, docname])
     }
 
     @property
@@ -1321,12 +1330,21 @@ class LuaDomain(Domain):
         for fullname, (fn, *_) in list(self.data["objects"].items()):
             if fn == docname:
                 del self.data["objects"][fullname]
+        for modname, (fn, globals) in list(self.data["globals"].items()):
+            if fn == docname:
+                del self.data["globals"][modname]
+            else:
+                self.data["globals"][modname] = (fn, [g for g in globals if g[1] != docname])
 
     def merge_domaindata(self, docnames: Set[str], otherdata: dict[Any, Any]) -> None:
         # XXX check duplicates?
         for fullname, (fn, *rest) in otherdata["objects"].items():
             if fn in docnames:
                 self.data["objects"][fullname] = (fn,) + tuple(rest)
+        for modname, (fn, globals) in otherdata["globals"].items():
+            if fn not in docnames:
+                continue
+            self.data["globals"][modname] = (fn, [g for g in globals if g[1] in docnames])
 
     def _find_obj(
         self, modname: str, classname: str, name: str, typ: str | None
