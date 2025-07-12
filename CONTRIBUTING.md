@@ -22,6 +22,10 @@
    pre-commit install
    ```
 
+5. If you're not on linux, install [EmmyLua Doc Cli].
+
+[EmmyLua Doc Cli]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/?tab=readme-ov-file#-installation
+
 ## Run tests
 
 To run tests, simply run `pytest` and `pyright`:
@@ -35,6 +39,12 @@ To fix code style, you can manually run pre-commit hooks:
 
 ```shell
 pre-commit run -a  # Fix code style.
+```
+
+To regenerate data for regression tests, run
+
+```shell
+pytest --regen-all
 ```
 
 

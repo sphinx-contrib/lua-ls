@@ -1,53 +1,38 @@
+--- @namespace logging
+
 --- A generic logging module, just to demonstrate you documentation.
----
---- .. lua:autoobject:: LOG_LEVEL
----    :global:
----
---- !doctype module
---- @class logging
-logging = {}
+local logging = {}
 
 --- Represents message severity.
 ---
---- @alias logging.Level integer
-logging.Level = {}
+--- @enum Level
+logging.Level = {
+    --- For debug messages, hidden by default.
+    Debug = 1,
 
---- For debug messages, hidden by default.
----
---- @type logging.Level
-logging.Level.Debug = 1
+    --- For info messages.
+    Info = 2,
 
---- For info messages.
----
---- @type logging.Level
-logging.Level.Info = 2
+    --- For warnings, when behavior may be different from what users expect.
+    Warning = 3,
 
---- For warnings, when behavior may be different from what users expect.
----
---- @type logging.Level
-logging.Level.Warning = 3
-
---- For errors, when the system stops working.
----
---- @type logging.Level
-logging.Level.Error = 4
+    --- For errors, when the system stops working.
+    Error = 4,
+}
 
 --- Default log level.
 ---
---- @type logging.Level
+--- @type Level
 LOG_LEVEL = LOG_LEVEL or logging.Level.Info
 
 --- An object for logging messages.
 ---
---- @class logging.Logger
+--- @class Logger
 logging.Logger = {}
 
---- Create a new logger.
----
 --- @param name string name of the logger, will be added to every message.
 --- @param level logging.Level? level of the logger, equals to `LOG_LEVEL` by default.
---- @return logging.Logger
-function logging.Logger.new(name, level) return {} end
+function logging.Logger.__init(name, level) end
 
 --- Print a debug message.
 ---

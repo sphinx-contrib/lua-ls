@@ -1,7 +1,7 @@
 [project]
 name = "sphinx-lua-ls"
 authors = [{name = "Tamika Nomara", email = "taminomara@gmail.com"}]
-description = "Automatic documentation generation via LuaLS"
+description = "Automatic documentation generation via EmmyLua/LuaLs"
 dynamic = ["version"]
 readme = "README.md"
 license = {file = "LICENSE"}
@@ -44,11 +44,13 @@ test = [
     "sybil~=6.1",
     "pytest-regressions~=2.7",
     "beautifulsoup4~=4.13",
+    "myst-parser~=4.0"
 ]
 doc = [
     "sybil~=6.1",
     "furo>=2024",
-    "sphinx_design>=0.6"
+    "sphinx_design>=0.6",
+    "myst-parser~=4.0"
 ]
 
 [project.urls]

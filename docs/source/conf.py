@@ -2,9 +2,9 @@ import datetime
 
 import sphinx_lua_ls
 
-project = 'Sphinx-LuaLS'
+project = "Sphinx-LuaLs"
 copyright = f"{datetime.date.today().year}, Tamika Nomara"
-author = 'Tamika Nomara'
+author = "Tamika Nomara"
 release = version = sphinx_lua_ls.__version__
 
 # -- General configuration ---------------------------------------------------
@@ -14,15 +14,17 @@ extensions = [
     "sphinx.ext.githubpages",
     "sphinx_design",
     "sphinx_lua_ls",
+    "myst_parser",
 ]
 
-templates_path = ['_templates']
+templates_path = ["_templates"]
 exclude_patterns = []
 
 primary_domain = "lua"
 default_role = "lua:obj"
 
 lua_ls_project_root = "../example"
+lua_ls_backend = "emmylua"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
@@ -34,3 +36,9 @@ html_theme_options = {
     "source_branch": "main",
     "source_directory": "docs/source",
 }
+
+
+def setup(app):
+    from myst_parser._docs import MystLexer
+
+    app.add_lexer("myst", MystLexer)

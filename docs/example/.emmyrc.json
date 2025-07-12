@@ -1,0 +1,17 @@
+{
+  "runtime": {
+    "version": "Lua5.4",
+    "requireLikeFunction": [],
+    "frameworkVersions": [],
+    "extensions": [],
+    "requirePattern": [],
+    "classDefaultCall": {
+      "functionName": "__init",
+      "forceNonColon": true,
+      "forceReturnSelf": true
+    }
+  },
+  "doc": {
+    "knownTags": ["doctype", "doc"]
+  }
+}
