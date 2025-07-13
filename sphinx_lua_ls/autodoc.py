@@ -432,6 +432,11 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
                     f"unknown !doc option {option} in object {self.arguments[0]}"
                 )
 
+        if root.using:
+            options.setdefault("using", []).extend(
+                map(utils.normalize_type, root.using)
+            )
+
         if root.is_toplevel:
             options["module"] = ""
 
@@ -884,7 +889,7 @@ class AutoObjectDirective(AutodocUtilsMixin):
 
         root, modname, classname, objname = found
 
-        self.push_context(modname, classname)
+        self.push_context(modname, classname, root.using)
         try:
             return self.render(root, objname, top_level=True)
         finally:

@@ -65,6 +65,7 @@ class InheritedMembersTransform(SphinxTransform):
                         data.base_lookup_classname or "",
                         base,
                         None,
+                        data.base_lookup_using,
                     )
 
                     if not resolved_base:

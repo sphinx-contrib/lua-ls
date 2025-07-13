@@ -281,6 +281,9 @@ class Object(DocstringMixin):
     #: Child objects.
     children: dict[str, Object] = dataclasses.field(default_factory=dict)
 
+    #: All ``@using`` directives of the module.
+    using: list[str] = dataclasses.field(default_factory=list)
+
     #: True if this object appears on top level of object tree.
     is_toplevel: bool = False
 
@@ -732,6 +735,7 @@ class Parser:
         a.line = a.line if a.line is not None else b.line
         a.inferred_options.update(b.inferred_options)
         a.inferred_doctype = a.inferred_doctype or b.inferred_doctype
+        a.using.extend(b.using)
 
         if not a.docstring:
             a.docstring = b.docstring
@@ -956,7 +960,7 @@ class EmmyLuaParser(Parser):
             self._set_common(res, data)
             self._set_path(res, data["file"])
             self._parse_members(res, data["members"])
-
+            res.using = data["using"] or []
             self.add(data["name"], res)
 
     def _parse_types(self, types):

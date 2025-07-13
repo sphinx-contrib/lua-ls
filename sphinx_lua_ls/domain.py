@@ -202,7 +202,7 @@ class LuaTypedField(TypedField):
 
 
 class LuaContextManagerMixin(SphinxDirective):
-    def push_context(self, modname: str, classname: str):
+    def push_context(self, modname: str, classname: str, using: list[str] | None):
         classes = self.env.ref_context.setdefault("lua:classes", [])
         classes.append(self.env.ref_context.get("lua:class"))
         if classname:
@@ -217,6 +217,13 @@ class LuaContextManagerMixin(SphinxDirective):
         else:
             self.env.ref_context.pop("lua:module", None)
 
+        usings = self.env.ref_context.setdefault("lua:usings", [])
+        usings.append(self.env.ref_context.get("lua:using"))
+        if using:
+            self.env.ref_context["lua:using"] = using
+        else:
+            self.env.ref_context.pop("lua:using", None)
+
     def pop_context(self):
         classes = self.env.ref_context.setdefault("lua:classes", [])
         if classes:
@@ -229,6 +236,12 @@ class LuaContextManagerMixin(SphinxDirective):
             self.env.ref_context["lua:module"] = modules.pop()
         else:
             self.env.ref_context.pop("lua:module", None)
+
+        usings = self.env.ref_context.setdefault("lua:usings", [])
+        if usings:
+            self.env.ref_context["lua:using"] = usings.pop()
+        else:
+            self.env.ref_context.pop("lua:using", None)
 
 
 class LuaObject(
@@ -261,6 +274,7 @@ class LuaObject(
         "global": directives.flag,
         "deprecated": directives.flag,
         "synopsis": directives.unchanged,
+        "using": utils.parse_list_option,
         **ObjectDescription.option_spec,
     }
 
@@ -456,6 +470,9 @@ class LuaObject(
                 members[fullname].bases = self.collected_bases
                 members[fullname].base_lookup_modname = modname
                 members[fullname].base_lookup_classname = classname
+                members[fullname].base_lookup_using = self.options.get(
+                    "using", self.env.ref_context.get("lua:using", None)
+                )
 
             if "[" in fullname:
                 name_components = utils.separate_sig(fullname, ".")
@@ -522,8 +539,11 @@ class LuaObject(
             else:
                 classname = classname + "." if classname else ""
                 classname += objname
+            using = self.options.get(
+                "using", self.env.ref_context.get("lua:using", None)
+            )
 
-            self.push_context(modname, classname)
+            self.push_context(modname, classname, using)
 
     def after_content(self) -> None:
         if self.names and self.allow_nesting:
@@ -1040,6 +1060,7 @@ class LuaXRefRole(XRefRole):
     ) -> tuple[str, str]:
         refnode["lua:module"] = env.ref_context.get("lua:module")
         refnode["lua:class"] = env.ref_context.get("lua:class")
+        refnode["lua:using"] = env.ref_context.get("lua:using")
         if not has_explicit_title:
             title = title.lstrip(".")  # only has a meaning for the target
             target = target.lstrip("~")  # only has a meaning for the title
@@ -1126,6 +1147,7 @@ class LuaDomain(Domain):
         bases: list[str]
         base_lookup_modname: str | None = None
         base_lookup_classname: str | None = None
+        base_lookup_using: list[str] | None = None
 
     initial_data: dict[str, dict[str, tuple[Any]]] = {
         "objects": {},  # fullname -> ObjectEntry
@@ -1173,6 +1195,7 @@ class LuaDomain(Domain):
                     bases=data.bases,
                     base_lookup_modname=data.base_lookup_modname,
                     base_lookup_classname=data.base_lookup_classname,
+                    base_lookup_using=data.base_lookup_using,
                 )
 
     def merge_domaindata(self, docnames: Set[str], otherdata: dict[Any, Any]) -> None:
@@ -1213,6 +1236,7 @@ class LuaDomain(Domain):
                     bases=data.bases,
                     base_lookup_modname=data.base_lookup_modname,
                     base_lookup_classname=data.base_lookup_classname,
+                    base_lookup_using=data.base_lookup_using,
                 )
             else:
                 self.members[modname].entries.extend(
@@ -1220,7 +1244,12 @@ class LuaDomain(Domain):
                 )
 
     def _find_obj(
-        self, modname: str, classname: str, name: str, typ: str | None
+        self,
+        modname: str,
+        classname: str,
+        name: str,
+        typ: str | None,
+        using: list[str] | None,
     ) -> tuple[str, "LuaDomain.ObjectEntry"] | None:
         if name[-2:] == "()":
             name = name[:-2]
@@ -1238,11 +1267,9 @@ class LuaDomain(Domain):
             candidates = [
                 [modname, classname, name],
                 [modname, name],
+                *([used_modname, name] for used_modname in using or []),
                 [name],
             ]
-
-            if typ in ("func", "meth") and "." not in name:
-                candidates.append(["object", name])
 
         for candidate in candidates:
             path = ".".join(filter(None, candidate))
@@ -1263,7 +1290,8 @@ class LuaDomain(Domain):
     ) -> nodes.reference | None:
         modname = node.get("lua:module")
         classname = node.get("lua:class")
-        if match := self._find_obj(modname, classname, target, typ):
+        using = node.get("lua:using")
+        if match := self._find_obj(modname, classname, target, typ, using):
             name, data = match
             allowed_typs = self.object_types[data.objtype].roles
             if typ != "any" and typ not in allowed_typs:
@@ -1309,7 +1337,8 @@ class LuaDomain(Domain):
     ) -> list[tuple[str, nodes.reference]]:
         modname = node.get("lua:module")
         classname = node.get("lua:class")
-        if match := self._find_obj(modname, classname, target, None):
+        using = node.get("lua:using")
+        if match := self._find_obj(modname, classname, target, None, using):
             name, data = match
             role = "lua:" + (self.role_for_objtype(data.objtype, None) or "obj")
             return [

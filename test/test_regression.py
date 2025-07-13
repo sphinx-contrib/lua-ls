@@ -98,6 +98,7 @@ def test_autodoc_regression(app, src, file_regression):
         "src/nesting.html",
         "src/object_types.html",
         "src/relative_resolve.html",
+        "src/using.html",
     ],
 )
 def test_autodoc_regression_emmylua(app, src, file_regression):
