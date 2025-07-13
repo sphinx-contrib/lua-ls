@@ -57,6 +57,7 @@ def test_intersphinx(app, ver):
     [
         "src/annotations.html",
         "src/autoindex.html",
+        "src/globals.html",
         "src/member_ordering.html",
         "src/module_title.html",
         "src/nested_modules.html",
@@ -75,6 +76,39 @@ def test_autodoc_regression(app, src, file_regression):
     file_regression.check(
         content.prettify(),
         basename="autodoc-" + pathlib.Path(src).stem,
+        extension=".html",
+        encoding="utf8",
+    )
+
+
+@pytest.mark.sphinx("html", testroot="autodoc-emmylua")
+@pytest.mark.test_params(shared_result="test_autodoc_regression_emmylua")
+@pytest.mark.parametrize(
+    "src",
+    [
+        "src/annotations.html",
+        "src/autoindex.html",
+        "src/global_tables.html",
+        "src/globals.html",
+        "src/incongruent_export.html",
+        "src/member_ordering.html",
+        "src/module_title.html",
+        "src/nested_modules.html",
+        "src/nesting_recursive.html",
+        "src/nesting.html",
+        "src/object_types.html",
+        "src/relative_resolve.html",
+    ],
+)
+def test_autodoc_regression_emmylua(app, src, file_regression):
+    app.build()
+    path = pathlib.Path(app.outdir) / src
+    soup = BeautifulSoup(path.read_text("utf8"), "html.parser")
+    content = soup.select_one("div.regression")
+    assert content
+    file_regression.check(
+        content.prettify(),
+        basename="autodoc-emmylua-" + pathlib.Path(src).stem,
         extension=".html",
         encoding="utf8",
     )

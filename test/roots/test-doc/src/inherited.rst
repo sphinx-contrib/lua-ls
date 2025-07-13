@@ -1,6 +1,21 @@
 Inherited
 =========
 
+.. container:: regression
+
+   .. lua:other-inherited-members:: inherited.Foo
+
+   .. lua:other-inherited-members:: inherited.Baz
+
+   .. lua:other-inherited-members:: inherited_ty.[{a: b.c}].[x.z]
+
+   .. lua:class:: InheritedTest: inherited.Foo
+
+      .. lua:other-inherited-members:: inherited.Baz
+
+Targets
+-------
+
 .. lua:module:: inherited
 
 .. lua:class:: Foo
@@ -8,6 +23,12 @@ Inherited
    .. lua:data:: foo_a
 
    .. lua:data:: foo_b
+
+.. lua:class:: Boo
+
+   .. lua:data:: boo_a
+
+   .. lua:data:: boo_b
 
 .. lua:class:: Bar: Foo
 
@@ -17,12 +38,20 @@ Inherited
 
    .. lua:data:: bar_d
 
-.. lua:class:: Baz: Bar
+.. lua:class:: Baz: Bar, Boo
 
    .. lua:data:: bar_d
 
    .. lua:data:: baz_e
 
-.. container:: regression
+.. lua:module:: inherited_ty.[{a: b.c}]
 
-   .. lua:inherited-members:: inherited.Baz
+.. lua:class:: [x.y]
+
+   .. lua:data:: [x.y.1]
+
+   .. lua:data:: [x.y.2]
+
+.. lua:class:: [x.z]: [x.y]
+
+   .. lua:data:: [x.y.2]

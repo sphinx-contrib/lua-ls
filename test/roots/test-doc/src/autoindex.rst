@@ -9,6 +9,14 @@ Autoindex
 
    .. lua:autoindex:: target_module
 
+   .. lua:autoindex:: autoindex_globals
+
+   .. lua:autoindex:: autoindex_ty.[{a: b.c}]
+
+   .. lua:currentmodule:: autoindex
+
+   .. lua:autoindex::
+
 Targets
 -------
 
@@ -35,3 +43,20 @@ Targets
 
 .. lua:module:: autoindex_empty
    :synopsis: synopsis for autoindex_empty
+
+.. lua:module:: autoindex_globals
+   :synopsis: synopsis for autoindex_globals
+
+.. lua:data:: autoindex_data_globals
+   :synopsis: synopsis for autoindex_data_globals
+
+.. lua:data:: autoindex_data_globals_global
+   :module:
+   :global:
+   :synopsis: synopsis for autoindex_data_globals_global
+
+.. lua:module:: autoindex_ty.[{a: b.c}]
+   :synopsis: synopsis for autoindex_ty.[{a: b.c}]
+
+.. lua:data:: [x.y.z]
+   :synopsis: synopsis for [x.y.z]

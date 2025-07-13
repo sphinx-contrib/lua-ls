@@ -19,6 +19,8 @@ Modules
    Switches current module without making an index entry or an anchor.
    If ``name`` is ``None``, sets current module to be the global namespace.
 
+   This directive can't be used inside other lua objects.
+
 
 Objects
 -------
@@ -391,5 +393,3 @@ All directives that document Lua objects accept the standard parameters:
 
    Allows overriding current module for a single object. This is useful
    for documenting global variables that are declared in a module.
-
-   This option should not be used inside of a table, class, alias, or enum.

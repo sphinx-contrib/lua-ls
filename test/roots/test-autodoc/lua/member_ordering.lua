@@ -3,7 +3,7 @@
 --- Description
 --- !doctype module
 --- @class member_ordering
-member_ordering = {}
+local member_ordering = {}
 
 --- Description
 function member_ordering.a() end

@@ -6,7 +6,7 @@
 --- Description
 --- !doctype module
 --- @class nesting
-nesting = {}
+local nesting = {}
 
 --- @type integer
 nesting.undoc = 0

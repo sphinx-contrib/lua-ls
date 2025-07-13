@@ -166,6 +166,11 @@ Directives
 
       .. lua:method:: class_method
 
+   .. lua:class:: class_ctor(a: T)
+
+   .. lua:class:: class_bases_and_ctor: T
+                  class_bases_and_ctor(a: T)
+
    .. lua:alias:: alias_simple
 
    .. lua:alias:: alias_type_colon: T

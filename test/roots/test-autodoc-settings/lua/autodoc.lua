@@ -1,11 +1,13 @@
+--- @namespace autodoc
+
 --- Description
---- !doctype module
---- @class autodoc
-autodoc = {}
+local autodoc = {}
 
 --- Description.
---- @class autodoc.meep
+--- @class meep
 autodoc.meep = {}
 
 --- Description.
 function autodoc.meep.meow() end
+
+return autodoc

@@ -496,23 +496,23 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
 
             content_node += nodes
 
-            if self.root.see:
-                node = sphinx.addnodes.seealso()
-                content_node += node
+        if self.root.see:
+            node = sphinx.addnodes.seealso()
+            content_node += node
 
-                p = docutils.nodes.paragraph()
-                node += p
+            p = docutils.nodes.paragraph()
+            node += p
 
-                sep = ""
-                for see in self.root.see:
-                    if sep:
-                        p += docutils.nodes.Text(sep)
-                    ref_nodes, warn_nodes = sphinx_lua_ls.domain.LuaXRefRole()(
-                        "lua:obj", see, see, 0, self.state.inliner
-                    )
-                    p += ref_nodes
-                    p += warn_nodes
-                    sep = ", "
+            sep = ""
+            for see in self.root.see:
+                if sep:
+                    p += docutils.nodes.Text(sep)
+                ref_nodes, warn_nodes = sphinx_lua_ls.domain.LuaXRefRole()(
+                    "lua:obj", see, see, 0, self.state.inliner
+                )
+                p += ref_nodes
+                p += warn_nodes
+                sep = ", "
 
 
 class AutodocObjectMixin(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaObject[Any]):

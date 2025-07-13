@@ -6,7 +6,7 @@
 ---
 --- !doctype module
 --- @class relative_resolve
-relative_resolve = {}
+local relative_resolve = {}
 
 --- Description.
 ---

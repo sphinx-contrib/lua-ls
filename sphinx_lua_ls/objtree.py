@@ -634,9 +634,11 @@ class Parser:
     #: Lua version used by this runtime.
     runtime_version: str | None = None
 
+    needs_cleanup = False
+
     def __init__(self):
         #: Root of the object tree.
-        self.root = Object(needs_cleanup=True)
+        self.root = Object(needs_cleanup=self.needs_cleanup)
 
         #: All files seen while parsing docs.
         self.files: set[pathlib.Path] = set()
@@ -664,7 +666,9 @@ class Parser:
             if component in root.children:
                 root = root.children[component]
             else:
-                root.children[component] = root = Object(needs_cleanup=True)
+                root.children[component] = root = Object(
+                    needs_cleanup=self.needs_cleanup
+                )
         self.add_child(root, name, o)
 
     def merge_objects(self, a: Object, b: Object) -> Object:
@@ -694,10 +698,12 @@ class Parser:
         if not a.docstring:
             a.docstring = b.docstring
             a.docstring_file = b.docstring_file
+            a.needs_cleanup = b.needs_cleanup
         elif b.docstring and len(a.docstring) < len(b.docstring) and not b.is_foreign:
             # Sometimes, `@see` directives are only included in one definition.
             a.docstring = b.docstring
             a.docstring_file = b.docstring_file
+            a.needs_cleanup = b.needs_cleanup
         return a
 
     def add_child(self, o: Object, name: str, child: Object):
@@ -713,6 +719,8 @@ class Parser:
 
 
 class LuaLsParser(Parser):
+    needs_cleanup = True
+
     def parse(self, json, path: str | pathlib.Path):
         if not isinstance(json, list):
             return

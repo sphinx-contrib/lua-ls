@@ -5,6 +5,7 @@ Test autodoc
 
    src/annotations.rst
    src/autoindex.rst
+   src/globals.rst
    src/member_ordering.rst
    src/module_title.rst
    src/nested_modules.rst

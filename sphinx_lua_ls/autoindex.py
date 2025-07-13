@@ -17,7 +17,7 @@ class AutoIndexDirective(SphinxDirective):
     has_content = False
     required_arguments = 0
     optional_arguments = 1
-    final_argument_whitespace = False
+    final_argument_whitespace = True
 
     def run(self) -> list[docutils.nodes.Node]:
         module = (

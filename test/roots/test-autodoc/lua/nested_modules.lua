@@ -3,7 +3,7 @@
 --- Description
 --- !doctype module
 --- @class nested_modules
-nested_modules = {}
+local nested_modules = {}
 
 --- Description
 --- !doctype module

@@ -3,7 +3,7 @@
 --- Description
 --- !doctype module
 --- @class annotations
-annotations = {}
+local annotations = {}
 
 --- Description.
 --- @private

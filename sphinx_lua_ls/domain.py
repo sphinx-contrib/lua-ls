@@ -1263,7 +1263,7 @@ class LuaModule(SphinxDirective):
     has_content = False
     required_arguments = 1
     optional_arguments = 0
-    final_argument_whitespace = False
+    final_argument_whitespace = True
     option_spec = {
         "no-index": directives.flag,
         "deprecated": directives.flag,
@@ -1366,7 +1366,7 @@ class LuaCurrentModule(SphinxDirective):
     has_content = False
     required_arguments = 1
     optional_arguments = 0
-    final_argument_whitespace = False
+    final_argument_whitespace = True
     option_spec = {}
 
     def run(self) -> list[nodes.Node]:
