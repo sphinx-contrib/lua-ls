@@ -686,9 +686,9 @@ class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
         ):
             signatures.append(self.arguments[0])
 
-        if (
-            class_signature_from in ("both", "ctor") and class_doc_from != "separate"
-        ) or (class_signature_from == "minimal" and self.constructor_sig):
+        if (class_signature_from == "ctor" and class_doc_from != "separate") or (
+            class_signature_from in ("minimal", "both") and self.constructor_sig
+        ):
             if self.constructor_sig:
                 signatures.append("")
                 signatures.extend(
