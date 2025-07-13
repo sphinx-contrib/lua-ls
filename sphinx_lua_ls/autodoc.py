@@ -23,18 +23,12 @@ import sphinx_lua_ls.autoindex
 import sphinx_lua_ls.domain
 import sphinx_lua_ls.inherited
 import sphinx_lua_ls.objtree
+from sphinx_lua_ls import utils
 from sphinx_lua_ls.objtree import Kind, Object, Visibility
 
 # Dirty hack =(
 # Alias files and types are not properly reported sometimes.
 _FIX_FLAKY_ALIAS_TESTS = "_LUA_LS_FIX_FLAKY_ALIAS_TESTS" in os.environ
-
-
-def _parse_members(value: str):
-    if not value:
-        return True
-    else:
-        return sphinx_lua_ls.domain._separate_sig(value)
 
 
 def _iter_children(
@@ -205,14 +199,14 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
     """
 
     option_spec: ClassVar[dict[str, Callable[[str], Any]]] = {  # type: ignore
-        "members": _parse_members,
-        "undoc-members": _parse_members,
-        "private-members": _parse_members,
-        "protected-members": _parse_members,
-        "package-members": _parse_members,
-        "special-members": _parse_members,
-        "inherited-members": _parse_members,
-        "exclude-members": _parse_members,
+        "members": utils.parse_list_option,
+        "undoc-members": utils.parse_list_option,
+        "private-members": utils.parse_list_option,
+        "protected-members": utils.parse_list_option,
+        "package-members": utils.parse_list_option,
+        "special-members": utils.parse_list_option,
+        "inherited-members": utils.parse_list_option,
+        "exclude-members": utils.parse_list_option,
         "title": directives.unchanged,
         "index-title": directives.unchanged,
         "recursive": directives.flag,
@@ -224,7 +218,7 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         "module-member-order": lambda x: directives.choice(
             x, ("alphabetical", "groupwise", "bysource")
         ),
-        "globals": _parse_members,
+        "globals": utils.parse_list_option,
         "class-doc-from": lambda x: directives.choice(
             x, ("class", "both", "ctor", "separate", "none")
         ),

@@ -6,6 +6,7 @@ from sphinx.transforms import SphinxTransform
 from sphinx.util.docutils import SphinxDirective
 
 import sphinx_lua_ls.domain
+from sphinx_lua_ls import utils
 from sphinx_lua_ls.objtree import Kind
 
 
@@ -27,7 +28,7 @@ class AutoIndexDirective(SphinxDirective):
         )
         if not module:
             raise self.error("module name is required")
-        return [AutoIndexNode("", target=sphinx_lua_ls.domain._normalize_name(module))]
+        return [AutoIndexNode("", target=utils.normalize_name(module))]
 
 
 class AutoIndexTransform(SphinxTransform):

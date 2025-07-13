@@ -6,6 +6,7 @@ from sphinx.transforms import SphinxTransform
 from sphinx.util.docutils import SphinxDirective
 
 import sphinx_lua_ls.domain
+from sphinx_lua_ls import utils
 
 
 class InheritedMethodsNode(docutils.nodes.Element):
@@ -27,16 +28,12 @@ class InheritedMembersDirective(SphinxDirective):
             target = ".".join(filter(None, [modname, classname]))
         if not target:
             raise self.error("class name is required")
-        return [
-            InheritedMethodsNode(
-                "", target=sphinx_lua_ls.domain._normalize_name(target)
-            )
-        ]
+        return [InheritedMethodsNode("", target=utils.normalize_name(target))]
 
 
 def _get_name(fullname: str) -> str:
     if "[" in fullname:
-        return sphinx_lua_ls.domain._separate_sig(fullname, ".")[-1]
+        return utils.separate_sig(fullname, ".")[-1]
     else:
         return fullname.rsplit(".", maxsplit=1)[-1]
 
