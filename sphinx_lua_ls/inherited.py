@@ -99,7 +99,7 @@ class InheritedMembersTransform(SphinxTransform):
                 docutils.nodes.container(
                     "",
                     *self.render_bases(methods_per_base),
-                    classes=["lua-iherited-members"],
+                    classes=["lua-inherited-members"],
                 )
             )
 
