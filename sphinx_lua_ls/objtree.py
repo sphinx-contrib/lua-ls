@@ -701,7 +701,6 @@ class Parser:
         root = self.root
         *components, name = path.split(".")
         if not components:
-            o.inferred_options["global"] = ""
             o.is_toplevel = True
         for component in components:
             if component in root.children:

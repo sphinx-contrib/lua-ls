@@ -439,6 +439,8 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
 
         if root.is_toplevel:
             options["module"] = ""
+            if not top_level:
+                options["global"] = ""
 
         return cls(
             directive_name,
