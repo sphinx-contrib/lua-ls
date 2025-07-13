@@ -650,8 +650,6 @@ class LuaObject(
 
     allow_nesting = False
 
-    force_prefix_only = False
-
     collected_bases: list[str] | None = None
 
     def run(self) -> list[nodes.Node]:
@@ -681,11 +679,7 @@ class LuaObject(
         fullname = ".".join(filter(None, [modname, classname, name]))
 
         # Only display full path if we're not inside of a class.
-        prefix = (
-            ""
-            if classname and not self.force_prefix_only
-            else ".".join(filter(None, [modname, classname]))
-        )
+        prefix = "" if classname else ".".join(filter(None, [modname, classname]))
 
         descname = name
         if self.use_semicolon_path():
@@ -710,12 +704,6 @@ class LuaObject(
         sig_prefix = self.get_signature_prefix(sig, sigdata)
         if sig_prefix:
             signode += addnodes.desc_annotation("", "", *sig_prefix)
-
-        if self.force_prefix_only and prefix:
-            prefix_components = _separate_sig(prefix, ".")
-            if len(prefix_components) > 1:
-                descname = prefix_components[-1]
-                prefix = prefix[: -len(descname) - 1]
 
         if prefix:
             signode += addnodes.desc_addname(prefix, prefix)
@@ -913,6 +901,10 @@ class LuaFunction(
     """
 
     def parse_signature(self, sig):
+        return self.parse_function_signature(sig)
+
+    @staticmethod
+    def parse_function_signature(sig: str):
         name, sig = _separate_name_prefix(sig)
         generics, sig = _separate_paren_prefix(sig, ("<", ">"))
         params, returns = _separate_paren_prefix(sig)
@@ -1195,7 +1187,9 @@ class LuaClass(
             prefix = super().get_signature_prefix(signature, sigdata, set())
             prefix.extend(
                 [
-                    addnodes.desc_sig_keyword("", "constructor"),
+                    addnodes.desc_sig_keyword("", self.objtype),
+                    addnodes.desc_sig_space(),
+                    addnodes.desc_sig_keyword("", "ctor"),
                     addnodes.desc_sig_space(),
                 ]
             )

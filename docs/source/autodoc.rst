@@ -225,6 +225,68 @@ Autodoc directive
       Accepts a comma-separated list of names; if list is empty,
       adds all global variables.
 
+   .. rst:directive:option:: class-doc-from
+
+      Specifies how to generate documentation for classes
+      if :py:data:`class_default_function_name` is configured.
+
+      Options are:
+
+      - ``"class"``: only use documentation from ``@class`` annotation,
+
+      - ``"ctor"``: only use documentation from class constructor,
+
+      - ``"both"``: use documentation from ``@class`` annotation and constructor,
+        place them one next to another.
+
+      - ``"separate"``: only use documentation from ``@class`` annotation,
+        document class constructor as a separate method.
+
+   .. rst:directive:option:: class-signature
+
+      Specifies how to generate signatures for classes
+      if :py:data:`class_default_function_name` is configured.
+
+      Options are:
+
+      - ``"bases"``: only show base classes,
+
+      - ``"ctor"``: only show constructor arguments,
+
+      - ``"both"``: show base classes and constructor arguments,
+
+      - ``"minimal"``: show bases and/or constructor arguments if either is present.
+
+      .. dropdown:: Example
+
+         **Bases:**
+
+         .. lua:autoobject:: logging.Logger
+            :no-index:
+            :class-doc-from: class
+            :class-signature: bases
+
+         **Ctor:**
+
+         .. lua:autoobject:: logging.Logger
+            :no-index:
+            :class-doc-from: class
+            :class-signature: ctor
+
+         **Both:**
+
+         .. lua:autoobject:: logging.Logger
+            :no-index:
+            :class-doc-from: class
+            :class-signature: both
+
+         **Minimal:**
+
+         .. lua:autoobject:: logging.Logger
+            :no-index:
+            :class-doc-from: class
+            :class-signature: minimal
+
    .. rst:directive:option:: recursive
 
       If enabled, autodoc will recursively generate documentation

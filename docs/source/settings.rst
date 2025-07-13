@@ -60,6 +60,31 @@ Settings
           # And so on...
       }
 
+.. py:data:: class_default_function_name
+   :type: str
+
+   Allows specifying which class method represents a class constructor.
+
+   Class constructors are documented separately, depending on
+   :rst:dir:`lua:autoobject:class-doc-from`
+   and :rst:dir:`lua:autoobject:class-signature` options.
+
+   If using EmmyLua as lua analyzer, this option will be inferred from ``.emmyrc.json``.
+
+.. py:data:: class_default_force_non_colon
+   :type:
+
+   If `true`, Sphinx-LuaLs will remove ``self`` from class constructor's signature.
+
+   If using EmmyLua as lua analyzer, this option will be inferred from ``.emmyrc.json``.
+
+.. py:data:: class_default_force_return_self
+   :type:
+
+   If `true`, Sphinx-LuaLs will replace class constructor's return type with ``self``.
+
+   If using EmmyLua as lua analyzer, this option will be inferred from ``.emmyrc.json``.
+
 .. py:data:: lua_ls_lua_version
    :type: str
 

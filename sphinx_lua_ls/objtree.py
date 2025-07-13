@@ -70,7 +70,7 @@ class Visibility(enum.Enum):
     Package = "package"
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=False)
 class DocstringMixin:
     #: Raw docstring contents.
     docstring: str | None = None
@@ -231,7 +231,7 @@ class Param(DocstringMixin):
         return f"{self.name or '_'}: {self.type or 'unknown'}"
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=False)
 class Object(DocstringMixin):
     """
     A documented lua object.
@@ -302,6 +302,34 @@ class Object(DocstringMixin):
             return Kind.Table
         else:
             return None
+
+    def find_all_bases(self, obj: Class) -> list[Object]:
+        """
+        Find all bases of a class, including transitive ones.
+
+        Bases are returned in order of DFS.
+
+        """
+
+        if not hasattr(self, "_bases_cache"):
+            self._bases_cache = {}
+
+        if obj not in self._bases_cache:
+            seen_bases: set[str] = set()
+            res: list[Object] = []
+            stack: list[str] = list(obj.bases)
+            while stack:
+                basename = stack.pop()
+                if basename in seen_bases:
+                    continue
+                seen_bases.add(basename)
+                if (base := self.find(basename)) and base != obj:
+                    res.append(base)
+                    if isinstance(base, Class):
+                        stack.extend(base.bases)
+            self._bases_cache[obj] = res
+
+        return self._bases_cache[obj]
 
     def __repr__(self) -> str:
         return self.__class__.__name__
@@ -398,7 +426,7 @@ class Object(DocstringMixin):
         return root, ".".join(modname), ".".join(classname), name
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=False)
 class Data(Object):
     """
     A lua variable.
@@ -432,7 +460,7 @@ class Data(Object):
         return ""
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=False)
 class Table(Object):
     """
     A lua table.
@@ -459,7 +487,7 @@ class Table(Object):
         return "}"
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=False)
 class Function(Object):
     """
     A lua function.
@@ -510,7 +538,7 @@ class Function(Object):
         return ""
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=False)
 class Class(Object):
     """
     A lua class.
@@ -554,7 +582,7 @@ class Class(Object):
         return ""
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=False)
 class Alias(Object):
     """
     A lua type alias.
@@ -592,7 +620,7 @@ class Alias(Object):
         return ""
 
 
-@dataclass(kw_only=True, repr=False)
+@dataclass(kw_only=True, repr=False, eq=False)
 class Enum(Object):
     """
     A lua enum.
@@ -634,6 +662,16 @@ class Parser:
     #: Lua version used by this runtime.
     runtime_version: str | None = None
 
+    #: Name of the function that will be invoked as a class constructor.
+    class_default_function_name: str | None = None
+
+    #: Whether to require first parameter of the constructor to be `self`.
+    class_default_force_non_colon: bool = False
+
+    #: Whether to force constructor to return `self`.
+    class_default_force_return_self: bool = False
+
+    #: Whether we need to clean up LuaLs-generated junk.
     needs_cleanup = False
 
     def __init__(self):
@@ -741,6 +779,21 @@ class LuaLsParser(Parser):
                 continue
 
             self.add_child(o, field["name"], self._parse_field(field))
+
+        if (
+            isinstance(o, Class)
+            and self.class_default_function_name
+            and self.class_default_function_name in o.children
+            and isinstance(o.children[self.class_default_function_name], Function)
+        ):
+            o.constructor_name = self.class_default_function_name
+            o.constructor = _t.cast(
+                Function, o.children.pop(self.class_default_function_name)
+            )
+            if self.class_default_force_non_colon:
+                o.constructor.implicit_self = False
+                if o.constructor.params and o.constructor.params[0].name == "self":
+                    o.constructor.params.pop(0)
 
         self.add(ns.get("name", ""), o)
 
@@ -861,15 +914,6 @@ def _process_alias_doc(node: Alias, doc: str | None):
 
 
 class EmmyLuaParser(Parser):
-    #: Name of the function that will be invoked as a class constructor.
-    class_default_function_name: str | None = None
-
-    #: Whether to require first parameter of the constructor to be `self`.
-    class_default_force_non_colon: bool = False
-
-    #: Whether to force constructor to return `self`.
-    class_default_force_return_self: bool = False
-
     _VISIBILITY_MAP = {
         "public": Visibility.Public,
         "protected": Visibility.Protected,

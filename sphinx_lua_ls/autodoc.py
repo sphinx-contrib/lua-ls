@@ -33,10 +33,8 @@ _FIX_FLAKY_ALIAS_TESTS = "_LUA_LS_FIX_FLAKY_ALIAS_TESTS" in os.environ
 def _parse_members(value: str):
     if not value:
         return True
-    elif "," in value:
-        return {s for m in value.split(",") if (s := m.strip())}
     else:
-        return set(value.split())
+        return sphinx_lua_ls.domain._separate_sig(value)
 
 
 def _iter_children(
@@ -103,10 +101,8 @@ def _iter_children(
         and parent.kind == Kind.Class
         and isinstance(parent, sphinx_lua_ls.objtree.Class)
     ):
-        for basename in parent.bases:
-            base = objtree.find(basename)
-            if base:
-                inherited_names.update(base.children.keys())
+        for base in objtree.find_all_bases(parent):
+            inherited_names.update(base.children.keys())
 
     include_normal = False
     include_undoc = False
@@ -229,6 +225,12 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
             x, ("alphabetical", "groupwise", "bysource")
         ),
         "globals": _parse_members,
+        "class-doc-from": lambda x: directives.choice(
+            x, ("class", "both", "ctor", "separate", "none")
+        ),
+        "class-signature": lambda x: directives.choice(
+            x, ("bases", "both", "ctor", "minimal")
+        ),
         **sphinx_lua_ls.domain.LuaObject.option_spec,
     }
 
@@ -325,13 +327,20 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         return directive.run()
 
     def render_class(self, root: Object, name: str, top_level: bool = False):
-        return self._create_directive(
+        assert isinstance(root, sphinx_lua_ls.objtree.Class)
+
+        directive = self._create_directive(
             name,
             LuaClass,
             "lua:" + (root.parsed_doctype or "class"),
             root,
             top_level,
-        ).run()
+        )
+
+        if root.constructor and root.constructor.is_async:
+            directive.options["async"] = True
+
+        return directive.run()
 
     def render_alias(self, root: Object, name: str, top_level: bool = False):
         return self._create_directive(
@@ -383,6 +392,8 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
                 "recursive",
                 "no-index",
                 "inherited-members-table",
+                "class-doc-from",
+                "class-signature",
             ]:
                 if key in self.options:
                     options[key] = self.options[key]
@@ -657,48 +668,117 @@ class LuaAlias(AutodocObjectMixin, sphinx_lua_ls.domain.LuaAlias):
 
 
 class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
+    def get_signatures(self) -> list[str]:
+        assert isinstance(self.root, sphinx_lua_ls.objtree.Class)
+
+        if self.root.constructor:
+            self.constructor_sig = self.root.constructor
+        else:
+            for base in self.objtree.find_all_bases(self.root):
+                if isinstance(base, sphinx_lua_ls.objtree.Class) and base.constructor:
+                    self.constructor_sig = base.constructor
+                    break
+            else:
+                self.constructor_sig = None
+
+        signatures = []
+
+        class_signature_from = self.options.get("class-signature", "both")
+        class_doc_from = self.options.get("class-doc-from", "both")
+
+        if class_signature_from in ("both", "bases") or (
+            class_signature_from == "minimal"
+            and (self.root.bases or not self.constructor_sig)
+        ):
+            signatures.append(self.arguments[0])
+
+        if (
+            class_signature_from in ("both", "ctor") and class_doc_from != "separate"
+        ) or (class_signature_from == "minimal" and self.constructor_sig):
+            if self.constructor_sig:
+                signatures.append("")
+                signatures.extend(
+                    str(i) for i in range(len(self.constructor_sig.overloads))
+                )
+            else:
+                signatures.append("")
+
+        return signatures
+
     def parse_signature(self, sig):
         assert isinstance(self.root, sphinx_lua_ls.objtree.Class)
-        return sig, (
-            [(p.name or "", p.type or "") for p in self.root.generics],
-            self.root.bases,
-            None,
-            None,
-        )
+
+        if sig == self.arguments[0]:
+            # Bases
+            return sig, (
+                [(p.name or "", p.type or "") for p in self.root.generics],
+                self.root.bases,
+                None,
+                None,
+            )
+        elif not sig:
+            # Ctor
+            if not self.constructor_sig:
+                return self.arguments[0], ([], None, [], [])
+            else:
+                return self.arguments[0], (
+                    [
+                        (p.name or "", p.type or "")
+                        for p in self.constructor_sig.generics
+                    ],
+                    None,
+                    [(p.name or "", p.type or "") for p in self.constructor_sig.params],
+                    [
+                        (p.name or "", p.type or "")
+                        for p in self.constructor_sig.returns
+                    ],
+                )
+        else:
+            # Ctor overload
+            assert self.constructor_sig
+            i = int(sig)  # What a dirty hack =(
+            overload = self.constructor_sig.overloads[i]
+            _, (
+                generics,
+                params,
+                returns,
+            ) = sphinx_lua_ls.domain.LuaFunction.parse_function_signature(overload)
+            return self.arguments[0], (generics, None, params, returns)
 
     def transform_content(self, content_node: sphinx.addnodes.desc_content):
         assert isinstance(self.root, sphinx_lua_ls.objtree.Class)
 
         fullname = self.names[-1][0] if self.names else None
-        self.render_root_docstring(content_node, fullname)
+
+        class_doc_from = self.options.get("class-doc-from", "both")
+
+        if class_doc_from not in ("ctor", "none"):
+            self.render_root_docstring(content_node, fullname)
 
         if self.root.constructor:
-            directive = cast(
-                LuaFunction,
-                self._create_directive(
-                    self.root.constructor_name or "__call",
+            if class_doc_from == "separate":
+                content_node += self.render(
+                    self.root.constructor, self.root.constructor_name or "__call", False
+                )
+            elif class_doc_from not in ("class", "none"):
+                directive = cast(
                     LuaFunction,
-                    "lua:function",
-                    self.root.constructor,
-                    False,
-                ),
-            )
+                    self._create_directive(
+                        self.root.constructor_name or "__call",
+                        LuaFunction,
+                        "lua:function",
+                        self.root.constructor,
+                        False,
+                    ),
+                )
 
-            directive.options["annotation"] = " ".join(
-                filter(None, [directive.options.get("annotation"), "constructor"])
-            )
-            directive.options["no-index"] = ""
-            directive.force_prefix_only = True
-            directive.arguments += self.root.constructor.overloads
+                directive.options["no-index"] = ""
+                directive.arguments += self.root.constructor.overloads
 
-            ctor_nodes = directive.run()
-            for node in ctor_nodes:
-                if isinstance(node, sphinx.addnodes.index):
-                    self.indexnode["entries"] += node["entries"]
-                elif isinstance(node, sphinx.addnodes.desc):
-                    [*signatures, body] = node.children
-                    content_node.parent.insert(-1, signatures)
-                    content_node += body.children
+                ctor_nodes = directive.run()
+                for node in ctor_nodes:
+                    if isinstance(node, sphinx.addnodes.desc):
+                        content_node.extend(node.children[-1].children)
 
         if self.allow_nesting:
             for name, child in _iter_children(

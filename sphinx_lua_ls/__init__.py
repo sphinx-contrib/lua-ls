@@ -229,6 +229,21 @@ def check_options(app: sphinx.application.Sphinx):
         domain.config["apidoc_ignored_modules"],
         domain.config["apidoc_format"],
     )
+    domain.config["class_default_function_name"] = _type(
+        "lua_ls_class_default_function_name",
+        config["lua_ls_class_default_function_name"],
+        str,
+    )
+    domain.config["class_default_force_non_colon"] = _type(
+        "lua_ls_class_default_force_non_colon",
+        config["lua_ls_class_default_force_non_colon"],
+        bool,
+    )
+    domain.config["class_default_force_return_self"] = _type(
+        "lua_ls_class_default_force_return_self",
+        config["lua_ls_class_default_force_return_self"],
+        bool,
+    )
 
 
 def run_lua_ls(app: sphinx.application.Sphinx):
@@ -290,6 +305,15 @@ def run_lua_ls(app: sphinx.application.Sphinx):
         except ValueError:
             relpath = dir
         with progress_message(f"running lua language server in {relpath or '.'}"):
+            parser.class_default_function_name = domain.config[
+                "class_default_function_name"
+            ]
+            parser.class_default_force_non_colon = domain.config[
+                "class_default_force_non_colon"
+            ]
+            parser.class_default_force_return_self = domain.config[
+                "class_default_force_return_self"
+            ]
             parser.parse(runner.run(dir, configs=configs), dir)
             parser.files.update(map(pathlib.Path, dir.rglob("*.lua")))
 
@@ -354,6 +378,9 @@ def setup(app: sphinx.application.Sphinx):
     app.add_config_value("lua_ls_apidoc_max_depth", 4, rebuild="")
     app.add_config_value("lua_ls_apidoc_ignored_modules", None, rebuild="")
     app.add_config_value("lua_ls_apidoc_format", "rst", rebuild="")
+    app.add_config_value("lua_ls_class_default_function_name", "", rebuild="env")
+    app.add_config_value("lua_ls_class_default_force_non_colon", False, rebuild="env")
+    app.add_config_value("lua_ls_class_default_force_return_self", False, rebuild="env")
 
     app.add_directive_to_domain(
         "lua", "autoobject", sphinx_lua_ls.autodoc.AutoObjectDirective
