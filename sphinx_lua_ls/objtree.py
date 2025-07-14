@@ -284,6 +284,15 @@ class Object(DocstringMixin):
     #: All ``@using`` directives of the module.
     using: list[str] = dataclasses.field(default_factory=list)
 
+    #: Type that will be returned when you require this module.
+    require_type: str | None = None
+
+    #: Name of the ``require`` function used to require this module.
+    require_function: str | None = None
+
+    #: Separator used with the ``require`` function.
+    require_separator: str | None = None
+
     #: True if this object appears on top level of object tree.
     is_toplevel: bool = False
 
@@ -674,6 +683,12 @@ class Parser:
     #: Whether to force constructor to return `self`.
     class_default_force_return_self: bool = False
 
+    #: Name of the ``require`` function.
+    auto_require_function: str | None = None
+
+    #: Separator used with the ``require`` function.
+    auto_require_separator: str | None = None
+
     #: Whether we need to clean up LuaLs-generated junk.
     needs_cleanup = False
 
@@ -948,6 +963,10 @@ class EmmyLuaParser(Parser):
         self.runtime_version = self._RUNTIME_MAP.get(
             json["config"]["runtime"]["version"], None
         )
+        self.auto_require_function = json["config"]["completion"]["autoRequireFunction"]
+        self.auto_require_separator = json["config"]["completion"][
+            "autoRequireSeparator"
+        ]
 
         self._parse_modules(json["modules"])
         self._parse_types(json["types"])
@@ -959,7 +978,10 @@ class EmmyLuaParser(Parser):
             self._set_common(res, data)
             self._set_path(res, data["file"])
             self._parse_members(res, data["members"])
-            res.using = data["using"] or []
+            res.using = data["using"]
+            res.require_type = data["typ"] or ""
+            res.require_function = self.auto_require_function
+            res.require_separator = self.auto_require_separator
             self.add(data["name"], res)
 
     def _parse_types(self, types):

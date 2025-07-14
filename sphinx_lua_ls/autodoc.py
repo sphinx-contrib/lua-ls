@@ -225,6 +225,11 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         "class-signature": lambda x: directives.choice(
             x, ("bases", "both", "ctor", "minimal")
         ),
+        "annotate-require": lambda x: directives.choice(
+            x, ("always", "never", "auto", "force")
+        ),
+        "require-function-name": directives.unchanged,
+        "require-separator": directives.unchanged,
         **sphinx_lua_ls.domain.LuaObject.option_spec,
     }
 
@@ -388,6 +393,9 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
                 "inherited-members-table",
                 "class-doc-from",
                 "class-signature",
+                "annotate-require",
+                "require-function-name",
+                "require-separator",
             ]:
                 if key in self.options:
                     options[key] = self.options[key]
@@ -525,6 +533,59 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
                 p += ref_nodes
                 p += warn_nodes
                 sep = ", "
+
+        annotate_require = self.options.get("annotate-require", "auto")
+        if (
+            self.name == "lua:module"
+            and annotate_require != "never"
+            and (annotate_require == "force" or self.root.require_type is not None)
+        ):
+            require_function_name = (
+                utils.normalize_type(
+                    self.options.get(
+                        "require-function-name", self.root.require_function or ""
+                    ).strip()
+                )
+                or "require"
+            )
+
+            require_separator = (
+                self.options.get(
+                    "require-separator", self.root.require_separator or "."
+                ).strip()
+                or "."
+            )
+
+            require_path: str = self.env.ref_context["lua:module"]
+            if require_separator != ".":
+                require_path = require_path.replace(".", require_separator)
+
+            if self.root.require_type:
+                typ = utils.normalize_type(self.root.require_type)
+                ref_nodes, warn_nodes = sphinx_lua_ls.domain.LuaXRefRole()(
+                    "lua:obj", typ, typ, 0, self.state.inliner
+                )
+                content_node += docutils.nodes.paragraph(
+                    "",
+                    "",
+                    docutils.nodes.strong("", "Require: "),
+                    docutils.nodes.literal(
+                        "",
+                        f"{require_function_name}" f'("{require_path}"): ',
+                        *ref_nodes,
+                        *warn_nodes,
+                    ),
+                )
+            elif annotate_require in ("always", "force"):
+                content_node += docutils.nodes.paragraph(
+                    "",
+                    "",
+                    docutils.nodes.strong("", "Require: "),
+                    docutils.nodes.literal(
+                        "",
+                        f"{require_function_name}" f'("{require_path}")',
+                    ),
+                )
 
 
 class AutodocObjectMixin(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaObject[Any]):

@@ -232,14 +232,14 @@ Autodoc directive
 
       Options are:
 
-      - ``"class"``: only use documentation from ``@class`` annotation,
+      - ``class``: only use documentation from ``@class`` annotation,
 
-      - ``"ctor"``: only use documentation from class constructor,
+      - ``ctor``: only use documentation from class constructor,
 
-      - ``"both"``: use documentation from ``@class`` annotation and constructor,
+      - ``both``: use documentation from ``@class`` annotation and constructor,
         place them one next to another.
 
-      - ``"separate"``: only use documentation from ``@class`` annotation,
+      - ``separate``: only use documentation from ``@class`` annotation,
         document class constructor as a separate method.
 
    .. rst:directive:option:: class-signature
@@ -249,13 +249,13 @@ Autodoc directive
 
       Options are:
 
-      - ``"bases"``: only show base classes,
+      - ``bases``: only show base classes,
 
-      - ``"ctor"``: only show constructor arguments,
+      - ``ctor``: only show constructor arguments,
 
-      - ``"both"``: show base classes and constructor arguments,
+      - ``both``: show base classes and constructor arguments,
 
-      - ``"minimal"``: show bases and/or constructor arguments if either is present.
+      - ``minimal``: show bases and/or constructor arguments if either is present.
 
       .. dropdown:: Example
 
@@ -339,6 +339,36 @@ Autodoc directive
    .. rst:directive:option:: inherited-members-table
 
       Adds :rst:dir:`lua:other-inherited-members` to all classes.
+
+   .. rst:directive:option:: annotate-require
+
+      Adds information about how to require a module.
+
+      Options are:
+
+      - ``always``: always show how to require a module;
+
+      - ``never``: never show how to require a module;
+
+      - ``auto``: only show how to require a module if the module's exported type
+        is not a table;
+
+      - ``force``: always show how to require a module,
+        even if lua analyzer didn't export this information.
+
+      .. warning::
+
+         LuaLs only supports ``never`` and ``force``.
+
+   .. rst:directive:option:: require-function-name
+
+      Allows overriding name of the `require` function
+      for :rst:dir:`lua:autoobject:annotate-require`.
+
+   .. rst:directive:option:: require-separator
+
+      Allows overriding separator
+      for :rst:dir:`lua:autoobject:annotate-require`.
 
 .. rst:directive:: .. lua:autoindex:: module-name
 
