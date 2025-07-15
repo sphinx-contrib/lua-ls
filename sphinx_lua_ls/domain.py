@@ -822,8 +822,7 @@ class LuaClass(
 
         if bases:
             if self.collected_bases is None:
-                self.collected_bases = []
-            self.collected_bases.extend(map(utils.normalize_name, bases))
+                self.collected_bases = [utils.normalize_name(base) for base in bases]
 
             sw.punctuation(":")
             sw.space()

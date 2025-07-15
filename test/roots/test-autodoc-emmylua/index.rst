@@ -16,4 +16,5 @@ Test autodoc
    src/object_types.rst
    src/relative_resolve.rst
    src/require.rst
+   src/signatures.rst
    src/using.rst

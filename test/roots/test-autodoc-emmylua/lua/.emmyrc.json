@@ -36,9 +36,9 @@
     "extensions": [],
     "requirePattern": [],
     "classDefaultCall": {
-      "functionName": "",
-      "forceNonColon": false,
-      "forceReturnSelf": false
+      "functionName": "__init",
+      "forceNonColon": true,
+      "forceReturnSelf": true
     }
   },
   "workspace": {

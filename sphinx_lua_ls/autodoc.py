@@ -733,6 +733,8 @@ class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
     def get_signatures(self) -> list[str]:
         assert isinstance(self.root, sphinx_lua_ls.objtree.Class)
 
+        self.collected_bases = self.root.bases
+
         if self.root.constructor:
             self.constructor_sig = self.root.constructor
         else:
@@ -746,24 +748,28 @@ class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
         signatures = []
 
         class_signature_from = self.options.get("class-signature", "both")
-        class_doc_from = self.options.get("class-doc-from", "both")
 
-        if class_signature_from in ("both", "bases") or (
-            class_signature_from == "minimal"
-            and (self.root.bases or not self.constructor_sig)
-        ):
+        if self.options.get("class-doc-from", "both") == "separate":
             signatures.append(self.arguments[0])
+            self.print_bases = class_signature_from != "ctor"
+        else:
+            if class_signature_from in ("both", "bases") or (
+                class_signature_from == "minimal"
+                and (self.root.bases or not self.constructor_sig)
+            ):
+                signatures.append(self.arguments[0])
+                self.print_bases = True
 
-        if (class_signature_from == "ctor" and class_doc_from != "separate") or (
-            class_signature_from in ("minimal", "both") and self.constructor_sig
-        ):
-            if self.constructor_sig:
-                signatures.append("")
-                signatures.extend(
-                    str(i) for i in range(len(self.constructor_sig.overloads))
-                )
-            else:
-                signatures.append("")
+            if class_signature_from == "ctor" or (
+                class_signature_from in ("minimal", "both") and self.constructor_sig
+            ):
+                if self.constructor_sig:
+                    signatures.append("")
+                    signatures.extend(
+                        str(i) for i in range(len(self.constructor_sig.overloads))
+                    )
+                else:
+                    signatures.append("")
 
         return signatures
 
@@ -774,7 +780,7 @@ class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
             # Bases
             return sig, (
                 [(p.name or "", p.type or "") for p in self.root.generics],
-                self.root.bases,
+                self.root.bases if self.print_bases else [],
                 None,
                 None,
             )
