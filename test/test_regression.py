@@ -193,7 +193,7 @@ def test_autodoc_roots(app, name, file_regression):
 
 
 @pytest.mark.skipif(sys.platform == "darwin", reason="requires case-sensitive system")
-@pytest.mark.sphinx("html", testroot="apidoc")
+@pytest.mark.sphinx("html", testroot="apidoc", copy_test_root=True)
 @pytest.mark.parametrize(
     "name",
     [
