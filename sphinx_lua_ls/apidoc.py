@@ -74,6 +74,7 @@ class ApiDocError(sphinx.errors.SphinxError):
 
 
 def generate(
+    outdir: pathlib.Path,
     domain: LuaDomain,
     dir: pathlib.Path,
     fullname: str,
@@ -86,12 +87,13 @@ def generate(
 ):
     dir.mkdir(parents=True, exist_ok=True)
 
-    if not make_case_insensitive(dir):
+    if not make_case_insensitive(dir) and not make_case_insensitive(outdir):
         msg = "Lua apidoc can't work with case-insensitive file systems."
         if sys.platform == "win32":
             msg += (
                 f"\nPlease, make {dir} case-sensitive by running this PowerShell command:\n\n"
-                f'    fsutil.exe file setCaseSensitiveInfo "{dir}" enable\n\n'
+                f'    fsutil.exe file setCaseSensitiveInfo "{dir}" enable\n'
+                f'    fsutil.exe file setCaseSensitiveInfo "{outdir}" enable\n\n'
                 f"See details at https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity"
             )
         _logger.error(msg, type="lua-ls")

@@ -355,15 +355,16 @@ def run_apidoc(
             else:
                 mod_filter = lambda s: False
             sphinx_lua_ls.apidoc.generate(
-                domain,
-                params["path"],
-                name,
-                objtree,
-                params["options"],
-                params["max_depth"],
-                mod_filter,
-                params["format"],
-                params["separate_members"],
+                outdir=app.outdir,
+                domain=domain,
+                dir=params["path"],
+                fullname=name,
+                objtree=objtree,
+                options=params["options"],
+                depth=params["max_depth"],
+                mod_filter=mod_filter,
+                format=params["format"],
+                separate_members=params["separate_members"],
             )
 
 
