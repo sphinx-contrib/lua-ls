@@ -6,6 +6,7 @@ import jinja2
 import sphinx.errors
 
 from sphinx_lua_ls.autodoc import AutoObjectDirective, _iter_children
+from sphinx_lua_ls.domain import LuaDomain
 from sphinx_lua_ls.objtree import Kind, Object
 
 _ENV = jinja2.Environment()
@@ -17,43 +18,49 @@ _ENV.filters["h3"] = lambda title: f"{title}\n{'~' * len(title)}"  # type: ignor
 _TEMPLATE_RST = _ENV.from_string(
     """{{ title | h1 }}
 
-{% if submodules %}
-.. toctree::
-   :hidden:
-
-   {% for _, child_filename in submodules.items() %}
-   {{ child_filename }}.rst
-   {% endfor %}
-{% endif %}
+.. lua:currentmodule:: {{ parent_modname }}
 
 .. lua:autoobject:: {{ fullname }}
    {% for option, value in options.items() %}:{{ option }}: {{ value }}
    {% endfor %}
+
+{% if submodules %}
+.. toctree::
+   :hidden:
+
+   {% for child_fullname in submodules %}
+   {{ child_fullname }}.rst
+   {% endfor %}
+{% endif %}
 """.lstrip()
 )
 
 _TEMPLATE_MD = _ENV.from_string(
     """# {{ title }}
 
-{% if submodules %}
-```{toctree}
-:hidden:
-
-{% for _, child_filename in submodules.items() %}
-{{ child_filename }}.md
-{% endfor %}
+```{lua:currentmodule} {{ parent_modname }}
 ```
-{% endif %}
 
 ```{lua:autoobject} {{ fullname }}
 {% for option, value in options.items() %}:{{ option }}: {{ value }}
 {% endfor %}
 ```
+
+{% if submodules %}
+```{toctree}
+:hidden:
+
+{% for child_fullname in submodules %}
+{{ child_fullname }}.md
+{% endfor %}
+```
+{% endif %}
 """.lstrip()
 )
 
 
 def generate(
+    domain: LuaDomain,
     dir: pathlib.Path,
     fullname: str,
     objtree: Object,
@@ -61,6 +68,7 @@ def generate(
     depth: int,
     mod_filter: Callable[[str], Any],
     format: str,
+    separate_members: bool,
 ):
     dir.mkdir(parents=True, exist_ok=True)
 
@@ -70,18 +78,20 @@ def generate(
 
     files: set[pathlib.Path] = set()
     _generate(
-        dir,
-        fullname,
-        objtree,
-        "",
-        depth,
-        options,
-        mod_filter,
-        files,
-        format,
+        domain=domain,
+        dir=dir,
+        fullname=fullname,
+        objtree=objtree,
+        depth=depth,
+        options=options,
+        mod_filter=mod_filter,
+        files=files,
+        format=format,
+        separate_members=separate_members,
+        is_toplevel=True,
     )
 
-    removed: set[pathlib.Path] = set(dir.glob("*.rst")) | set(dir.glob("*.md"))
+    removed: set[pathlib.Path] = set(dir.glob("**/*.rst")) | set(dir.glob("**/*.md"))
     removed -= files
 
     for file in removed:
@@ -89,25 +99,23 @@ def generate(
 
 
 def _generate(
+    domain: LuaDomain,
     dir: pathlib.Path,
     fullname: str,
     objtree: Object,
-    filename: str,
     depth: int,
     options: dict[str, Any],
     mod_filter: Callable[[str], Any],
     files: set[pathlib.Path],
     format: str,
+    separate_members: bool,
+    is_toplevel: bool,
+    is_global: bool = False,
+    parent_modname: str | None = None,
 ):
     obj = objtree.find(fullname)
     if not obj:
         raise sphinx.errors.ConfigError(f"can't find module {fullname}")
-
-    if obj.kind != Kind.Module:
-        raise sphinx.errors.ConfigError(
-            f"lua apidoc can only work with modules, "
-            f"instead it got {obj.kind} {fullname}"
-        )
 
     autodoc_options = options.copy()
     for name, value in obj.parsed_options.items():
@@ -126,20 +134,27 @@ def _generate(
         "exclude-members" not in autodoc_options
         or autodoc_options["exclude-members"] is True
     ):
-        autodoc_options["exclude-members"] = set()
+        exclude_members = set()
     else:
-        autodoc_options["exclude-members"] = autodoc_options["exclude-members"].copy()
+        exclude_members = autodoc_options["exclude-members"].copy()
 
-    submodules: dict[str, str] = {}
+    submodules: dict[str, bool] = {}
 
-    if depth > 0:
+    if depth > 0 and obj.kind == Kind.Module:
         for child_name, child in _iter_children(obj, objtree, None, autodoc_options):
-            if child.kind == Kind.Module:
+            if child.kind != Kind.Module and not separate_members:
+                continue
+            if child.is_toplevel:
+                child_fullname = child_name
+                child_is_global = True
+            else:
                 child_fullname = f"{fullname}.{child_name}"
-                child_filename = f"{filename}.{child_name}" if filename else child_name
-                autodoc_options["exclude-members"].add(child_name)
-                if not mod_filter(child_fullname):
-                    submodules[child_fullname] = child_filename
+                child_is_global = False
+            exclude_members.add(child_name)
+            if not mod_filter(child_fullname):
+                submodules[child_fullname] = child_is_global
+
+    autodoc_options["exclude-members"] = exclude_members
 
     for option_name in autodoc_options:
         if autodoc_options[option_name] in (None, True):
@@ -148,14 +163,22 @@ def _generate(
             autodoc_options[option_name] = ", ".join(
                 sorted(autodoc_options[option_name])
             )
+    if is_global:
+        autodoc_options["global"] = ""
+        autodoc_options["module"] = ""
+        lname = "Global"
+    elif obj.kind:
+        lname = LuaDomain.object_types[obj.kind.value].lname.title()
+    else:
+        lname = "Object"
 
     match format:
         case "rst":
             template = _TEMPLATE_RST
-            title = f"Module ``{fullname}``"
+            title = f"{lname} ``{fullname}``"
         case "md":
             template = _TEMPLATE_MD
-            title = f"Module `{fullname}`"
+            title = f"{lname} `{fullname}`"
         case _:
             raise sphinx.errors.ConfigError(f"unknown apidoc format {format}")
 
@@ -164,22 +187,30 @@ def _generate(
         fullname=fullname,
         options=autodoc_options,
         submodules=submodules,
+        parent_modname=parent_modname or "None",
     )
 
-    filepath = dir / f"{filename or 'index'}.{format}"
+    if is_toplevel:
+        filepath = dir / f"index.{format}"
+    else:
+        filepath = dir / f"{fullname}.{format}"
     if not filepath.exists() or filepath.read_text() != page:
         filepath.write_text(page)
     files.add(filepath)
 
-    for child_fullname, child_filename in submodules.items():
+    for child_fullname, child_is_global in submodules.items():
         _generate(
-            dir,
-            child_fullname,
-            objtree,
-            child_filename,
-            depth - 1,
-            options,
-            mod_filter,
-            files,
-            format,
+            domain=domain,
+            dir=dir,
+            fullname=child_fullname,
+            objtree=objtree,
+            depth=depth - 1,
+            options=options,
+            mod_filter=mod_filter,
+            files=files,
+            format=format,
+            separate_members=separate_members,
+            is_toplevel=False,
+            is_global=child_is_global,
+            parent_modname=fullname if child_is_global else parent_modname,
         )

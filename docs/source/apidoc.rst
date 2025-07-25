@@ -13,15 +13,32 @@ where generated ``.rst`` or ``.md`` files should be placed.
 For example, to generate API reference for module ``moduleName``
 in directory ``moduleDirectory``, add the following:
 
-.. code-block:: python
+.. tab-set::
+   :sync-group: lang
 
-   lua_ls_apidoc_roots = {
-       "moduleName": "moduleDirectory",
-   }
+   .. tab-item:: RST
+      :sync: rst
 
-Upon start, Sphinx-LuaLs will recursively create ``.rst`` files in ``moduleDirectory``.
-``moduleDirectory/index.rst`` will contain reference for ``moduleName``.
-Then, for every submodule of ``moduleName``, there will be another ``.rst`` generated.
+      .. code-block:: python
+
+         lua_ls_apidoc_roots = {
+            "moduleName": "moduleDirectory",
+         }
+
+   .. tab-item:: Markdown
+      :sync: md
+
+      .. code-block:: python
+
+         lua_ls_apidoc_format = "md"
+         lua_ls_apidoc_roots = {
+            "moduleName": "moduleDirectory",
+         }
+
+Upon start, Sphinx-LuaLs will recursively create ``.rst`` or ``.md`` files
+in ``moduleDirectory``. ``moduleDirectory/index`` will contain reference for
+``moduleName``. Then, for every submodule of ``moduleName``, there will be another
+``.rst`` or ``.md`` generated.
 
 .. warning::
 
@@ -29,5 +46,34 @@ Then, for every submodule of ``moduleName``, there will be another ``.rst`` gene
 
    It is best to add ``moduleDirectory`` to your ``.gitignore`` file.
 
-Don't forget to include ``moduleDirectory/index.rst`` into a table of contents
-in your main ``index.rst``.
+Don't forget to include ``moduleDirectory/index`` into a table of contents
+in your main ``index.rst``/``index.md``.
+
+Settings
+--------
+
+You can override default settings using :py:data:`lua_ls_apidoc_max_depth`,
+:py:data:`lua_ls_apidoc_default_options`,
+:py:data:`lua_ls_apidoc_ignored_modules`,
+:py:data:`lua_ls_apidoc_separate_members`,
+and :py:data:`lua_ls_apidoc_format`;
+see `settings <settings.html>`_ for more info.
+
+For example, here's how to enable documentation for members without description,
+protected members, and global variables:
+
+.. code-block:: python
+
+   lua_ls_apidoc_default_options = {
+      # Document members without description.
+      "undoc-members": "",
+      # Document protected members.
+      "protected-members": "",
+      # Document module's global variables.
+      "globals": "",
+      # Override default ordering.
+      "member-order": "alphabetical",
+      "module-member-order": "groupwise",
+      # Add table with inherited members for classes.
+      "inherited-members-table": "",
+   }

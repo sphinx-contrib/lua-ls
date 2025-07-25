@@ -189,3 +189,60 @@ def test_autodoc_roots(app, name, file_regression):
         extension=".html",
         encoding="utf8",
     )
+
+
+@pytest.mark.sphinx("html", testroot="apidoc")
+@pytest.mark.parametrize(
+    "name",
+    [
+        pytest.param(
+            "rst",
+            marks=pytest.mark.sphinx(
+                confoverrides={
+                    "lua_ls_apidoc_format": "rst",
+                    "lua_ls_apidoc_separate_members": False,
+                }
+            ),
+        ),
+        pytest.param(
+            "md",
+            marks=pytest.mark.sphinx(
+                confoverrides={
+                    "lua_ls_apidoc_format": "md",
+                    "lua_ls_apidoc_separate_members": False,
+                }
+            ),
+        ),
+        pytest.param(
+            "rst-sep",
+            marks=pytest.mark.sphinx(
+                confoverrides={
+                    "lua_ls_apidoc_format": "rst",
+                    "lua_ls_apidoc_separate_members": True,
+                }
+            ),
+        ),
+        pytest.param(
+            "md-sep",
+            marks=pytest.mark.sphinx(
+                confoverrides={
+                    "lua_ls_apidoc_format": "md",
+                    "lua_ls_apidoc_separate_members": True,
+                }
+            ),
+        ),
+    ],
+)
+def test_apidoc(app, name, data_regression, file_regression):
+    app.build()
+    path = pathlib.Path(app.srcdir) / "api"
+    files = [f for f in path.glob("*") if f.name != ".gitignore"]
+    data_regression.check(
+        {
+            "files": sorted(str(f.relative_to(app.srcdir)) for f in files),
+            "content": {
+                str(file.relative_to(app.srcdir)): file.read_text() for file in files
+            },
+        },
+        basename=f"apidoc-{name}",
+    )

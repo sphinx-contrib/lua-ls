@@ -1,6 +1,8 @@
 # Changelog
 
-## v2.1.0
+## v3.0.0
+
+- Breaking change: changed how `apidoc` generates file names to avoid collisions.
 
 - Supported [EmmyLua] as an alternative backend for documentation export.
 
@@ -59,8 +61,19 @@
   These allow listing all members that were inherited by a class but weren't
   documented within the class body (see [#3]).
 
+- Supported markdown output for `apidoc`.
+
+- Added option to separate module members into their own files for `apidoc`.
+
 [EmmyLua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
 [#3]: https://github.com/taminomara/sphinx-lua-ls/issues/3
+
+**Migrating to 3.0.0:**
+
+- If you're using `apidoc`, you'll need to update links to your documentation.
+
+- You'll need to explicitly specify which language server to use
+  by including `lua_ls_backend` to your `conf.py`.
 
 ## v2.0.1
 

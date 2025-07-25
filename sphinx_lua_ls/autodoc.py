@@ -958,7 +958,12 @@ class AutoObjectDirective(AutodocUtilsMixin):
 
         root, modname, classname, objname = found
 
-        self.push_context(modname, classname, root.using)
+        if root.is_toplevel:
+            # Preserve parent modname so that globals can link to their modules.
+            modname = self.env.ref_context.get("lua:module")
+            self.push_context(modname or "", "", root.using)
+        else:
+            self.push_context(modname, classname, root.using)
         try:
             return self.render(root, objname, top_level=True)
         finally:
@@ -966,7 +971,10 @@ class AutoObjectDirective(AutodocUtilsMixin):
 
     def get_root(self, name: str) -> tuple[Object, str, str, str] | None:
         modname = self.options.get("module", self.env.ref_context.get("lua:module"))
-        classname = self.env.ref_context.get("lua:class", None)
+        if "module" in self.options:
+            classname = ""
+        else:
+            classname = self.env.ref_context.get("lua:class", "")
 
         candidates = [
             ".".join(filter(None, [modname, classname, name])),

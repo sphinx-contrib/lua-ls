@@ -1,0 +1,11 @@
+content:
+  api/index.rst: "Module ``mod``\n==============\n\n.. lua:currentmodule:: None\n\n\
+    .. lua:autoobject:: mod\n   :globals: \n   :members: \n   :recursive: \n   :index-table:\
+    \ \n   :exclude-members: inner\n   \n\n\n.. toctree::\n   :hidden:\n\n   \n  \
+    \ mod.inner.rst\n   \n"
+  api/mod.inner.rst: "Module ``mod.inner``\n====================\n\n.. lua:currentmodule::\
+    \ None\n\n.. lua:autoobject:: mod.inner\n   :globals: \n   :members: \n   :recursive:\
+    \ \n   :index-table: \n   :exclude-members: \n   \n\n"
+files:
+- api/index.rst
+- api/mod.inner.rst

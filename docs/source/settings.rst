@@ -95,7 +95,7 @@ Settings
 .. py:data:: lua_ls_apidoc_roots
    :type: dict[str, str | dict[str, Any]]
 
-   Roots for `apidoc <automatic generation of API files>`_. Keys are full module names
+   Roots for `apidoc <apidoc.html>`_. Keys are full module names
    that should be generated, and values are directories (relative to the location
    of ``conf.py``) where ``.rst`` files are placed.
 
@@ -104,7 +104,8 @@ Settings
    :py:data:`max_depth <lua_ls_apidoc_max_depth>`,
    :py:data:`options <lua_ls_apidoc_default_options>`,
    :py:data:`ignored_modules <lua_ls_apidoc_ignored_modules>`,
-   and :py:data:`ignored_modules <lua_ls_apidoc_format>`:
+   :py:data:`separate_members <lua_ls_apidoc_separate_members>`,
+   and :py:data:`format <lua_ls_apidoc_format>`:
 
    .. code-block:: python
 
@@ -132,6 +133,11 @@ Settings
    will not get their own file, and instead will be generated inline.
 
    Default value is ``4``.
+
+.. py:data:: lua_ls_apidoc_separate_members
+   :type: bool
+
+   If set to ``True``, module members will be rendered on separate pages.
 
 .. py:data:: lua_ls_apidoc_ignored_modules
    :type: list[str]

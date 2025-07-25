@@ -1,0 +1,45 @@
+content:
+  api/Foo.md: "# Global `Foo`\n\n```{lua:currentmodule} mod\n```\n\n```{lua:autoobject}\
+    \ Foo\n:globals: \n:members: \n:recursive: \n:index-table: \n:exclude-members:\
+    \ \n:global: \n:module: \n\n```\n\n"
+  api/INNER_GLOBAL.md: "# Global `INNER_GLOBAL`\n\n```{lua:currentmodule} mod.inner\n\
+    ```\n\n```{lua:autoobject} INNER_GLOBAL\n:globals: \n:members: \n:recursive: \n\
+    :index-table: \n:exclude-members: \n:global: \n:module: \n\n```\n\n"
+  api/MOD_GLOBAL.md: "# Global `MOD_GLOBAL`\n\n```{lua:currentmodule} mod\n```\n\n\
+    ```{lua:autoobject} MOD_GLOBAL\n:globals: \n:members: \n:recursive: \n:index-table:\
+    \ \n:exclude-members: \n:global: \n:module: \n\n```\n\n"
+  api/index.md: "# Module `mod`\n\n```{lua:currentmodule} None\n```\n\n```{lua:autoobject}\
+    \ mod\n:globals: \n:members: \n:recursive: \n:index-table: \n:exclude-members:\
+    \ Foo, MOD_GLOBAL, foo, inner\n\n```\n\n\n```{toctree}\n:hidden:\n\n\nmod.foo.md\n\
+    \nMOD_GLOBAL.md\n\nmod.MOD_GLOBAL.md\n\nFoo.md\n\nmod.Foo.md\n\nmod.inner.md\n\
+    \n```\n"
+  api/mod.Foo.md: "# Class `mod.Foo`\n\n```{lua:currentmodule} None\n```\n\n```{lua:autoobject}\
+    \ mod.Foo\n:globals: \n:members: \n:recursive: \n:index-table: \n:exclude-members:\
+    \ \n\n```\n\n"
+  api/mod.MOD_GLOBAL.md: "# Data `mod.MOD_GLOBAL`\n\n```{lua:currentmodule} None\n\
+    ```\n\n```{lua:autoobject} mod.MOD_GLOBAL\n:globals: \n:members: \n:recursive:\
+    \ \n:index-table: \n:exclude-members: \n\n```\n\n"
+  api/mod.foo.md: "# Function `mod.foo`\n\n```{lua:currentmodule} None\n```\n\n```{lua:autoobject}\
+    \ mod.foo\n:globals: \n:members: \n:recursive: \n:index-table: \n:exclude-members:\
+    \ \n\n```\n\n"
+  api/mod.inner.Bar.md: "# Class `mod.inner.Bar`\n\n```{lua:currentmodule} None\n\
+    ```\n\n```{lua:autoobject} mod.inner.Bar\n:globals: \n:members: \n:recursive:\
+    \ \n:index-table: \n:exclude-members: \n\n```\n\n"
+  api/mod.inner.bar.md: "# Function `mod.inner.bar`\n\n```{lua:currentmodule} None\n\
+    ```\n\n```{lua:autoobject} mod.inner.bar\n:globals: \n:members: \n:recursive:\
+    \ \n:index-table: \n:exclude-members: \n\n```\n\n"
+  api/mod.inner.md: "# Module `mod.inner`\n\n```{lua:currentmodule} None\n```\n\n\
+    ```{lua:autoobject} mod.inner\n:globals: \n:members: \n:recursive: \n:index-table:\
+    \ \n:exclude-members: Bar, INNER_GLOBAL, bar\n\n```\n\n\n```{toctree}\n:hidden:\n\
+    \n\nINNER_GLOBAL.md\n\nmod.inner.bar.md\n\nmod.inner.Bar.md\n\n```\n"
+files:
+- api/Foo.md
+- api/INNER_GLOBAL.md
+- api/MOD_GLOBAL.md
+- api/index.md
+- api/mod.Foo.md
+- api/mod.MOD_GLOBAL.md
+- api/mod.foo.md
+- api/mod.inner.Bar.md
+- api/mod.inner.bar.md
+- api/mod.inner.md

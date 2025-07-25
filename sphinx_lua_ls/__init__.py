@@ -93,6 +93,7 @@ def _api_roots(
     options: dict[str, Any],
     excludes: set[str],
     format: str,
+    separate_members: bool,
 ) -> dict[str, dict[str, Any]]:
     if value is None:
         value = []
@@ -125,6 +126,11 @@ def _api_roots(
         )
         new_api_root["format"] = _str_choices(
             f"{name}[{mod!r}]['format']", api_root.pop("format", format), ["rst", "md"]
+        )
+        new_api_root["separate_members"] = _type(
+            f"{name}[{mod!r}]['separate_members']",
+            api_root.pop("separate_members", separate_members),
+            bool,
         )
         if api_root:
             raise ConfigError(
@@ -163,7 +169,7 @@ def check_options(app: sphinx.application.Sphinx):
     else:
         domain.config["backend"] = "luals"
         _logger.warning(
-            "Sphinx-LuaLs will use EmmyLua as the default language server since v3.0. "
+            "Sphinx-LuaLs will use EmmyLua as the default language server since v4.0. "
             "To keep using LuaLs, set `lua_ls_backend='luals' in your conf.py`",
             type="lua-ls",
         )
@@ -220,6 +226,9 @@ def check_options(app: sphinx.application.Sphinx):
     domain.config["apidoc_format"] = _str_choices(
         "lua_ls_apidoc_format", config["lua_ls_apidoc_format"], ["rst", "md"]
     )
+    domain.config["apidoc_separate_members"] = _type(
+        "lua_ls_apidoc_separate_members", config["lua_ls_apidoc_separate_members"], bool
+    )
     domain.config["apidoc_roots"] = _api_roots(
         "lua_ls_apidoc_roots",
         config["lua_ls_apidoc_roots"],
@@ -228,6 +237,7 @@ def check_options(app: sphinx.application.Sphinx):
         domain.config["apidoc_default_options"],
         domain.config["apidoc_ignored_modules"],
         domain.config["apidoc_format"],
+        domain.config["apidoc_separate_members"],
     )
     domain.config["class_default_function_name"] = _type(
         "lua_ls_class_default_function_name",
@@ -345,6 +355,7 @@ def run_apidoc(
             else:
                 mod_filter = lambda s: False
             sphinx_lua_ls.apidoc.generate(
+                domain,
                 params["path"],
                 name,
                 objtree,
@@ -352,6 +363,7 @@ def run_apidoc(
                 params["max_depth"],
                 mod_filter,
                 params["format"],
+                params["separate_members"],
             )
 
 
@@ -378,6 +390,7 @@ def setup(app: sphinx.application.Sphinx):
     app.add_config_value("lua_ls_apidoc_max_depth", 4, rebuild="")
     app.add_config_value("lua_ls_apidoc_ignored_modules", None, rebuild="")
     app.add_config_value("lua_ls_apidoc_format", "rst", rebuild="")
+    app.add_config_value("lua_ls_apidoc_separate_members", False, rebuild="")
     app.add_config_value("lua_ls_class_default_function_name", "", rebuild="env")
     app.add_config_value("lua_ls_class_default_force_non_colon", False, rebuild="env")
     app.add_config_value("lua_ls_class_default_force_return_self", False, rebuild="env")

@@ -1,0 +1,50 @@
+content:
+  api/Foo.rst: "Global ``Foo``\n==============\n\n.. lua:currentmodule:: mod\n\n..\
+    \ lua:autoobject:: Foo\n   :globals: \n   :members: \n   :recursive: \n   :index-table:\
+    \ \n   :exclude-members: \n   :global: \n   :module: \n   \n\n"
+  api/INNER_GLOBAL.rst: "Global ``INNER_GLOBAL``\n=======================\n\n.. lua:currentmodule::\
+    \ mod.inner\n\n.. lua:autoobject:: INNER_GLOBAL\n   :globals: \n   :members: \n\
+    \   :recursive: \n   :index-table: \n   :exclude-members: \n   :global: \n   :module:\
+    \ \n   \n\n"
+  api/MOD_GLOBAL.rst: "Global ``MOD_GLOBAL``\n=====================\n\n.. lua:currentmodule::\
+    \ mod\n\n.. lua:autoobject:: MOD_GLOBAL\n   :globals: \n   :members: \n   :recursive:\
+    \ \n   :index-table: \n   :exclude-members: \n   :global: \n   :module: \n   \n\
+    \n"
+  api/index.rst: "Module ``mod``\n==============\n\n.. lua:currentmodule:: None\n\n\
+    .. lua:autoobject:: mod\n   :globals: \n   :members: \n   :recursive: \n   :index-table:\
+    \ \n   :exclude-members: Foo, MOD_GLOBAL, foo, inner\n   \n\n\n.. toctree::\n\
+    \   :hidden:\n\n   \n   mod.foo.rst\n   \n   MOD_GLOBAL.rst\n   \n   mod.MOD_GLOBAL.rst\n\
+    \   \n   Foo.rst\n   \n   mod.Foo.rst\n   \n   mod.inner.rst\n   \n"
+  api/mod.Foo.rst: "Class ``mod.Foo``\n=================\n\n.. lua:currentmodule::\
+    \ None\n\n.. lua:autoobject:: mod.Foo\n   :globals: \n   :members: \n   :recursive:\
+    \ \n   :index-table: \n   :exclude-members: \n   \n\n"
+  api/mod.MOD_GLOBAL.rst: "Data ``mod.MOD_GLOBAL``\n=======================\n\n..\
+    \ lua:currentmodule:: None\n\n.. lua:autoobject:: mod.MOD_GLOBAL\n   :globals:\
+    \ \n   :members: \n   :recursive: \n   :index-table: \n   :exclude-members: \n\
+    \   \n\n"
+  api/mod.foo.rst: "Function ``mod.foo``\n====================\n\n.. lua:currentmodule::\
+    \ None\n\n.. lua:autoobject:: mod.foo\n   :globals: \n   :members: \n   :recursive:\
+    \ \n   :index-table: \n   :exclude-members: \n   \n\n"
+  api/mod.inner.Bar.rst: "Class ``mod.inner.Bar``\n=======================\n\n.. lua:currentmodule::\
+    \ None\n\n.. lua:autoobject:: mod.inner.Bar\n   :globals: \n   :members: \n  \
+    \ :recursive: \n   :index-table: \n   :exclude-members: \n   \n\n"
+  api/mod.inner.bar.rst: "Function ``mod.inner.bar``\n==========================\n\
+    \n.. lua:currentmodule:: None\n\n.. lua:autoobject:: mod.inner.bar\n   :globals:\
+    \ \n   :members: \n   :recursive: \n   :index-table: \n   :exclude-members: \n\
+    \   \n\n"
+  api/mod.inner.rst: "Module ``mod.inner``\n====================\n\n.. lua:currentmodule::\
+    \ None\n\n.. lua:autoobject:: mod.inner\n   :globals: \n   :members: \n   :recursive:\
+    \ \n   :index-table: \n   :exclude-members: Bar, INNER_GLOBAL, bar\n   \n\n\n\
+    .. toctree::\n   :hidden:\n\n   \n   INNER_GLOBAL.rst\n   \n   mod.inner.bar.rst\n\
+    \   \n   mod.inner.Bar.rst\n   \n"
+files:
+- api/Foo.rst
+- api/INNER_GLOBAL.rst
+- api/MOD_GLOBAL.rst
+- api/index.rst
+- api/mod.Foo.rst
+- api/mod.MOD_GLOBAL.rst
+- api/mod.foo.rst
+- api/mod.inner.Bar.rst
+- api/mod.inner.bar.rst
+- api/mod.inner.rst

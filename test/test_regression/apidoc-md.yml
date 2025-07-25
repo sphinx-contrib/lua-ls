@@ -1,0 +1,10 @@
+content:
+  api/index.md: "# Module `mod`\n\n```{lua:currentmodule} None\n```\n\n```{lua:autoobject}\
+    \ mod\n:globals: \n:members: \n:recursive: \n:index-table: \n:exclude-members:\
+    \ inner\n\n```\n\n\n```{toctree}\n:hidden:\n\n\nmod.inner.md\n\n```\n"
+  api/mod.inner.md: "# Module `mod.inner`\n\n```{lua:currentmodule} None\n```\n\n\
+    ```{lua:autoobject} mod.inner\n:globals: \n:members: \n:recursive: \n:index-table:\
+    \ \n:exclude-members: \n\n```\n\n"
+files:
+- api/index.md
+- api/mod.inner.md
