@@ -1,4 +1,5 @@
 import pathlib
+import sys
 
 import pytest
 from bs4 import BeautifulSoup
@@ -191,6 +192,7 @@ def test_autodoc_roots(app, name, file_regression):
     )
 
 
+# @pytest.mark.skipif(sys.platform == "win32", reason="requires case-sensitive system")
 @pytest.mark.sphinx("html", testroot="apidoc")
 @pytest.mark.parametrize(
     "name",
@@ -236,12 +238,13 @@ def test_autodoc_roots(app, name, file_regression):
 def test_apidoc(app, name, data_regression, file_regression):
     app.build()
     path = pathlib.Path(app.srcdir) / "api"
-    files = [f for f in path.glob("*") if f.name != ".gitignore"]
+    files = sorted([f for f in path.glob("*") if f.name != ".gitignore"])
     data_regression.check(
         {
-            "files": sorted(str(f.relative_to(app.srcdir)) for f in files),
+            "files": [f.relative_to(app.srcdir).as_posix() for f in files],
             "content": {
-                str(file.relative_to(app.srcdir)): file.read_text() for file in files
+                file.relative_to(app.srcdir).as_posix(): file.read_text()
+                for file in files
             },
         },
         basename=f"apidoc-{name}",

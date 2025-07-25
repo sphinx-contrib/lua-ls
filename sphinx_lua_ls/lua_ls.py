@@ -23,7 +23,7 @@ import requests.adapters
 import urllib3
 from sphinx.errors import SphinxError
 from sphinx.util import logging
-from sphinx.util.console import bold  # type: ignore
+from sphinx.util.console import bold, red  # type: ignore
 
 _PathLike: _t.TypeAlias = str | os.PathLike[str]
 
@@ -176,12 +176,14 @@ class LuaLs:
                     check=True,
                 )
             except subprocess.CalledProcessError as e:
-                raise LuaLsRunError(
+                err = LuaLsRunError(
                     e.returncode,
                     e.cmd,
                     e.output,
                     e.stderr,
-                ) from None
+                )
+                _logger.error("%s", err, type="lua-ls")
+                raise err from None
 
             return json.loads(pathlib.Path(output_path, "doc.json").read_text())
 
@@ -247,7 +249,7 @@ class DefaultProgressReporter(ProgressReporter):
 
     def finish(self, exc_type, exc_val, exc_tb):
         if exc_val:
-            self.progress(f"installation failed: {exc_val}", 0, 0, 0)
+            self.progress(f"installation failed: {red(exc_val)}", 0, 0, 0)
             self.write("\n")
         elif self._prev_len > 0:
             self.progress(f"installed", 0, 0, 0)

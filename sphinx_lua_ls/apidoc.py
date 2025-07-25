@@ -1,13 +1,17 @@
 import os
 import pathlib
+import sys
 from typing import Any, Callable
 
 import jinja2
 import sphinx.errors
+from sphinx.util import logging
 
 from sphinx_lua_ls.autodoc import AutoObjectDirective, _iter_children
 from sphinx_lua_ls.domain import LuaDomain
 from sphinx_lua_ls.objtree import Kind, Object
+
+_logger = logging.getLogger("sphinx_lua_ls")
 
 _ENV = jinja2.Environment()
 _ENV.filters["h1"] = lambda title: f"{title}\n{'=' * len(title)}"  # type: ignore
@@ -59,6 +63,15 @@ _TEMPLATE_MD = _ENV.from_string(
 )
 
 
+class ApiDocError(sphinx.errors.SphinxError):
+    """
+    Raised when ApiDoc fails to run.
+
+    """
+
+    category = "Lua apidoc run failed (see the message above)"
+
+
 def generate(
     domain: LuaDomain,
     dir: pathlib.Path,
@@ -71,6 +84,17 @@ def generate(
     separate_members: bool,
 ):
     dir.mkdir(parents=True, exist_ok=True)
+
+    if fs_is_case_insensitive(dir):
+        msg = "Lua apidoc can't work with case-insensitive file systems."
+        if sys.platform == "win32":
+            msg += (
+                f"\nPlease, make {dir} case-sensitive by running this PowerShell command:\n\n"
+                f'    fsutil.exe file setCaseSensitiveInfo "{dir}" enable\n\n'
+                f"See details at https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity"
+            )
+        _logger.error(msg, type="lua-ls")
+        raise ApiDocError(msg)
 
     options.setdefault("members", True)
     options.setdefault("recursive", True)
@@ -214,3 +238,22 @@ def _generate(
             is_global=child_is_global,
             parent_modname=fullname if child_is_global else parent_modname,
         )
+
+
+def fs_is_case_insensitive(dir: pathlib.Path) -> bool:
+    f1 = dir / "__sphinx_lua_ls_CASE_SENSITIVITY_TEST"
+    f2 = dir / "__sphinx_lua_ls_case_sensitivity_test"
+
+    if f1.exists():
+        os.remove(f1)
+    if f2.exists():
+        os.remove(f2)
+
+    try:
+        f1.touch()
+        return f2.exists()
+    finally:
+        if f1.exists():
+            os.remove(f1)
+        if f2.exists():
+            os.remove(f2)
