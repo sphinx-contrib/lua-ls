@@ -85,8 +85,6 @@ def generate(
     format: str,
     separate_members: bool,
 ):
-    dir.mkdir(parents=True, exist_ok=True)
-
     if not make_case_insensitive(dir) and not make_case_insensitive(outdir):
         msg = "Lua apidoc can't work with case-insensitive file systems."
         if sys.platform == "win32":
@@ -244,6 +242,8 @@ def _generate(
 
 
 def make_case_insensitive(dir: pathlib.Path) -> bool:
+    dir.mkdir(parents=True, exist_ok=True)
+
     if not fs_is_case_insensitive(dir):
         return True
 

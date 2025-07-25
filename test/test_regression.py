@@ -238,7 +238,9 @@ def test_autodoc_roots(app, name, file_regression):
 def test_apidoc(app, name, data_regression, file_regression):
     app.build()
     path = pathlib.Path(app.srcdir) / "api"
-    files = sorted([f for f in path.glob("*") if f.name != ".gitignore"])
+    files = sorted(
+        [f for f in path.glob("*") if f.name != ".gitignore"], key=pathlib.Path.as_posix
+    )
     data_regression.check(
         {
             "files": [f.relative_to(app.srcdir).as_posix() for f in files],
