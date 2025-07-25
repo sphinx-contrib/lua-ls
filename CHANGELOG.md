@@ -2,7 +2,7 @@
 
 ## v3.0.0
 
-- Breaking change: changed how `apidoc` generates file names to avoid collisions.
+- **Breaking change:** changed how `apidoc` generates file names to avoid collisions.
 
 - Supported [EmmyLua] as an alternative backend for documentation export.
 
@@ -81,10 +81,10 @@
 
 ## v2.0.0
 
-- Breaking change: don't implicitly convert classes that're derived from `table`
+- **Breaking change:** don't implicitly convert classes that're derived from `table`
   to modules. Users should use a `!doctype` comment instead.
 
-- Breaking change: disallow nesting modules inside classes.
+- **Breaking change:** disallow nesting modules inside classes.
 
 - Added `autoindex` directive.
 
