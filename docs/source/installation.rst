@@ -130,9 +130,12 @@ You'll need a Python installation and a Sphinx project to start with Sphinx-LuaL
 
             lua_ls_backend = "emmylua"
 
-         At the moment, Sphinx-LuaLs does not provide an automatic way to install
-         EmmyLua's documentation tool. You'll need to install ``emmylua_doc_cli`` manually,
-         see `instructions at github`_.
+         .. note::
+
+            If you're on Linux x64, Windows x64, or MacOs arm, Sphinx-LuaLs will
+            download EmmyLua's documentation tool automatically. Otherwise,
+            you'll need to install ``emmylua_doc_cli`` manually,
+            see `instructions at github`_.
 
          .. tip::
 
@@ -142,6 +145,9 @@ You'll need a Python installation and a Sphinx project to start with Sphinx-LuaL
             .. code-block:: json
 
                {
+                  "diagnostics": {
+                     "enables": ["unknown-doc-tag"]
+                  },
                   "doc": {
                      "knownTags": ["doctype", "doc"]
                   }

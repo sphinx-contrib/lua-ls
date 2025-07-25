@@ -26,10 +26,6 @@ Settings
    Controls whether Sphinx-LuaLs should try downloading lua analyzer (LuaLs or EmmyLua)
    from github if it isn't installed already. This setting is enabled by default.
 
-   .. note::
-
-      At the moment, automatic installation does not work for EmmyLua.
-
 .. py:data:: lua_ls_auto_install_location
    :type: str
 

@@ -247,10 +247,10 @@ class DefaultProgressReporter(ProgressReporter):
 
     def finish(self, exc_type, exc_val, exc_tb):
         if exc_val:
-            self.progress(f"lua_ls installation failed: {exc_val}", 0, 0, 0)
+            self.progress(f"installation failed: {exc_val}", 0, 0, 0)
             self.write("\n")
         elif self._prev_len > 0:
-            self.progress(f"lua_ls installed", 0, 0, 0)
+            self.progress(f"installed", 0, 0, 0)
             self.write("\n")
 
     def format_desc(self, desc: str) -> str:
@@ -531,7 +531,7 @@ def _install_lua_ls(
     platform: str,
     system_bin_path: str | None,
     system_version: str | None,
-    verify: bool = False,
+    verify: bool = True,
 ):
     # Check system compatibility.
 
@@ -593,6 +593,8 @@ def _install_lua_ls(
                 tmp_dir,
                 filter,
                 reporter,
+                platform,
+                machine,
             )
 
             reporter.progress(f"processing lua-language-server", 0, 0, 0)
@@ -607,7 +609,11 @@ def _install_lua_ls(
                 bin_path = cache_path / "bin/lua-language-server"
             bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
         except Exception as e:
-            raise LuaLsError(f"lua-language-server install failed: {e}")
+            raise LuaLsError(
+                f"lua-language-server install failed: {e}; "
+                f"please install it manually -- see "
+                f"https://lua_ls.github.io/#other-install"
+            )
 
     if verify:
         can_use_cached_lua_ls, _ = _check_version(version, bin_path)
@@ -637,12 +643,12 @@ def _install_emmylua(
     platform: str,
     system_bin_path: str | None,
     system_version: str | None,
-    verify: bool = False,
+    verify: bool = True,
 ):
     release_names = {
         ("darwin", "arm"): "-darwin-arm64.tar.gz",
         ("darwin", "x86_64"): "-darwin-x64.tar.gz",
-        # ("linux", "arm"): "-linux-arm64.tar.gz",
+        ("linux", "arm"): "-linux-arm64.tar.gz",
         ("linux", "x86_64"): "-linux-x64.tar.gz",
         ("win32", "amd64"): "-win32-x64.zip",
     }
@@ -680,12 +686,6 @@ def _install_emmylua(
 
     # Download binary release.
 
-    raise LuaLsError(
-        f"at the moment, emmylua does not ship pre-compiled binaries for emmylua_doc_cli; "
-        f"please, install it manually - see "
-        f"https://github.com/EmmyLuaLs/emmylua-analyzer-rust?tab=readme-ov-file#-installation"
-    )
-
     api = github.Github(retry=retry, timeout=timeout)
 
     filter = lambda name: name.startswith("emmylua_doc_cli") and name.endswith(
@@ -705,6 +705,8 @@ def _install_emmylua(
                 tmp_dir,
                 filter,
                 reporter,
+                platform,
+                machine,
             )
 
             reporter.progress(f"processing emmylua_doc_cli", 0, 0, 0)
@@ -714,12 +716,16 @@ def _install_emmylua(
             shutil.unpack_archive(tmp_file, cache_path)
 
             if platform == "win32":
-                bin_path = cache_path / "bin/emmylua_doc_cli.exe"
+                bin_path = cache_path / "emmylua_doc_cli.exe"
             else:
-                bin_path = cache_path / "bin/emmylua_doc_cli"
+                bin_path = cache_path / "emmylua_doc_cli"
             bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
         except Exception as e:
-            raise LuaLsError(f"emmylua_doc_cli install failed: {e}")
+            raise LuaLsError(
+                f"emmylua_doc_cli install failed: {e}; "
+                f"please install it manually -- see "
+                f"https://github.com/EmmyLuaLs/emmylua-analyzer-rust?tab=readme-ov-file#-installation"
+            )
 
     if verify:
         can_use_cached_lua_ls, _ = _check_version(version, bin_path)
@@ -745,6 +751,8 @@ def _download_latest_release(
     dest: pathlib.Path,
     filter: _t.Callable[[str], bool],
     reporter: ProgressReporter,
+    platform: str,
+    machine: str,
 ):
     reporter.progress(f"resolving {name}", 0, 0, 0)
 
@@ -764,9 +772,7 @@ def _download_latest_release(
                 browser_download_url = asset.browser_download_url
                 break
         else:
-            raise LuaLsError(
-                f"unable to find {name} release for platform {sys.platform}"
-            )
+            raise LuaLsError(f"unable to find {name} release for {platform}-{machine}")
 
         break
     else:
@@ -814,6 +820,7 @@ if __name__ == "__main__":
         import argparse
 
         parser = argparse.ArgumentParser()
+        parser.add_argument("--runtime", choices=["luals", "emmylua"], default="luals")
         parser.add_argument("platform")
         parser.add_argument("machine")
         parser.add_argument("path", type=pathlib.Path)
@@ -825,19 +832,38 @@ if __name__ == "__main__":
 
         args = parser.parse_args()
 
-        _install_lua_ls(
-            "0.0.0",
-            args.path,
-            _get_path(None),
-            True,
-            DefaultProgressReporter(),
-            15,
-            urllib3.Retry(10, backoff_factor=0.1),
-            args.machine,
-            args.platform,
-            None,
-            None,
-            False,
-        )
+        match args.runtime:
+            case "luals":
+                _install_lua_ls(
+                    "0.0.0",
+                    args.path,
+                    _get_path(None),
+                    True,
+                    DefaultProgressReporter(),
+                    15,
+                    urllib3.Retry(10, backoff_factor=0.1),
+                    args.machine,
+                    args.platform,
+                    None,
+                    None,
+                    False,
+                )
+            case "emmylua":
+                _install_emmylua(
+                    "0.0.0",
+                    args.path,
+                    _get_path(None),
+                    True,
+                    DefaultProgressReporter(),
+                    15,
+                    urllib3.Retry(10, backoff_factor=0.1),
+                    args.machine,
+                    args.platform,
+                    None,
+                    None,
+                    False,
+                )
+            case _:
+                parser.error(f"unknown runtime {args.runtime}")
 
     main()
