@@ -15,7 +15,7 @@
   - it exports way more metadata, including function overloads and class constructors,
   - you don't have to annotate modules with `@class` and `!doctype` anymore.
 
-  I plan to use EmmyLua as the default language server since *v3.0.0*.
+  I plan to use EmmyLua as the default language server since *v4.0.0*.
 
 - Long object signatures are now broken into multiple lines.
 
