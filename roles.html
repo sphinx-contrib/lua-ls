@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="installation.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Generating documentation for objects" href="autodoc.html" /><link rel="prev" title="Declaring objects" href="directives.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Sphinx-LuaLs 3.0.0 documentation</title>
+        <title>Cross-referencing objects - Sphinx-LuaLs 3.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">Sphinx-LuaLs 3.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -189,7 +189,7 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   <span class="sidebar-brand-text">Sphinx-LuaLs 3.0.0 documentation</span>
   
@@ -199,11 +199,11 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="directives.html">Declaring objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roles.html">Cross-referencing objects</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Cross-referencing objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Generating documentation for objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="apidoc.html">Generating API references</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a></li>
@@ -228,12 +228,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/blob/main/docs/source/index.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/blob/main/docs/source/roles.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/edit/main/docs/source/index.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/edit/main/docs/source/roles.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -252,30 +252,72 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="sphinx-luals">
-<h1>Sphinx-LuaLs<a class="headerlink" href="#sphinx-luals" title="Link to this heading">¶</a></h1>
-<p>Sphinx-LuaLs features domain for <a class="reference external" href="https://lua.org">Lua</a> and automatic documentation generator
-based on <a class="reference external" href="https://github.com/EmmyLuaLs/emmylua-analyzer-rust/">EmmyLua</a> or <a class="reference external" href="https://lua_ls.github.io/">LuaLs</a> language servers.</p>
-<p>See an example output: <a class="reference internal" href="example.html#lua-logging" title="logging"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging</span></code></a>.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="directives.html">Declaring objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roles.html">Cross-referencing objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc.html">Generating documentation for objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apidoc.html">Generating API references</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a></li>
-<li class="toctree-l1"><a class="reference internal" href="example.html">Example output</a></li>
-</ul>
+          <section id="cross-referencing-objects">
+<h1>Cross-referencing objects<a class="headerlink" href="#cross-referencing-objects" title="Link to this heading">¶</a></h1>
+<dl class="rst role">
+<dt class="sig sig-object rst" id="role-lua-obj">
+<span class="sig-name descname"><span class="pre">:lua:obj:</span></span><a class="headerlink" href="#role-lua-obj" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="role-lua-lua">
+<span class="sig-name descname"><span class="pre">:lua:lua:</span></span><a class="headerlink" href="#role-lua-lua" title="Link to this definition">¶</a></dt>
+<dd><p>You can reference any documented object through the <a class="reference internal" href="#role-lua-obj" title="lua:obj role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:obj</span></code></a> role.</p>
+<p>Given an object path, Lua domain will first search for an object with this path
+in the outer-most class, then in the current module, and finally
+in the global namespace.</p>
+<p>So, if you reference an object <code class="docutils literal notranslate"><span class="pre">Sound.id</span></code> from documentation of a class
+<code class="docutils literal notranslate"><span class="pre">SoundBoard.Helper</span></code> located in the module <code class="docutils literal notranslate"><span class="pre">soundboard</span></code>, Lua domain will
+first check <code class="docutils literal notranslate"><span class="pre">soundboard.SoundBoard.Helper.Sound.id</span></code>,
+then <code class="docutils literal notranslate"><span class="pre">soundboard.Sound.id</span></code>, and finally <code class="docutils literal notranslate"><span class="pre">Sound.id</span></code>.</p>
+<p>If you specify a fully qualified object name, and would like to hide its prefix,
+you can add a tilde (<code class="docutils literal notranslate"><span class="pre">~</span></code>) to the object’s path:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-0">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span>Reference to a <span class="na">:lua:obj:</span><span class="nv">`~logging.Logger`</span>.
+</pre></div>
 </div>
-<section id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
-</section>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-1">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-myst notranslate"><div class="highlight"><pre><span></span>Reference to a <span class="p">{</span><span class="ow">lua:obj</span><span class="p">}</span><span class="sb">`~logging.Logger`</span>.
+</pre></div>
+</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Example output</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Reference to a <a class="reference internal" href="example.html#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">Logger</span></code></a>.</p>
+</div>
+</details></dd></dl>
+
+<dl class="rst role">
+<dt class="sig sig-object rst" id="role-lua-func">
+<span class="sig-name descname"><span class="pre">:lua:func:</span></span><a class="headerlink" href="#role-lua-func" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="role-lua-data">
+<span class="sig-name descname"><span class="pre">:lua:data:</span></span><a class="headerlink" href="#role-lua-data" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="role-lua-const">
+<span class="sig-name descname"><span class="pre">:lua:const:</span></span><a class="headerlink" href="#role-lua-const" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="role-lua-class">
+<span class="sig-name descname"><span class="pre">:lua:class:</span></span><a class="headerlink" href="#role-lua-class" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="role-lua-alias">
+<span class="sig-name descname"><span class="pre">:lua:alias:</span></span><a class="headerlink" href="#role-lua-alias" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="role-lua-enum">
+<span class="sig-name descname"><span class="pre">:lua:enum:</span></span><a class="headerlink" href="#role-lua-enum" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="role-lua-meth">
+<span class="sig-name descname"><span class="pre">:lua:meth:</span></span><a class="headerlink" href="#role-lua-meth" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="role-lua-attr">
+<span class="sig-name descname"><span class="pre">:lua:attr:</span></span><a class="headerlink" href="#role-lua-attr" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="role-lua-mod">
+<span class="sig-name descname"><span class="pre">:lua:mod:</span></span><a class="headerlink" href="#role-lua-mod" title="Link to this definition">¶</a></dt>
+<dd><p>These are additional roles that you can use to reference a Lua object.</p>
+<p>Lua domain does not allow having multiple objects with the same full name.
+Thus, all of these roles work exactly the same as <a class="reference internal" href="#role-lua-obj" title="lua:obj role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:obj</span></code></a>.
+The only difference is that they will warn you if the type of the referenced object
+doesn’t match the role’s type.</p>
+</dd></dl>
+
 </section>
 
         </article>
@@ -283,16 +325,26 @@ based on <a class="reference external" href="https://github.com/EmmyLuaLs/emmylu
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="installation.html">
+          <a class="next-page" href="autodoc.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Installation</div>
+                <div class="title">Generating documentation for objects</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          
+          <a class="prev-page" href="directives.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Declaring objects</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -323,8 +375,18 @@ based on <a class="reference external" href="https://github.com/EmmyLuaLs/emmylu
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Sphinx-LuaLs</a><ul>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#">Cross-referencing objects</a><ul>
+<li><a class="reference internal" href="#role-lua-obj"><code class="docutils literal notranslate"><span class="pre">:lua:obj:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-lua"><code class="docutils literal notranslate"><span class="pre">:lua:lua:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-func"><code class="docutils literal notranslate"><span class="pre">:lua:func:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-data"><code class="docutils literal notranslate"><span class="pre">:lua:data:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-const"><code class="docutils literal notranslate"><span class="pre">:lua:const:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-class"><code class="docutils literal notranslate"><span class="pre">:lua:class:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-alias"><code class="docutils literal notranslate"><span class="pre">:lua:alias:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-enum"><code class="docutils literal notranslate"><span class="pre">:lua:enum:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-meth"><code class="docutils literal notranslate"><span class="pre">:lua:meth:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-attr"><code class="docutils literal notranslate"><span class="pre">:lua:attr:</span></code></a></li>
+<li><a class="reference internal" href="#role-lua-mod"><code class="docutils literal notranslate"><span class="pre">:lua:mod:</span></code></a></li>
 </ul>
 </li>
 </ul>

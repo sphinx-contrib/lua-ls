@@ -3,10 +3,10 @@
   <head><meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
-<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Installation" href="installation.html" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Settings" href="settings.html" /><link rel="prev" title="Generating documentation for objects" href="autodoc.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Sphinx-LuaLs 3.0.0 documentation</title>
+        <title>Generating API references - Sphinx-LuaLs 3.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="#"><div class="brand">Sphinx-LuaLs 3.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.0.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -189,7 +189,7 @@
   <aside class="sidebar-drawer">
     <div class="sidebar-container">
       
-      <div class="sidebar-sticky"><a class="sidebar-brand" href="#">
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
   <span class="sidebar-brand-text">Sphinx-LuaLs 3.0.0 documentation</span>
   
@@ -199,13 +199,13 @@
   <input type="hidden" name="area" value="default">
 </form>
 <div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
-  <ul>
+  <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
 <li class="toctree-l1"><a class="reference internal" href="directives.html">Declaring objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="roles.html">Cross-referencing objects</a></li>
 <li class="toctree-l1"><a class="reference internal" href="autodoc.html">Generating documentation for objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apidoc.html">Generating API references</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Generating API references</a></li>
 <li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example.html">Example output</a></li>
 </ul>
@@ -228,12 +228,12 @@
         </a>
         <div class="content-icon-container">
           <div class="view-this-page">
-  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/blob/main/docs/source/index.rst?plain=true" title="View this page">
+  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/blob/main/docs/source/apidoc.rst?plain=true" title="View this page">
     <svg><use href="#svg-eye"></use></svg>
     <span class="visually-hidden">View this page</span>
   </a>
 </div><div class="edit-this-page">
-  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/edit/main/docs/source/index.rst" rel="edit" title="Edit this page">
+  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/edit/main/docs/source/apidoc.rst" rel="edit" title="Edit this page">
     <svg><use href="#svg-pencil"></use></svg>
     <span class="visually-hidden">Edit this page</span>
   </a>
@@ -252,29 +252,74 @@
           </label>
         </div>
         <article role="main" id="furo-main-content">
-          <section id="sphinx-luals">
-<h1>Sphinx-LuaLs<a class="headerlink" href="#sphinx-luals" title="Link to this heading">¶</a></h1>
-<p>Sphinx-LuaLs features domain for <a class="reference external" href="https://lua.org">Lua</a> and automatic documentation generator
-based on <a class="reference external" href="https://github.com/EmmyLuaLs/emmylua-analyzer-rust/">EmmyLua</a> or <a class="reference external" href="https://lua_ls.github.io/">LuaLs</a> language servers.</p>
-<p>See an example output: <a class="reference internal" href="example.html#lua-logging" title="logging"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging</span></code></a>.</p>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quickstart</a></li>
-<li class="toctree-l1"><a class="reference internal" href="directives.html">Declaring objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="roles.html">Cross-referencing objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="autodoc.html">Generating documentation for objects</a></li>
-<li class="toctree-l1"><a class="reference internal" href="apidoc.html">Generating API references</a></li>
-<li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a></li>
-<li class="toctree-l1"><a class="reference internal" href="example.html">Example output</a></li>
-</ul>
+          <section id="generating-api-references">
+<h1>Generating API references<a class="headerlink" href="#generating-api-references" title="Link to this heading">¶</a></h1>
+<p><a class="reference internal" href="autodoc.html#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> allows recursively generating documentation,
+however it all ends up on a single page. If you want to give a separate page
+for every module, you’ll need to create multiple <code class="docutils literal notranslate"><span class="pre">.rst</span></code> or <code class="docutils literal notranslate"><span class="pre">.md</span></code> files.
+Fortunately, Sphinx-LuaLs can do this for you.</p>
+<p>Add <a class="reference internal" href="settings.html#lua_ls_apidoc_roots" title="lua_ls_apidoc_roots"><code class="xref py py-data docutils literal notranslate"><span class="pre">lua_ls_apidoc_roots</span></code></a> option to the <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>, and provide a mapping
+from module names to directories (relative to the location of <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>)
+where generated <code class="docutils literal notranslate"><span class="pre">.rst</span></code> or <code class="docutils literal notranslate"><span class="pre">.md</span></code> files should be placed.</p>
+<p>For example, to generate API reference for module <code class="docutils literal notranslate"><span class="pre">moduleName</span></code>
+in directory <code class="docutils literal notranslate"><span class="pre">moduleDirectory</span></code>, add the following:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-0">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lua_ls_apidoc_roots</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;moduleName&quot;</span><span class="p">:</span> <span class="s2">&quot;moduleDirectory&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
 </div>
-<section id="indices-and-tables">
-<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Link to this heading">¶</a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
-<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
-</ul>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-1">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lua_ls_apidoc_format</span> <span class="o">=</span> <span class="s2">&quot;md&quot;</span>
+<span class="n">lua_ls_apidoc_roots</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="s2">&quot;moduleName&quot;</span><span class="p">:</span> <span class="s2">&quot;moduleDirectory&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Upon start, Sphinx-LuaLs will recursively create <code class="docutils literal notranslate"><span class="pre">.rst</span></code> or <code class="docutils literal notranslate"><span class="pre">.md</span></code> files
+in <code class="docutils literal notranslate"><span class="pre">moduleDirectory</span></code>. <code class="docutils literal notranslate"><span class="pre">moduleDirectory/index</span></code> will contain reference for
+<code class="docutils literal notranslate"><span class="pre">moduleName</span></code>. Then, for every submodule of <code class="docutils literal notranslate"><span class="pre">moduleName</span></code>, there will be another
+<code class="docutils literal notranslate"><span class="pre">.rst</span></code> or <code class="docutils literal notranslate"><span class="pre">.md</span></code> generated.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Do not add any other files to <code class="docutils literal notranslate"><span class="pre">moduleDirectory</span></code>, otherwise they will be deleted.</p>
+<p>It is best to add <code class="docutils literal notranslate"><span class="pre">moduleDirectory</span></code> to your <code class="docutils literal notranslate"><span class="pre">.gitignore</span></code> file.</p>
+</div>
+<p>Don’t forget to include <code class="docutils literal notranslate"><span class="pre">moduleDirectory/index</span></code> into a table of contents
+in your main <code class="docutils literal notranslate"><span class="pre">index.rst</span></code>/<code class="docutils literal notranslate"><span class="pre">index.md</span></code>.</p>
+<section id="settings">
+<h2>Settings<a class="headerlink" href="#settings" title="Link to this heading">¶</a></h2>
+<p>You can override default settings using <a class="reference internal" href="settings.html#lua_ls_apidoc_max_depth" title="lua_ls_apidoc_max_depth"><code class="xref py py-data docutils literal notranslate"><span class="pre">lua_ls_apidoc_max_depth</span></code></a>,
+<a class="reference internal" href="settings.html#lua_ls_apidoc_default_options" title="lua_ls_apidoc_default_options"><code class="xref py py-data docutils literal notranslate"><span class="pre">lua_ls_apidoc_default_options</span></code></a>,
+<a class="reference internal" href="settings.html#lua_ls_apidoc_ignored_modules" title="lua_ls_apidoc_ignored_modules"><code class="xref py py-data docutils literal notranslate"><span class="pre">lua_ls_apidoc_ignored_modules</span></code></a>,
+<a class="reference internal" href="settings.html#lua_ls_apidoc_separate_members" title="lua_ls_apidoc_separate_members"><code class="xref py py-data docutils literal notranslate"><span class="pre">lua_ls_apidoc_separate_members</span></code></a>,
+and <a class="reference internal" href="settings.html#lua_ls_apidoc_format" title="lua_ls_apidoc_format"><code class="xref py py-data docutils literal notranslate"><span class="pre">lua_ls_apidoc_format</span></code></a>;
+see <a class="reference external" href="settings.html">settings</a> for more info.</p>
+<p>For example, here’s how to enable documentation for members without description,
+protected members, and global variables:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lua_ls_apidoc_default_options</span> <span class="o">=</span> <span class="p">{</span>
+   <span class="c1"># Document members without description.</span>
+   <span class="s2">&quot;undoc-members&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+   <span class="c1"># Document protected members.</span>
+   <span class="s2">&quot;protected-members&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+   <span class="c1"># Document module&#39;s global variables.</span>
+   <span class="s2">&quot;globals&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+   <span class="c1"># Override default ordering.</span>
+   <span class="s2">&quot;member-order&quot;</span><span class="p">:</span> <span class="s2">&quot;alphabetical&quot;</span><span class="p">,</span>
+   <span class="s2">&quot;module-member-order&quot;</span><span class="p">:</span> <span class="s2">&quot;groupwise&quot;</span><span class="p">,</span>
+   <span class="c1"># Add table with inherited members for classes.</span>
+   <span class="s2">&quot;inherited-members-table&quot;</span><span class="p">:</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </section>
 </section>
 
@@ -283,16 +328,26 @@ based on <a class="reference external" href="https://github.com/EmmyLuaLs/emmylu
       <footer>
         
         <div class="related-pages">
-          <a class="next-page" href="installation.html">
+          <a class="next-page" href="settings.html">
               <div class="page-info">
                 <div class="context">
                   <span>Next</span>
                 </div>
-                <div class="title">Installation</div>
+                <div class="title">Settings</div>
               </div>
               <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
             </a>
-          
+          <a class="prev-page" href="autodoc.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Generating documentation for objects</div>
+                
+              </div>
+            </a>
         </div>
         <div class="bottom-of-page">
           <div class="left-details">
@@ -323,8 +378,8 @@ based on <a class="reference external" href="https://github.com/EmmyLuaLs/emmylu
         <div class="toc-tree-container">
           <div class="toc-tree">
             <ul>
-<li><a class="reference internal" href="#">Sphinx-LuaLs</a><ul>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+<li><a class="reference internal" href="#">Generating API references</a><ul>
+<li><a class="reference internal" href="#settings">Settings</a></li>
 </ul>
 </li>
 </ul>
