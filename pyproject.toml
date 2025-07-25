@@ -4,7 +4,7 @@ authors = [{name = "Tamika Nomara", email = "taminomara@gmail.com"}]
 description = "Automatic documentation generation via EmmyLua/LuaLs"
 dynamic = ["version"]
 readme = "README.md"
-license = {file = "LICENSE"}
+license = "MIT"
 requires-python = ">=3.12"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -12,7 +12,6 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
-    "License :: OSI Approved :: MIT License",
     "Intended Audience :: Developers",
     "Framework :: Sphinx",
     "Framework :: Sphinx :: Domain",
