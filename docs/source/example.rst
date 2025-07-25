@@ -31,11 +31,11 @@ This output is generated with the following directive:
          :module-member-order: groupwise
          ```
 
-See ``logger.lua`` `on github`_.
-
-----
+See ``logging.lua`` `on github`_.
 
 .. _on github: https://github.com/taminomara/sphinx-lua-ls/blob/main/docs/example/logging.lua
+
+----
 
 .. lua:autoobject:: logging
    :members:
