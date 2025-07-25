@@ -2,6 +2,7 @@ import os
 import pathlib
 import subprocess
 import sys
+import urllib.parse
 from typing import Any, Callable
 
 import jinja2
@@ -11,6 +12,7 @@ from sphinx.util import logging
 from sphinx_lua_ls.autodoc import AutoObjectDirective, _iter_children
 from sphinx_lua_ls.domain import LuaDomain
 from sphinx_lua_ls.objtree import Kind, Object
+from sphinx_lua_ls.utils import normalize_name
 
 _logger = logging.getLogger("sphinx_lua_ls")
 
@@ -18,7 +20,7 @@ _ENV = jinja2.Environment()
 _ENV.filters["h1"] = lambda title: f"{title}\n{'=' * len(title)}"  # type: ignore
 _ENV.filters["h2"] = lambda title: f"{title}\n{'-' * len(title)}"  # type: ignore
 _ENV.filters["h3"] = lambda title: f"{title}\n{'~' * len(title)}"  # type: ignore
-
+_ENV.filters["mangle"] = lambda name: _mangle_filename(name)  # type: ignore
 
 _TEMPLATE_RST = _ENV.from_string(
     """{{ title | h1 }}
@@ -34,7 +36,7 @@ _TEMPLATE_RST = _ENV.from_string(
    :hidden:
 
    {% for child_fullname in submodules %}
-   {{ child_fullname }}.rst
+   {{ child_fullname | mangle }}.rst
    {% endfor %}
 {% endif %}
 """.lstrip()
@@ -56,21 +58,12 @@ _TEMPLATE_MD = _ENV.from_string(
 :hidden:
 
 {% for child_fullname in submodules %}
-{{ child_fullname }}.md
+{{ child_fullname | mangle }}.md
 {% endfor %}
 ```
 {% endif %}
 """.lstrip()
 )
-
-
-class ApiDocError(sphinx.errors.SphinxError):
-    """
-    Raised when ApiDoc fails to run.
-
-    """
-
-    category = "Lua apidoc run failed (see the message above)"
 
 
 def generate(
@@ -85,23 +78,17 @@ def generate(
     format: str,
     separate_members: bool,
 ):
-    if not make_case_insensitive(dir) and not make_case_insensitive(outdir):
-        msg = "Lua apidoc can't work with case-insensitive file systems."
-        if sys.platform == "win32":
-            msg += (
-                f"\nPlease, make {dir} case-sensitive by running this PowerShell command:\n\n"
-                f'    fsutil.exe file setCaseSensitiveInfo "{dir}" enable\n'
-                f'    fsutil.exe file setCaseSensitiveInfo "{outdir}" enable\n\n'
-                f"See details at https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity"
-            )
-        _logger.error(msg, type="lua-ls")
-        raise ApiDocError(msg)
+    dir_is_case_sensitive = _make_case_sensitive(dir)
+    out_is_case_sensitive = _make_case_sensitive(outdir)
+    is_case_insensitive = not dir_is_case_sensitive or not out_is_case_sensitive
 
     options.setdefault("members", True)
     options.setdefault("recursive", True)
     options.setdefault("index-table", True)
 
-    files: set[pathlib.Path] = set()
+    # Note: it's important to work with string file paths
+    # due to case sensitivity issues.
+    files: set[str] = set()
     _generate(
         domain=domain,
         dir=dir,
@@ -116,7 +103,25 @@ def generate(
         is_toplevel=True,
     )
 
-    removed: set[pathlib.Path] = set(dir.glob("**/*.rst")) | set(dir.glob("**/*.md"))
+    if (is_case_insensitive or pathlib.Path("a") == pathlib.Path("A")) and (
+        len(files) != len({f.lower() for f in files})
+    ):
+        msg = (
+            "Running Lua apidoc on case-insensitive file system."
+            "\nIf you experience issues, see documentation for potential solutions:"
+            "\n    https://taminomara.github.io/sphinx-lua-ls/settings.html#lua_ls_apidoc_separate_members"
+        )
+        if sys.platform == "win32" and is_case_insensitive:
+            msg += (
+                "\nYou can make relevant directories case-sensitive by running:"
+                f'\n    fsutil.exe file setCaseSensitiveInfo "{dir}" enable'
+                f'\n    fsutil.exe file setCaseSensitiveInfo "{outdir}" enable'
+                "\nSee more info at:"
+                "\n    https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity"
+            )
+        _logger.warning(msg, type="lua-ls")
+
+    removed: set[str] = {str(f) for f in dir.iterdir()}
     removed -= files
 
     for file in removed:
@@ -131,7 +136,7 @@ def _generate(
     depth: int,
     options: dict[str, Any],
     mod_filter: Callable[[str], Any],
-    files: set[pathlib.Path],
+    files: set[str],
     format: str,
     separate_members: bool,
     is_toplevel: bool,
@@ -218,10 +223,10 @@ def _generate(
     if is_toplevel:
         filepath = dir / f"index.{format}"
     else:
-        filepath = dir / f"{fullname}.{format}"
+        filepath = dir / f"{_mangle_filename(fullname)}.{format}"
     if not filepath.exists() or filepath.read_text() != page:
         filepath.write_text(page)
-    files.add(filepath)
+    files.add(str(filepath))
 
     for child_fullname, child_is_global in submodules.items():
         _generate(
@@ -241,10 +246,10 @@ def _generate(
         )
 
 
-def make_case_insensitive(dir: pathlib.Path) -> bool:
+def _make_case_sensitive(dir: pathlib.Path) -> bool:
     dir.mkdir(parents=True, exist_ok=True)
 
-    if not fs_is_case_insensitive(dir):
+    if not _fs_is_case_insensitive(dir):
         return True
 
     if sys.platform == "win32":
@@ -261,13 +266,12 @@ def make_case_insensitive(dir: pathlib.Path) -> bool:
         if retcode != 0:
             return False
         else:
-            _logger.info("success")
-            return not fs_is_case_insensitive(dir)
+            return not _fs_is_case_insensitive(dir)
 
     return False
 
 
-def fs_is_case_insensitive(dir: pathlib.Path) -> bool:
+def _fs_is_case_insensitive(dir: pathlib.Path) -> bool:
     f1 = dir / "__sphinx_lua_ls_CASE_SENSITIVITY_TEST"
     f2 = dir / "__sphinx_lua_ls_case_sensitivity_test"
 
@@ -284,3 +288,9 @@ def fs_is_case_insensitive(dir: pathlib.Path) -> bool:
             os.remove(f1)
         if f2.exists():
             os.remove(f2)
+
+
+def _mangle_filename(name: str) -> str:
+    # We don't want to urlencode the file name because we'll end up with double
+    # encoding in all references. So, we use `!` instead of `%`.
+    return urllib.parse.quote(normalize_name(name), safe="()[]").replace("%", "!")

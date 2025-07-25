@@ -107,7 +107,7 @@ class LuaLs:
         configs: list[_PathLike] | None = None,
     ) -> _t.Any:
         """
-        Renter the given VHS file.
+        Run lua ls.
 
         :param input_path:
             path to the directory/file that needs documentation.
@@ -120,7 +120,7 @@ class LuaLs:
         :return:
             parsed documentation.
 
-        :raises LuaLsRunError: VHS process failed with non-zero return code.
+        :raises LuaLsRunError: Lua ls process failed with non-zero return code.
 
         """
 

@@ -200,37 +200,41 @@ def test_autodoc_roots(app, name, file_regression):
         pytest.param(
             "rst",
             marks=pytest.mark.sphinx(
+                srcdir="apidoc-rst",
                 confoverrides={
                     "lua_ls_apidoc_format": "rst",
                     "lua_ls_apidoc_separate_members": False,
-                }
+                },
             ),
         ),
         pytest.param(
             "md",
             marks=pytest.mark.sphinx(
+                srcdir="apidoc-md",
                 confoverrides={
                     "lua_ls_apidoc_format": "md",
                     "lua_ls_apidoc_separate_members": False,
-                }
+                },
             ),
         ),
         pytest.param(
             "rst-sep",
             marks=pytest.mark.sphinx(
+                srcdir="apidoc-rst-sep",
                 confoverrides={
                     "lua_ls_apidoc_format": "rst",
                     "lua_ls_apidoc_separate_members": True,
-                }
+                },
             ),
         ),
         pytest.param(
             "md-sep",
             marks=pytest.mark.sphinx(
+                srcdir="apidoc-md-sep",
                 confoverrides={
                     "lua_ls_apidoc_format": "md",
                     "lua_ls_apidoc_separate_members": True,
-                }
+                },
             ),
         ),
     ],
@@ -238,9 +242,7 @@ def test_autodoc_roots(app, name, file_regression):
 def test_apidoc(app, name, data_regression, file_regression):
     app.build()
     path = pathlib.Path(app.srcdir) / "api"
-    files = sorted(
-        [f for f in path.glob("*") if f.name != ".gitignore"], key=pathlib.Path.as_posix
-    )
+    files = sorted([f for f in path.iterdir()], key=pathlib.Path.as_posix)
     data_regression.check(
         {
             "files": [f.relative_to(app.srcdir).as_posix() for f in files],

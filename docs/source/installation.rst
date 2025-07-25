@@ -165,6 +165,8 @@ You'll need a Python installation and a Sphinx project to start with Sphinx-LuaL
 4. If you plan to use Markdown in code comments, install the `MySt`_ plugin for Sphinx
    and add it to the ``extensions`` list in your ``conf.py``.
 
-.. _instructions at github: https://github.com/EmmyLuaLs/emmylua-analyzer-rust?tab=readme-ov-file#-installation
+.. _instructions at github:
+   https://github.com/EmmyLuaLs/emmylua-analyzer-rust?tab=readme-ov-file#-installation
 
-.. _MySt: https://myst-parser.readthedocs.io/en/latest/index.html
+.. _MySt:
+   https://myst-parser.readthedocs.io/en/latest/index.html

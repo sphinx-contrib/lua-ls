@@ -139,6 +139,30 @@ Settings
 
    If set to ``True``, module members will be rendered on separate pages.
 
+   .. warning::
+
+      **Windows users**
+
+      This option might not work correctly on case-insensitive file systems.
+
+      It will generate a separate file for every member of a module;
+      if there are members that only differ in case (i.e. `Class` vs `class`),
+      one of them will overwrite the file for another.
+
+      If you're on Windows, and you experience difficulties because of it,
+      `make your source and output directories case-insensitive`_
+      and add the following hack to your ``conf.py``:
+
+      .. code-block:: python
+
+         # This evil code forces Python to treat
+         # windows filenames as case-sensitive.
+         import pathlib
+         pathlib.PureWindowsPath._str_normcase = property(str)
+
+.. _make your source and output directories case-insensitive:
+   https://learn.microsoft.com/en-us/windows/wsl/case-sensitivity
+
 .. py:data:: lua_ls_apidoc_ignored_modules
    :type: list[str]
 
