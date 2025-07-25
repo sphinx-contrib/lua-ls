@@ -1,5 +1,6 @@
 import os
 import pathlib
+import subprocess
 import sys
 from typing import Any, Callable
 
@@ -85,7 +86,7 @@ def generate(
 ):
     dir.mkdir(parents=True, exist_ok=True)
 
-    if fs_is_case_insensitive(dir):
+    if not make_case_insensitive(dir):
         msg = "Lua apidoc can't work with case-insensitive file systems."
         if sys.platform == "win32":
             msg += (
@@ -238,6 +239,30 @@ def _generate(
             is_global=child_is_global,
             parent_modname=fullname if child_is_global else parent_modname,
         )
+
+
+def make_case_insensitive(dir: pathlib.Path) -> bool:
+    if not fs_is_case_insensitive(dir):
+        return True
+
+    if sys.platform == "win32":
+        _logger.info(
+            "trying to switch directory to case-insensitive mode: %s",
+            dir,
+            type="lua-ls",
+        )
+
+        retcode = subprocess.call(
+            ["fsutil.exe", "file", "setCaseSensitiveInfo", dir, "enable"]
+        )
+
+        if retcode != 0:
+            return False
+        else:
+            _logger.info("success")
+            return not fs_is_case_insensitive(dir)
+
+    return False
 
 
 def fs_is_case_insensitive(dir: pathlib.Path) -> bool:
