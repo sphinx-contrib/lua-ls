@@ -446,6 +446,7 @@ def _check_version(
                 system_version_text,
                 type="lua-ls",
             )
+            return False, system_version_text
     except (subprocess.SubprocessError, OSError, UnicodeDecodeError):
         _logger.debug(
             "%s failed to print its version", bin_path, exc_info=True, type="lua-ls"
@@ -481,6 +482,16 @@ def _check_and_install(
                 "using pre-installed %s at %s",
                 bin_name,
                 system_bin_path,
+                type="lua-ls",
+            )
+            return pathlib.Path(system_bin_path).expanduser().resolve(), path
+        elif not install and system_version == "<Unknown>":
+            _logger.warning(
+                "found %s at %s, but its version is %r; "
+                "trying to use it anyway because lua_ls_auto_install=False",
+                bin_name,
+                system_bin_path,
+                system_version,
                 type="lua-ls",
             )
             return pathlib.Path(system_bin_path).expanduser().resolve(), path
