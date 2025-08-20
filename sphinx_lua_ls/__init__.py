@@ -21,6 +21,7 @@ import sphinx_lua_ls.intersphinx
 import sphinx_lua_ls.lua_ls
 import sphinx_lua_ls.objtree
 from sphinx_lua_ls._version import __version__, __version_tuple__
+from sphinx_lua_ls.pygments import LuaLexer
 
 _logger = logging.getLogger("sphinx_lua_ls")
 
@@ -441,6 +442,8 @@ def setup(app: sphinx.application.Sphinx):
 
     app.add_post_transform(sphinx_lua_ls.autoindex.AutoIndexTransform)
     app.add_post_transform(sphinx_lua_ls.inherited.InheritedMembersTransform)
+
+    app.add_lexer("lua", LuaLexer)
 
     app.add_css_file("lua.css")
 
