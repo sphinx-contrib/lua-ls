@@ -188,3 +188,15 @@ Settings
    :type: str
 
    Format for generated files. Can be either ``"rst"`` or ``"md"``.
+
+.. py:data:: lua_ls_maximum_signature_line_length
+   :type: int | None
+
+   Controls maximum width after which long signatures will be wrapped.
+
+   Default value is ``50``, which is suitable for most Sphinx themes.
+
+   Setting this value to `None` will cause signature formatter
+   to use Sphinx's global setting ``maximum_signature_line_length``.
+   If ``maximum_signature_line_length`` is also ``None``,
+   signature wrapping will be disabled.

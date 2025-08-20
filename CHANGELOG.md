@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.1.0
+
+- Added pygments lexer for Lua that highlights documentation tags.
+
+- Added option to control maximum signature length before wrapping.
+
+- Sphinx's nitpicky mode will no longer emit warnings
+  for cross-references in signatures.
+
+- Fixed generation of URL anchors to avoid duplicates.
+
+- Fixed some edge cases in parsing of type expressions.
+
 ## v3.0.0
 
 - **Breaking change:** changed how `apidoc` generates file names to avoid collisions.

@@ -85,6 +85,46 @@ and others to document module's contents.
             A sound that can be played by the sound board.
             ```
 
+   .. dropdown:: Setting up primary domain in EmmyLua
+
+      To enable accurate Go To Definition behavior for comments,
+      add ``rstPrimaryDomain`` setting to your ``.emmyrc.json``:
+
+      .. tab-set::
+         :sync-group: lang
+
+         .. tab-item:: RST
+            :sync: rst
+
+            .. code-block:: json
+
+               {
+                  "diagnostics": {
+                     "enables": ["unknown-doc-tag"]
+                  },
+                  "doc": {
+                     "knownTags": ["doctype", "doc"],
+                     "syntax": "rst",
+                     "rstPrimaryDomain": "lua"
+                  }
+               }
+
+         .. tab-item:: Markdown
+            :sync: md
+
+            .. code-block:: json
+
+               {
+                  "diagnostics": {
+                     "enables": ["unknown-doc-tag"]
+                  },
+                  "doc": {
+                     "knownTags": ["doctype", "doc"],
+                     "syntax": "myst",
+                     "rstPrimaryDomain": "lua"
+                  }
+               }
+
 
 Cross-referencing objects
 -------------------------
@@ -151,6 +191,46 @@ and :rst:role:`lua:class` roles:
          .. code-block:: myst
 
             Reference to a {lua}`logging.Logger.info`.
+
+   .. dropdown:: Setting up default role in EmmyLua
+
+      To enable accurate Go To Definition behavior for comments,
+      add ``rstDefaultRole`` setting to your ``.emmyrc.json``:
+
+      .. tab-set::
+         :sync-group: lang
+
+         .. tab-item:: RST
+            :sync: rst
+
+            .. code-block:: json
+
+               {
+                  "diagnostics": {
+                     "enables": ["unknown-doc-tag"]
+                  },
+                  "doc": {
+                     "knownTags": ["doctype", "doc"],
+                     "syntax": "rst",
+                     "rstDefaultRole": "lua:obj"
+                  }
+               }
+
+         .. tab-item:: Markdown
+            :sync: md
+
+            .. code-block:: json
+
+               {
+                  "diagnostics": {
+                     "enables": ["unknown-doc-tag"]
+                  },
+                  "doc": {
+                     "knownTags": ["doctype", "doc"],
+                     "syntax": "myst",
+                     "rstDefaultRole": "lua:obj"
+                  }
+               }
 
 
 Automatic documentation generation
