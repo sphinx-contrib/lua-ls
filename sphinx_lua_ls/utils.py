@@ -1,6 +1,5 @@
 import functools
 import re
-import urllib.parse
 
 import sphinx.config
 from docutils import nodes
@@ -348,10 +347,6 @@ def normalize_type(typ: str) -> str:
             res += text
 
     return res
-
-
-def make_anchor(name: str) -> str:
-    return f"lua-{urllib.parse.quote(name)}"
 
 
 def normalize_name(name: str) -> str:

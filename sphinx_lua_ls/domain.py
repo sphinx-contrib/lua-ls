@@ -25,7 +25,7 @@ from sphinx.roles import XRefRole
 from sphinx.util import logging
 from sphinx.util.docfields import TypedField
 from sphinx.util.docutils import SphinxDirective
-from sphinx.util.nodes import make_refnode
+from sphinx.util.nodes import make_id, make_refnode
 
 from sphinx_lua_ls import utils
 
@@ -433,10 +433,10 @@ class LuaObject(
         signode: addnodes.desc_signature,
     ) -> None:
         fullname, modname, classname, objname = name
-        anchor = utils.make_anchor(fullname)
-        if anchor not in self.state.document.ids:
-            signode["names"].append(anchor)
-            signode["ids"].append(anchor)
+        id = make_id(self.env, self.state.document, "lua", fullname)
+        if id not in self.state.document.ids:
+            signode["names"].append(id)
+            signode["ids"].append(id)
             signode["first"] = not self.names
             self.state.document.note_explicit_target(signode)
 
@@ -457,6 +457,7 @@ class LuaObject(
                 docname=self.env.docname,
                 objtype=self.objtype,
                 deprecated="deprecated" in self.options,
+                id=id,
                 synopsis=self.options.get("synopsis", None),
             )
 
@@ -514,9 +515,7 @@ class LuaObject(
         if "no-index-entry" not in self.options:
             indextext = self.get_index_text(fullname, modname, classname, objname)
             if indextext:
-                self.indexnode["entries"].append(
-                    ("single", indextext, anchor, "", None)
-                )
+                self.indexnode["entries"].append(("single", indextext, id, "", None))
 
     def _object_hierarchy_parts(
         self, sig_node: addnodes.desc_signature
@@ -977,10 +976,14 @@ class LuaModule(SphinxDirective):
                     "use :no-index: for one of them",
                     line=self.lineno,
                 )
+
+            id = make_id(self.env, self.state.document, "lua", fullname)
+
             objects[fullname] = LuaDomain.ObjectEntry(
                 docname=self.env.docname,
                 objtype="module",
                 deprecated="deprecated" in self.options,
+                id=id,
                 synopsis=self.options.get("synopsis", None),
             )
 
@@ -1017,17 +1020,13 @@ class LuaModule(SphinxDirective):
                     LuaDomain.Entry(fullname=fullname, docname=self.env.docname)
                 )
 
-            target_node = nodes.target(
-                "", "", ids=[utils.make_anchor(fullname)], ismod=True
-            )
+            target_node = nodes.target("", "", ids=[id], ismod=True)
             self.state.document.note_explicit_target(target_node)
             # the platform and synopsis aren't printed; in fact, they are only
             # used in the modindex currently
             ret.append(target_node)
             indextext = _("%s (module)") % fullname
-            inode = addnodes.index(
-                entries=[("single", indextext, utils.make_anchor(fullname), "", None)]
-            )
+            inode = addnodes.index(entries=[("single", indextext, id, "", None)])
             ret.append(inode)
         return ret
 
@@ -1143,6 +1142,7 @@ class LuaDomain(Domain):
         docname: str
         objtype: str
         deprecated: bool
+        id: str
         synopsis: str | None
 
     @dataclass(slots=True)
@@ -1336,7 +1336,7 @@ class LuaDomain(Domain):
                 builder,
                 fromdocname,
                 data.docname,
-                utils.make_anchor(name),
+                data.id,
                 contnode,
                 name,
             )
@@ -1363,7 +1363,7 @@ class LuaDomain(Domain):
                         builder,
                         fromdocname,
                         data.docname,
-                        utils.make_anchor(name),
+                        data.id,
                         contnode,
                         name,
                     ),
