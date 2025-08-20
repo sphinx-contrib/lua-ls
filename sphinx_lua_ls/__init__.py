@@ -256,6 +256,18 @@ def check_options(app: sphinx.application.Sphinx):
         config["lua_ls_class_default_force_return_self"],
         bool,
     )
+    if config["lua_ls_maximum_signature_line_length"] is not None:
+        domain.config["maximum_signature_line_length"] = _type(
+            "lua_ls_maximum_signature_line_length",
+            config["lua_ls_maximum_signature_line_length"],
+            int,
+        )
+    else:
+        domain.config["maximum_signature_line_length"] = _type(
+            "maximum_signature_line_length",
+            config["maximum_signature_line_length"],
+            (int, type(None)),
+        )
 
 
 def run_lua_ls(app: sphinx.application.Sphinx):
@@ -406,6 +418,7 @@ def setup(app: sphinx.application.Sphinx):
     app.add_config_value("lua_ls_class_default_function_name", "", rebuild="env")
     app.add_config_value("lua_ls_class_default_force_non_colon", False, rebuild="env")
     app.add_config_value("lua_ls_class_default_force_return_self", False, rebuild="env")
+    app.add_config_value("lua_ls_maximum_signature_line_length", 50, rebuild="env")
 
     app.add_directive_to_domain(
         "lua", "autoobject", sphinx_lua_ls.autodoc.AutoObjectDirective

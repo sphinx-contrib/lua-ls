@@ -39,8 +39,13 @@ logger = logging.getLogger("sphinx_lua_ls")
 
 
 class _SigWriter:
-    def __init__(self, signode: addnodes.desc_signature) -> None:
+    def __init__(
+        self,
+        signode: addnodes.desc_signature,
+        maximum_signature_line_length: int | None,
+    ) -> None:
         self._signode = signode
+        self._maximum_signature_line_length = maximum_signature_line_length
         signode["is_multiline"] = True
 
         self._line = addnodes.desc_signature_line(add_permalink=True)
@@ -98,7 +103,10 @@ class _SigWriter:
         estimated_len = sum(
             len(p[0]) + len(p[1]) + (1 if p[0] and p[1] else 0) for p in params
         ) + len(params)
-        multiline = estimated_len > 50
+        multiline = (
+            self._maximum_signature_line_length is not None
+            and estimated_len > self._maximum_signature_line_length
+        )
 
         if multiline and not parens:
             parens = ("(", ")")
@@ -140,7 +148,10 @@ class _SigWriter:
         inliner,
     ):
         estimated_len = sum(len(p) for p in params) + len(params)
-        multiline = estimated_len > 50
+        multiline = (
+            self._maximum_signature_line_length is not None
+            and estimated_len > self._maximum_signature_line_length
+        )
 
         if multiline and not parens:
             parens = ("(", ")")
@@ -549,6 +560,10 @@ class LuaObject(
         if self.names and self.allow_nesting:
             self.pop_context()
 
+    @property
+    def maximum_signature_line_length(self) -> int | None:
+        return self.env.domaindata["lua"]["config"]["maximum_signature_line_length"]
+
 
 class LuaFunction(
     LuaObject[
@@ -599,7 +614,7 @@ class LuaFunction(
             (generics, args, returns),
         ) = self.handle_signature_prefix(sig, signode)
 
-        sw = _SigWriter(signode)
+        sw = _SigWriter(signode, self.maximum_signature_line_length)
 
         if generics:
             sw.params(generics, ("<", ">"), False, self.state.inliner)
@@ -662,7 +677,7 @@ class LuaData(LuaObject[str]):
             sig, signode
         )
 
-        sw = _SigWriter(signode)
+        sw = _SigWriter(signode, self.maximum_signature_line_length)
 
         if typ:
             sw.punctuation(":")
@@ -719,7 +734,7 @@ class LuaAlias(LuaObject[tuple[list[tuple[str, str]], str]]):
             (generics, typ),
         ) = self.handle_signature_prefix(sig, signode)
 
-        sw = _SigWriter(signode)
+        sw = _SigWriter(signode, self.maximum_signature_line_length)
 
         if generics:
             sw.params(generics, ("<", ">"), False, self.state.inliner)
@@ -815,7 +830,7 @@ class LuaClass(
             (generics, bases, params, returns),
         ) = self.handle_signature_prefix(sig, signode)
 
-        sw = _SigWriter(signode)
+        sw = _SigWriter(signode, self.maximum_signature_line_length)
 
         if generics:
             sw.params(generics, ("<", ">"), False, self.state.inliner)
