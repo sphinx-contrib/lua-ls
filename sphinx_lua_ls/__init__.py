@@ -3,7 +3,9 @@ import pathlib
 import re
 from typing import Any, Type, TypeVar
 
+import sphinx.addnodes
 import sphinx.application
+import sphinx.domains
 import sphinx.errors
 from sphinx.errors import ConfigError
 from sphinx.util import logging
@@ -375,6 +377,15 @@ def copy_asset_files(app: sphinx.application.Sphinx, exc: Exception | None):
         copy_asset_file(custom_file, static_dir)
 
 
+def suppress_auto_ref_warnings(
+    app: sphinx.application.Sphinx,
+    domain: sphinx.domains.Domain,
+    node: sphinx.addnodes.pending_xref,
+):
+    if node["refdomain"] == "lua" and node["reftype"] == "_auto":
+        return True
+
+
 def setup(app: sphinx.application.Sphinx):
     app.add_domain(sphinx_lua_ls.domain.LuaDomain)
 
@@ -413,6 +424,7 @@ def setup(app: sphinx.application.Sphinx):
     app.connect("builder-inited", run_apidoc)
     app.connect("missing-reference", sphinx_lua_ls.intersphinx.resolve_std_reference)
     app.connect("build-finished", copy_asset_files)
+    app.connect("warn-missing-reference", suppress_auto_ref_warnings)
 
     app.add_post_transform(sphinx_lua_ls.autoindex.AutoIndexTransform)
     app.add_post_transform(sphinx_lua_ls.inherited.InheritedMembersTransform)

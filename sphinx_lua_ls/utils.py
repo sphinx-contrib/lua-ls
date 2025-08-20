@@ -286,7 +286,7 @@ def type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
             import sphinx_lua_ls.domain
 
             ref_nodes, warn_nodes = sphinx_lua_ls.domain.LuaXRefRole()(
-                "lua:obj", text, text, 0, inliner
+                "lua:_auto", text, text, 0, inliner
             )
             res.extend(ref_nodes)
             res.extend(warn_nodes)

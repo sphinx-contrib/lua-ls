@@ -1079,18 +1079,18 @@ class LuaDomain(Domain):
     name = "lua"
     label = "Lua"
     object_types: dict[str, ObjType] = {
-        "function": ObjType(_("function"), "func", "obj", "lua"),
-        "data": ObjType(_("data"), "data", "obj", "lua"),
-        "const": ObjType(_("const"), "attr", "const", "obj", "lua"),
-        "class": ObjType(_("class"), "class", "obj", "lua"),
-        "alias": ObjType(_("alias"), "alias", "obj", "lua"),
-        "enum": ObjType(_("enum"), "enum", "obj", "lua"),
-        "method": ObjType(_("method"), "meth", "obj", "lua"),
-        "classmethod": ObjType(_("class method"), "meth", "obj", "lua"),
-        "staticmethod": ObjType(_("static method"), "meth", "obj", "lua"),
-        "attribute": ObjType(_("attribute"), "attr", "obj", "lua"),
-        "table": ObjType(_("data"), "attr", "data", "obj", "lua"),
-        "module": ObjType(_("module"), "mod", "obj", "lua"),
+        "function": ObjType(_("function"), "func", "obj", "lua", "_auto"),
+        "data": ObjType(_("data"), "data", "obj", "lua", "_auto"),
+        "const": ObjType(_("const"), "attr", "const", "obj", "lua", "_auto"),
+        "class": ObjType(_("class"), "class", "obj", "lua", "_auto"),
+        "alias": ObjType(_("alias"), "alias", "obj", "lua", "_auto"),
+        "enum": ObjType(_("enum"), "enum", "obj", "lua", "_auto"),
+        "method": ObjType(_("method"), "meth", "obj", "lua", "_auto"),
+        "classmethod": ObjType(_("class method"), "meth", "obj", "lua", "_auto"),
+        "staticmethod": ObjType(_("static method"), "meth", "obj", "lua", "_auto"),
+        "attribute": ObjType(_("attribute"), "attr", "obj", "lua", "_auto"),
+        "table": ObjType(_("data"), "attr", "data", "obj", "lua", "_auto"),
+        "module": ObjType(_("module"), "mod", "obj", "lua", "_auto"),
     }
 
     directives = {
@@ -1120,6 +1120,7 @@ class LuaDomain(Domain):
         "mod": LuaXRefRole(),
         "obj": LuaXRefRole(),
         "lua": LuaXRefRole(),
+        "_auto": LuaXRefRole(),
     }
 
     @dataclass(slots=True)
