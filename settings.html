@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Example output" href="example.html" /><link rel="prev" title="Generating API references" href="apidoc.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Settings - Sphinx-LuaLs 3.0.0 documentation</title>
+        <title>Settings - Sphinx-LuaLs 3.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Sphinx-LuaLs 3.0.0 documentation</span>
+  <span class="sidebar-brand-text">Sphinx-LuaLs 3.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -438,6 +438,17 @@ Submodules can contain <code class="xref py py-mod docutils literal notranslate"
 <dd><p>Format for generated files. Can be either <code class="docutils literal notranslate"><span class="pre">&quot;rst&quot;</span></code> or <code class="docutils literal notranslate"><span class="pre">&quot;md&quot;</span></code>.</p>
 </dd></dl>
 
+<dl class="py data">
+<dt class="sig sig-object py" id="lua_ls_maximum_signature_line_length">
+<span class="sig-name descname"><span class="pre">lua_ls_maximum_signature_line_length</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#lua_ls_maximum_signature_line_length" title="Link to this definition">¶</a></dt>
+<dd><p>Controls maximum width after which long signatures will be wrapped.</p>
+<p>Default value is <code class="docutils literal notranslate"><span class="pre">50</span></code>, which is suitable for most Sphinx themes.</p>
+<p>Setting this value to <code class="xref lua lua-obj docutils literal notranslate"><span class="pre">None</span></code> will cause signature formatter
+to use Sphinx’s global setting <code class="docutils literal notranslate"><span class="pre">maximum_signature_line_length</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">maximum_signature_line_length</span></code> is also <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+signature wrapping will be disabled.</p>
+</dd></dl>
+
 </section>
 
         </article>
@@ -513,6 +524,7 @@ Submodules can contain <code class="xref py py-mod docutils literal notranslate"
 <li><a class="reference internal" href="#lua_ls_apidoc_separate_members"><code class="docutils literal notranslate"><span class="pre">lua_ls_apidoc_separate_members</span></code></a></li>
 <li><a class="reference internal" href="#lua_ls_apidoc_ignored_modules"><code class="docutils literal notranslate"><span class="pre">lua_ls_apidoc_ignored_modules</span></code></a></li>
 <li><a class="reference internal" href="#lua_ls_apidoc_format"><code class="docutils literal notranslate"><span class="pre">lua_ls_apidoc_format</span></code></a></li>
+<li><a class="reference internal" href="#lua_ls_maximum_signature_line_length"><code class="docutils literal notranslate"><span class="pre">lua_ls_maximum_signature_line_length</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -524,7 +536,7 @@ Submodules can contain <code class="xref py py-mod docutils literal notranslate"
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=acc74ff5"></script>
+</div><script src="_static/documentation_options.js?v=dd1205ac"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

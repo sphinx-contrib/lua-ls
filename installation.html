@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Quickstart" href="quickstart.html" /><link rel="prev" title="Sphinx-LuaLs" href="index.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Installation - Sphinx-LuaLs 3.0.0 documentation</title>
+        <title>Installation - Sphinx-LuaLs 3.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Sphinx-LuaLs 3.0.0 documentation</span>
+  <span class="sidebar-brand-text">Sphinx-LuaLs 3.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -354,26 +354,41 @@ EmmyLua</label><div class="sd-tab-content docutils">
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">lua_ls_backend</span> <span class="o">=</span> <span class="s2">&quot;emmylua&quot;</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you’re on Linux x64, Windows x64, or MacOs arm, Sphinx-LuaLs will
-download EmmyLua’s documentation tool automatically. Otherwise,
-you’ll need to install <code class="docutils literal notranslate"><span class="pre">emmylua_doc_cli</span></code> manually,
-see <a class="reference external" href="https://github.com/EmmyLuaLs/emmylua-analyzer-rust?tab=readme-ov-file#-installation">instructions at github</a>.</p>
-</div>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
-<p>Add the following settings to your <code class="docutils literal notranslate"><span class="pre">.emmyrc.json</span></code> to enable completion
-of documentation tags specific to Sphinx-LuaLs:</p>
+<p>Add the following settings to your <code class="docutils literal notranslate"><span class="pre">.emmyrc.json</span></code> to enable syntax
+highlighting and Go To Definition for comments:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-2">
+RST</label><div class="sd-tab-content docutils">
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
 <span class="w">   </span><span class="p">},</span>
 <span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rst&quot;</span>
 <span class="w">   </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-3">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myst&quot;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -441,7 +456,7 @@ and add it to the <code class="docutils literal notranslate"><span class="pre">e
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=acc74ff5"></script>
+</div><script src="_static/documentation_options.js?v=dd1205ac"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

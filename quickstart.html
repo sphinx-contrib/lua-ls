@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Declaring objects" href="directives.html" /><link rel="prev" title="Installation" href="installation.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Quickstart - Sphinx-LuaLs 3.0.0 documentation</title>
+        <title>Quickstart - Sphinx-LuaLs 3.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Sphinx-LuaLs 3.0.0 documentation</span>
+  <span class="sidebar-brand-text">Sphinx-LuaLs 3.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -327,22 +327,62 @@ A sound that can be played by the sound board.
 </div>
 </div>
 </div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Setting up primary domain in EmmyLua</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">To enable accurate Go To Definition behavior for comments,
+add <code class="docutils literal notranslate"><span class="pre">rstPrimaryDomain</span></code> setting to your <code class="docutils literal notranslate"><span class="pre">.emmyrc.json</span></code>:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-4">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rst&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rstPrimaryDomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lua&quot;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 </div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-5">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myst&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rstPrimaryDomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lua&quot;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
 </section>
 <section id="cross-referencing-objects">
 <h2>Cross-referencing objects<a class="headerlink" href="#cross-referencing-objects" title="Link to this heading">¶</a></h2>
 <p>Reference documented entities using the <a class="reference internal" href="roles.html#role-lua-data" title="lua:data role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:data</span></code></a>, <a class="reference internal" href="roles.html#role-lua-func" title="lua:func role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:func</span></code></a>,
 and <a class="reference internal" href="roles.html#role-lua-class" title="lua:class role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:class</span></code></a> roles:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
-<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-4">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-6">
 RST</label><div class="sd-tab-content docutils">
 <div class="highlight-rst notranslate"><div class="highlight"><pre><span></span>Here&#39;s a reference to the <span class="na">:lua:class:</span><span class="nv">`soundboard.Sound`</span> class.
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
-<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-5">
+<input id="sd-tab-item-7" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-7">
 Markdown</label><div class="sd-tab-content docutils">
 <div class="highlight-myst notranslate"><div class="highlight"><pre><span></span>Here&#39;s a reference to the <span class="p">{</span><span class="ow">lua:class</span><span class="p">}</span><span class="sb">`soundboard.Sound`</span> class.
 </pre></div>
@@ -358,8 +398,8 @@ Markdown</label><div class="sd-tab-content docutils">
 <p class="admonition-title">Tip</p>
 <p><strong>Setting the default role</strong></p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-3" type="radio">
-<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-6">
+<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-8">
 RST</label><div class="sd-tab-content docutils">
 <p>When you use backticks without explicitly specifying a role, Sphinx uses the default
 role to resolve it. Setting <a class="reference internal" href="roles.html#role-lua-obj" title="lua:obj role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:obj</span></code></a> as the default
@@ -373,8 +413,8 @@ role can reduce boilerplate in documentation.</p>
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-7" name="sd-tab-set-3" type="radio">
-<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-7">
+<input id="sd-tab-item-9" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-9">
 Markdown</label><div class="sd-tab-content docutils">
 <p>MySt plugin doesn’t support default roles. However, if you set <code class="docutils literal notranslate"><span class="pre">lua</span></code>
 as the <a class="reference internal" href="#primary-domain"><span class="std std-ref">primary domain</span></a>, you’ll be able to use <a class="reference internal" href="roles.html#role-lua-lua" title="lua:lua role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:lua</span></code></a> like so:</p>
@@ -383,23 +423,63 @@ as the <a class="reference internal" href="#primary-domain"><span class="std std
 </div>
 </div>
 </div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Setting up default role in EmmyLua</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">To enable accurate Go To Definition behavior for comments,
+add <code class="docutils literal notranslate"><span class="pre">rstDefaultRole</span></code> setting to your <code class="docutils literal notranslate"><span class="pre">.emmyrc.json</span></code>:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-10" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-10">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rst&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rstDefaultRole&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lua:obj&quot;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
 </div>
+</div>
+<input id="sd-tab-item-11" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-11">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myst&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rstDefaultRole&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lua:obj&quot;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
 </section>
 <section id="automatic-documentation-generation">
 <h2>Automatic documentation generation<a class="headerlink" href="#automatic-documentation-generation" title="Link to this heading">¶</a></h2>
 <p>Use <a class="reference internal" href="autodoc.html#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> to extract documentation from source code.
 Its options are similar to the ones used by python <code class="docutils literal notranslate"><span class="pre">autodoc</span></code>:</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-4" type="radio">
-<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-8">
+<input checked="checked" id="sd-tab-item-12" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-12">
 RST</label><div class="sd-tab-content docutils">
 <div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:autoobject</span><span class="p">::</span> logging.Logger
    <span class="nc">:members:</span>
 </pre></div>
 </div>
 </div>
-<input id="sd-tab-item-9" name="sd-tab-set-4" type="radio">
-<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-9">
+<input id="sd-tab-item-13" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-13">
 Markdown</label><div class="sd-tab-content docutils">
 <div class="highlight-myst notranslate"><div class="highlight"><pre><span></span>```{lua:autoobject} logging.Logger
 :members:
@@ -415,25 +495,25 @@ Markdown</label><div class="sd-tab-content docutils">
 <dt class="sig sig-object lua">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><br /></dt>
 <dt class="sig sig-object lua">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
 <dd><p class="sd-card-text">An object for logging messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p class="sd-card-text"><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – name of the logger, will be added to every message.</p></li>
-<li><p class="sd-card-text"><strong>level?</strong> (<a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Level</span></code></a>) – level of the logger, equals to <a class="reference internal" href="example.html#lua-LOG_LEVEL" title="LOG_LEVEL"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code></a> by default.</p></li>
+<li><p class="sd-card-text"><strong>name</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – name of the logger, will be added to every message.</p></li>
+<li><p class="sd-card-text"><strong>level?</strong> (<a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a>) – level of the logger, equals to <a class="reference internal" href="example.html#lua-LOG_LEVEL" title="LOG_LEVEL"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code></a> by default.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="lua method">
 <dt class="sig sig-object lua">
-<span class="sig-name descname"><span class="pre">debug</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
+<span class="sig-name descname"><span class="pre">debug</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
 <dd><p class="sd-card-text">Print a debug message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
-<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -441,13 +521,13 @@ Markdown</label><div class="sd-tab-content docutils">
 
 <dl class="lua method">
 <dt class="sig sig-object lua">
-<span class="sig-name descname"><span class="pre">info</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
+<span class="sig-name descname"><span class="pre">info</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
 <dd><p class="sd-card-text">Print an info message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
-<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -455,13 +535,13 @@ Markdown</label><div class="sd-tab-content docutils">
 
 <dl class="lua method">
 <dt class="sig sig-object lua">
-<span class="sig-name descname"><span class="pre">warning</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
+<span class="sig-name descname"><span class="pre">warning</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
 <dd><p class="sd-card-text">Print a warning message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
-<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -469,13 +549,13 @@ Markdown</label><div class="sd-tab-content docutils">
 
 <dl class="lua method">
 <dt class="sig sig-object lua">
-<span class="sig-name descname"><span class="pre">error</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
+<span class="sig-name descname"><span class="pre">error</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
 <dd><p class="sd-card-text">Print an error message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
-<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -560,7 +640,7 @@ Markdown</label><div class="sd-tab-content docutils">
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=acc74ff5"></script>
+</div><script src="_static/documentation_options.js?v=dd1205ac"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

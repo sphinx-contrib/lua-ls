@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Generating API references" href="apidoc.html" /><link rel="prev" title="Cross-referencing objects" href="roles.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Generating documentation for objects - Sphinx-LuaLs 3.0.0 documentation</title>
+        <title>Generating documentation for objects - Sphinx-LuaLs 3.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Sphinx-LuaLs 3.0.0 documentation</span>
+  <span class="sidebar-brand-text">Sphinx-LuaLs 3.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -281,7 +281,7 @@ as well as all classes, aliases, and enums that have prefix <code class="docutil
 <span class="c1">--- This class will be included in the documentation</span>
 <span class="c1">--- for module `meow` because it&#39;s located in the namespace `meow`.</span>
 <span class="c1">---</span>
-<span class="c1">--- @class meow.MeowingBackend</span>
+<span class="cm">--- </span><span class="k k-Comment">@class</span><span class="cm"> meow.MeowingBackend</span>
 
 <span class="kr">return</span><span class="w"> </span><span class="nv">meow</span>
 </pre></div>
@@ -291,7 +291,7 @@ as well as all classes, aliases, and enums that have prefix <code class="docutil
 <p>You don’t have to manually prefix names of all types.
 Use <code class="docutils literal notranslate"><span class="pre">&#64;namespace</span></code> to indicate that all types in a module
 belong to a certain namespace:</p>
-<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="c1">--- @namespace meow</span>
+<div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="hll"><span class="cm">--- </span><span class="k k-Comment">@namespace</span><span class="cm"> meow</span>
 </span>
 <span class="c1">--- A module for meowing and purring.</span>
 <span class="kd">local</span><span class="w"> </span><span class="nv">meow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
@@ -301,7 +301,7 @@ belong to a certain namespace:</p>
 <span class="hll"><span class="c1">--- This class will appear in namespace `meow` even though</span>
 </span><span class="hll"><span class="c1">--- we didn&#39;t write its full path.</span>
 </span><span class="hll"><span class="c1">---</span>
-</span><span class="hll"><span class="c1">--- @class MeowingBackend</span>
+</span><span class="hll"><span class="cm">--- </span><span class="k k-Comment">@class</span><span class="cm"> MeowingBackend</span>
 </span>
 <span class="kr">return</span><span class="w"> </span><span class="nv">meow</span>
 </pre></div>
@@ -327,13 +327,13 @@ You can change how Sphinx-LuaLs infers its type by adding a <code class="docutil
 <span class="c1">--- and added a `doctype`.</span>
 <span class="c1">---</span>
 <span class="c1">--- !doctype module</span>
-<span class="c1">--- @class meow</span>
+<span class="cm">--- </span><span class="k k-Comment">@class</span><span class="cm"> meow</span>
 <span class="kd">local</span><span class="w"> </span><span class="nv">meow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
 
 <span class="c1">--- Nested namespaces should also be declared as classes.</span>
 <span class="c1">---</span>
 <span class="c1">--- !doctype table</span>
-<span class="c1">--- @class meow.utils</span>
+<span class="cm">--- </span><span class="k k-Comment">@class</span><span class="cm"> meow.utils</span>
 <span class="nv">meow</span><span class="p">.</span><span class="py">utils</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{}</span>
 
 <span class="c1">--- Other objects are documented as usual.</span>
@@ -342,7 +342,7 @@ You can change how Sphinx-LuaLs infers its type by adding a <code class="docutil
 <span class="c1">--- This class will be included in the documentation</span>
 <span class="c1">--- for module `meow` because it&#39;s located in the namespace `meow`.</span>
 <span class="c1">---</span>
-<span class="c1">--- @class meow.MeowingBackend</span>
+<span class="cm">--- </span><span class="k k-Comment">@class</span><span class="cm"> meow.MeowingBackend</span>
 
 <span class="kr">return</span><span class="w"> </span><span class="nv">meow</span>
 </pre></div>
@@ -388,7 +388,7 @@ We recommend using <code class="docutils literal notranslate"><span class="pre">
 <span class="c1">---</span>
 <span class="c1">--- And so on...</span>
 <span class="c1">---</span>
-<span class="c1">--- @alias logging.LogLevel integer</span>
+<span class="cm">--- </span><span class="k k-Comment">@alias</span><span class="cm"> logging.LogLevel integer</span>
 <span class="nv">LogLevel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">   </span><span class="nv">Debug</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">   </span><span class="c1">-- ...</span>
@@ -510,7 +510,7 @@ if <a class="reference internal" href="settings.html#class_default_function_name
 <p class="sd-card-text"><strong>Ctor:</strong></p>
 <dl class="lua class">
 <dt class="sig sig-object lua">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
 <dd><p class="sd-card-text">An object for logging messages.</p>
 </dd></dl>
 
@@ -519,14 +519,14 @@ if <a class="reference internal" href="settings.html#class_default_function_name
 <dt class="sig sig-object lua">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><br /></dt>
 <dt class="sig sig-object lua">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
 <dd><p class="sd-card-text">An object for logging messages.</p>
 </dd></dl>
 
 <p class="sd-card-text"><strong>Minimal:</strong></p>
 <dl class="lua class">
 <dt class="sig sig-object lua">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
 <dd><p class="sd-card-text">An object for logging messages.</p>
 </dd></dl>
 
@@ -668,9 +668,9 @@ use <code class="docutils literal notranslate"><span class="pre">&#64;doc</span>
 and exclude <code class="docutils literal notranslate"><span class="pre">__tostring</span></code> for class <code class="docutils literal notranslate"><span class="pre">Foo</span></code>:</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">--- Some class documentation...</span>
 <span class="c1">---</span>
-<span class="c1">--- @doc special-members</span>
-<span class="c1">--- @doc exclude-members __tostring</span>
-<span class="c1">--- @class Foo</span>
+<span class="cm">--- </span><span class="k k-Comment">@doc</span><span class="cm"> special-members</span>
+<span class="cm">--- </span><span class="k k-Comment">@doc</span><span class="cm"> exclude-members __tostring</span>
+<span class="cm">--- </span><span class="k k-Comment">@class</span><span class="cm"> Foo</span>
 </pre></div>
 </div>
 <p>You can also specify which type of object is being documented by using
@@ -678,8 +678,8 @@ a <code class="docutils literal notranslate"><span class="pre">&#64;doctype</spa
 that a certain variable should be documented as <a class="reference internal" href="directives.html#directive-lua-const" title="lua:const directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:const</span></code></a>:</p>
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">--- Some const documentation...</span>
 <span class="c1">---</span>
-<span class="c1">--- @doctype const</span>
-<span class="c1">--- @type string</span>
+<span class="cm">--- </span><span class="k k-Comment">@doctype</span><span class="cm"> const</span>
+<span class="cm">--- </span><span class="k k-Comment">@type</span><span class="cm"> string</span>
 <span class="nv">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bar!&quot;</span>
 </pre></div>
 </div>
@@ -700,7 +700,7 @@ and exclude <code class="docutils literal notranslate"><span class="pre">__tostr
 <span class="c1">---</span>
 <span class="c1">--- !doc special-members</span>
 <span class="c1">--- !doc exclude-members: __tostring</span>
-<span class="c1">--- @class Foo</span>
+<span class="cm">--- </span><span class="k k-Comment">@class</span><span class="cm"> Foo</span>
 </pre></div>
 </div>
 <p>You can also specify which type of object is being documented by using
@@ -709,7 +709,7 @@ that a certain variable should be documented as <a class="reference internal" hr
 <div class="highlight-lua notranslate"><div class="highlight"><pre><span></span><span class="c1">--- Some const documentation...</span>
 <span class="c1">---</span>
 <span class="c1">--- !doctype const</span>
-<span class="c1">--- @type string</span>
+<span class="cm">--- </span><span class="k k-Comment">@type</span><span class="cm"> string</span>
 <span class="nv">foo</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">&quot;bar!&quot;</span>
 </pre></div>
 </div>
@@ -815,7 +815,7 @@ that a certain variable should be documented as <a class="reference internal" hr
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=acc74ff5"></script>
+</div><script src="_static/documentation_options.js?v=dd1205ac"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

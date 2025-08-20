@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="prev" title="Settings" href="settings.html" />
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
-        <title>Example output - Sphinx-LuaLs 3.0.0 documentation</title>
+        <title>Example output - Sphinx-LuaLs 3.1.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -168,7 +168,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.0.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.1.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -191,7 +191,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Sphinx-LuaLs 3.0.0 documentation</span>
+  <span class="sidebar-brand-text">Sphinx-LuaLs 3.1.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -330,7 +330,7 @@ Markdown</label><div class="sd-tab-content docutils">
 <h2>Global<a class="headerlink" href="#global" title="Link to this heading">¶</a></h2>
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-LOG_LEVEL">
-<em class="property"><span class="k"><span class="pre">global</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Level" title="logging.Level"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Level</span></code></a><a class="headerlink" href="#lua-LOG_LEVEL" title="Link to this definition">¶</a><br /></dt>
+<em class="property"><span class="k"><span class="pre">global</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a><a class="headerlink" href="#lua-LOG_LEVEL" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Default log level.</p>
 </dd></dl>
 
@@ -341,25 +341,25 @@ Markdown</label><div class="sd-tab-content docutils">
 <dt class="sig sig-object lua" id="lua-logging.Logger">
 <em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><a class="headerlink" href="#lua-logging.Logger" title="Link to this definition">¶</a><br /></dt>
 <dt class="sig sig-object lua">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Level" title="logging.Level"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
 <dd><p>An object for logging messages.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>name</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – name of the logger, will be added to every message.</p></li>
-<li><p><strong>level?</strong> (<a class="reference internal" href="#lua-logging.Level" title="logging.Level"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">logging.Level</span></code></a>) – level of the logger, equals to <a class="reference internal" href="#lua-LOG_LEVEL" title="LOG_LEVEL"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code></a> by default.</p></li>
+<li><p><strong>name</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – name of the logger, will be added to every message.</p></li>
+<li><p><strong>level?</strong> (<a class="reference internal" href="#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a>) – level of the logger, equals to <a class="reference internal" href="#lua-LOG_LEVEL" title="LOG_LEVEL"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code></a> by default.</p></li>
 </ul>
 </dd>
 </dl>
 <dl class="lua method">
 <dt class="sig sig-object lua" id="lua-logging.Logger.debug">
-<span class="sig-name descname"><span class="pre">debug</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-logging.Logger.debug" title="Link to this definition">¶</a><br /></dt>
+<span class="sig-name descname"><span class="pre">debug</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-logging.Logger.debug" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Print a debug message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
-<li><p><strong>...</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+<li><p><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -367,13 +367,13 @@ Markdown</label><div class="sd-tab-content docutils">
 
 <dl class="lua method">
 <dt class="sig sig-object lua" id="lua-logging.Logger.info">
-<span class="sig-name descname"><span class="pre">info</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-logging.Logger.info" title="Link to this definition">¶</a><br /></dt>
+<span class="sig-name descname"><span class="pre">info</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-logging.Logger.info" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Print an info message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
-<li><p><strong>...</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+<li><p><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -381,13 +381,13 @@ Markdown</label><div class="sd-tab-content docutils">
 
 <dl class="lua method">
 <dt class="sig sig-object lua" id="lua-logging.Logger.warning">
-<span class="sig-name descname"><span class="pre">warning</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-logging.Logger.warning" title="Link to this definition">¶</a><br /></dt>
+<span class="sig-name descname"><span class="pre">warning</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-logging.Logger.warning" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Print a warning message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
-<li><p><strong>...</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+<li><p><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -395,13 +395,13 @@ Markdown</label><div class="sd-tab-content docutils">
 
 <dl class="lua method">
 <dt class="sig sig-object lua" id="lua-logging.Logger.error">
-<span class="sig-name descname"><span class="pre">error</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-logging.Logger.error" title="Link to this definition">¶</a><br /></dt>
+<span class="sig-name descname"><span class="pre">error</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-logging.Logger.error" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Print an error message.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>msg</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
-<li><p><strong>...</strong> (<code class="xref lua lua-obj docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+<li><p><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
 </ul>
 </dd>
 </dl>
@@ -418,25 +418,25 @@ Markdown</label><div class="sd-tab-content docutils">
 <dd><p>Represents message severity.</p>
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-logging.Level.Debug">
-<span class="sig-name descname"><span class="pre">Debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Debug" title="Link to this definition">¶</a><br /></dt>
+<span class="sig-name descname"><span class="pre">Debug</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Debug" title="Link to this definition">¶</a><br /></dt>
 <dd><p>For debug messages, hidden by default.</p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-logging.Level.Info">
-<span class="sig-name descname"><span class="pre">Info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Info" title="Link to this definition">¶</a><br /></dt>
+<span class="sig-name descname"><span class="pre">Info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Info" title="Link to this definition">¶</a><br /></dt>
 <dd><p>For info messages.</p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-logging.Level.Warning">
-<span class="sig-name descname"><span class="pre">Warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Warning" title="Link to this definition">¶</a><br /></dt>
+<span class="sig-name descname"><span class="pre">Warning</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Warning" title="Link to this definition">¶</a><br /></dt>
 <dd><p>For warnings, when behavior may be different from what users expect.</p>
 </dd></dl>
 
 <dl class="lua data">
 <dt class="sig sig-object lua" id="lua-logging.Level.Error">
-<span class="sig-name descname"><span class="pre">Error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Error" title="Link to this definition">¶</a><br /></dt>
+<span class="sig-name descname"><span class="pre">Error</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">integer</span></code><a class="headerlink" href="#lua-logging.Level.Error" title="Link to this definition">¶</a><br /></dt>
 <dd><p>For errors, when the system stops working.</p>
 </dd></dl>
 
@@ -529,7 +529,7 @@ Markdown</label><div class="sd-tab-content docutils">
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=acc74ff5"></script>
+</div><script src="_static/documentation_options.js?v=dd1205ac"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

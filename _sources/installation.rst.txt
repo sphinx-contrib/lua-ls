@@ -130,28 +130,43 @@ You'll need a Python installation and a Sphinx project to start with Sphinx-LuaL
 
             lua_ls_backend = "emmylua"
 
-         .. note::
-
-            If you're on Linux x64, Windows x64, or MacOs arm, Sphinx-LuaLs will
-            download EmmyLua's documentation tool automatically. Otherwise,
-            you'll need to install ``emmylua_doc_cli`` manually,
-            see `instructions at github`_.
-
          .. tip::
 
-            Add the following settings to your ``.emmyrc.json`` to enable completion
-            of documentation tags specific to Sphinx-LuaLs:
+            Add the following settings to your ``.emmyrc.json`` to enable syntax
+            highlighting and Go To Definition for comments:
 
-            .. code-block:: json
+            .. tab-set::
+               :sync-group: lang
 
-               {
-                  "diagnostics": {
-                     "enables": ["unknown-doc-tag"]
-                  },
-                  "doc": {
-                     "knownTags": ["doctype", "doc"]
-                  }
-               }
+               .. tab-item:: RST
+                  :sync: rst
+
+                  .. code-block:: json
+
+                     {
+                        "diagnostics": {
+                           "enables": ["unknown-doc-tag"]
+                        },
+                        "doc": {
+                           "knownTags": ["doctype", "doc"],
+                           "syntax": "rst"
+                        }
+                     }
+
+               .. tab-item:: Markdown
+                  :sync: md
+
+                  .. code-block:: json
+
+                     {
+                        "diagnostics": {
+                           "enables": ["unknown-doc-tag"]
+                        },
+                        "doc": {
+                           "knownTags": ["doctype", "doc"],
+                           "syntax": "myst"
+                        }
+                     }
 
       .. tab-item:: LuaLs
          :sync: luals
