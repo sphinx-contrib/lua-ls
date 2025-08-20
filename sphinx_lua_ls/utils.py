@@ -218,7 +218,7 @@ _TYPE_PARSE_RE = re.compile(
     |
     # Number with optional exponent.
     # Example: `1.0`, `.1`, `1.`, `1e+5`.
-    (?P<number>(?:\d+(?:\.\d*)|\.\d+)(?:[eE][+-]?\d+)?)
+    (?P<number>(?:\d+(?:\.\d*)?|\.\d+)(?:[eE][+-]?\d+)?)
     |
     # Function type followed by an opening brace.
     # Example: `fun( ...`.
@@ -235,7 +235,7 @@ _TYPE_PARSE_RE = re.compile(
     # Example: `string`, `string?`.
     # Doesn't match: `string?: ...`, `string( ...`, etc.
     (?P<type>nil|any|boolean|string|number|integer|function|table|thread|userdata|lightuserdata)
-    \s*(?P<type_qm>\??)\s*
+    \b\s*(?P<type_qm>\??)\s*
     (?![:(\w.?-])
     |
     # Name component, only matches when `ident` and `type` didn't match.
@@ -243,10 +243,10 @@ _TYPE_PARSE_RE = re.compile(
     (?P<name>[\w.-]+)
     |
     # Punctuation that we separate with spaces.
-    (?P<punct>[=:,|])
+    (?P<punct>[=:,|&])
     |
     # Punctuation that we copy as-is, without adding spaces.
-    (?P<other_punct>[-!"#$%&'()*+/;<>?@[\]^_`{}~]+)
+    (?P<other_punct>[-!#$%()*+/;<>?@[\]^_{}~]+)
     |
     # Anything else is copied as-is.
     (?P<other>.)
@@ -294,7 +294,7 @@ def type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
         elif text := match.group("name"):
             res.append(addnodes.desc_sig_name(text, text))
         elif text := match.group("punct"):
-            if text in "=|":
+            if text in "=|&":
                 res.append(addnodes.desc_sig_space())
             res.append(addnodes.desc_sig_punctuation(text, text))
             res.append(addnodes.desc_sig_space())
