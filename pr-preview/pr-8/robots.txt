@@ -1,3 +1,0 @@
-User-agent: *
-Disallow: pr-preview/
-Disallow: preview/
