@@ -61,9 +61,11 @@ def separate_name_prefix(sig: str) -> tuple[str, str]:
 def make_ref_title(fullname: str, objtype: str, config: sphinx.config.Config):
     if "[" in fullname:
         components = [
-            "[" + normalize_type(c[1:-1]) + "]"
-            if c.startswith("[") and c.endswith("]")
-            else c
+            (
+                "[" + normalize_type(c[1:-1]) + "]"
+                if c.startswith("[") and c.endswith("]")
+                else c
+            )
             for c in separate_sig(fullname, ".")
         ]
 
@@ -353,9 +355,11 @@ def normalize_name(name: str) -> str:
     if "[" in name:
         return ".".join(
             [
-                "[" + normalize_type(c[1:-1]) + "]"
-                if c.startswith("[") and c.endswith("]")
-                else c
+                (
+                    "[" + normalize_type(c[1:-1]) + "]"
+                    if c.startswith("[") and c.endswith("]")
+                    else c
+                )
                 for c in separate_sig(name, ".")
             ]
         )

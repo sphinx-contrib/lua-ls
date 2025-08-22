@@ -22,34 +22,34 @@ classifiers = [
     "Typing :: Typed",
 ]
 dependencies = [
-    "sphinx>=8.0",
+    "sphinx>=8.0,<9.0",
     "PyGithub>=1.59,<3.0",
     "requests~=2.31",
 ]
 
 [project.optional-dependencies]
 dev = [
-    "pytest-cov~=6.0.0",
+    "pytest-cov==6.2.1",
     "sphinx-lua-ls[test,lint,doc]",
 ]
 lint = [
-    "black~=23.7",
-    "isort~=5.12",
-    "pre-commit~=3.8.0",
+    "black==25.1.0",
+    "isort==6.0.1",
+    "pre-commit==4.3.0",
 ]
 test = [
-    "pyright~=1.1",
-    "pytest~=7.4",
-    "sybil~=6.1",
-    "pytest-regressions~=2.7",
-    "beautifulsoup4~=4.13",
-    "myst-parser~=4.0"
+    "pyright==1.1.403",
+    "pytest==8.4.1",
+    "sybil==9.2.0",
+    "pytest-regressions==2.8.1",
+    "beautifulsoup4==4.13.4",
+    "myst-parser==4.0.1"
 ]
 doc = [
-    "sybil~=6.1",
-    "furo>=2024",
-    "sphinx_design>=0.6",
-    "myst-parser~=4.0"
+    "sybil==9.2.0",
+    "furo==2024.8.6",
+    "sphinx_design==0.6.1",
+    "myst-parser==4.0.1"
 ]
 
 [project.urls]

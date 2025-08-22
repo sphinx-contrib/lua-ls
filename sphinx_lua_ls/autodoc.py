@@ -78,9 +78,11 @@ def _iter_children(
         case "bysource":
             children.sort(
                 key=lambda ch: (
-                    str(ch[1].docstring_file or "~")
-                    if not _FIX_FLAKY_ALIAS_TESTS
-                    else "",
+                    (
+                        str(ch[1].docstring_file or "~")
+                        if not _FIX_FLAKY_ALIAS_TESTS
+                        else ""
+                    ),
                     ch[1].line or math.inf,
                     ch[0],
                 )
@@ -504,9 +506,9 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
                 and nodes
                 and isinstance(nodes[0], docutils.nodes.paragraph)
             ):
-                objects: dict[
-                    str, sphinx_lua_ls.domain.LuaDomain.ObjectEntry
-                ] = self.env.domaindata["lua"]["objects"]
+                objects: dict[str, sphinx_lua_ls.domain.LuaDomain.ObjectEntry] = (
+                    self.env.domaindata["lua"]["objects"]
+                )
                 if fullname in objects:
                     data = objects[fullname]
                     if not data.synopsis:
