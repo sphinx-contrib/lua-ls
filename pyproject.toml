@@ -29,7 +29,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest-cov~=6.0.0",
+    "pytest-cov>=6.0,<6.3",
     "sphinx-lua-ls[test,lint,doc]",
 ]
 lint = [
