@@ -29,24 +29,24 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "pytest-cov~=6.0.0",
+    "pytest-cov>=6.0,<6.3",
     "sphinx-lua-ls[test,lint,doc]",
 ]
 lint = [
-    "black~=23.7",
-    "isort~=5.12",
-    "pre-commit~=3.8.0",
+    "black>=23.7,<26.0",
+    "isort>=5.12,<7.0",
+    "pre-commit>=3.8,<4.4",
 ]
 test = [
     "pyright~=1.1",
-    "pytest~=7.4",
-    "sybil~=6.1",
+    "pytest>=7.4,<9.0",
+    "sybil>=6.1,<10.0",
     "pytest-regressions~=2.7",
     "beautifulsoup4~=4.13",
     "myst-parser~=4.0"
 ]
 doc = [
-    "sybil~=6.1",
+    "sybil>=6.1,<10.0",
     "furo>=2024",
     "sphinx_design>=0.6",
     "myst-parser~=4.0"
