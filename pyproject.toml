@@ -39,7 +39,7 @@ lint = [
 ]
 test = [
     "pyright~=1.1",
-    "pytest~=7.4",
+    "pytest>=7.4,<9.0",
     "sybil~=6.1",
     "pytest-regressions~=2.7",
     "beautifulsoup4~=4.13",
