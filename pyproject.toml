@@ -23,7 +23,7 @@ classifiers = [
 ]
 dependencies = [
     "sphinx>=8.0",
-    "PyGithub~=1.59",
+    "PyGithub>=1.59,<3.0",
     "requests~=2.31",
 ]
 
