@@ -1,0 +1,649 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" /><link rel="next" title="Declaring objects" href="directives.html" /><link rel="prev" title="Installation" href="installation.html" />
+
+    <!-- Generated with Sphinx 8.2.3 and Furo 2025.07.19 -->
+        <title>Quickstart - Sphinx-LuaLs 0.1.dev1+g89ce4e473 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
+    <link rel="stylesheet" type="text/css" href="_static/lua.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f2f2f2;
+  --color-code-foreground: #1e1e1e;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #2b2b2b;
+  --color-code-foreground: #f8f8f2;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 0.1.dev1+g89ce4e473 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  <span class="sidebar-brand-text">Sphinx-LuaLs 0.1.dev1+g89ce4e473 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current current-page"><a class="current reference internal" href="#">Quickstart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="directives.html">Declaring objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="roles.html">Cross-referencing objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="autodoc.html">Generating documentation for objects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="apidoc.html">Generating API references</a></li>
+<li class="toctree-l1"><a class="reference internal" href="settings.html">Settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example.html">Example output</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/blob/main/docs/source/quickstart.rst?plain=true" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div><div class="edit-this-page">
+  <a class="muted-link" href="https://github.com/taminomara/sphinx-lua-ls/edit/main/docs/source/quickstart.rst" rel="edit" title="Edit this page">
+    <svg><use href="#svg-pencil"></use></svg>
+    <span class="visually-hidden">Edit this page</span>
+  </a>
+</div><div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Link to this heading">¶</a></h1>
+<section id="declaring-objects">
+<h2>Declaring objects<a class="headerlink" href="#declaring-objects" title="Link to this heading">¶</a></h2>
+<p>Use <a class="reference internal" href="directives.html#directive-lua-module" title="lua:module directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:module</span></code></a> to indicate which module you’re documenting.
+After it, use <a class="reference internal" href="directives.html#directive-lua-data" title="lua:data directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:data</span></code></a>, <a class="reference internal" href="directives.html#directive-lua-function" title="lua:function directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:function</span></code></a>, <a class="reference internal" href="directives.html#directive-lua-class" title="lua:class directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:class</span></code></a>,
+and others to document module’s contents.</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-0" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-0">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:module</span><span class="p">::</span> soundboard
+
+<span class="p">..</span> <span class="ow">lua:class</span><span class="p">::</span> Sound
+
+   A sound that can be played by the sound board.
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-1" name="sd-tab-set-0" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-1">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-myst notranslate"><div class="highlight"><pre><span></span>```{lua:module} soundboard
+<span class="sb">```</span>
+
+<span class="sb">```{lua:class} Sound</span>
+<span class="sb">A sound that can be played by the sound board.</span>
+<span class="sb">```</span>
+</pre></div>
+</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Example output</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<dl class="lua class" id="lua-soundboard">
+<dt class="sig sig-object lua" id="lua-soundboard.Sound">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">soundboard.</span></span><span class="sig-name descname"><span class="pre">Sound</span></span><a class="headerlink" href="#lua-soundboard.Sound" title="Link to this definition">¶</a><br /></dt>
+<dd><p class="sd-card-text">A sound that can be played by the sound board.</p>
+</dd></dl>
+
+</div>
+</details><div class="admonition tip" id="primary-domain">
+<p class="admonition-title">Tip</p>
+<p><strong>Setting the primary domain</strong></p>
+<p>You can avoid prefixing directives and roles with <code class="docutils literal notranslate"><span class="pre">lua:</span></code> if you set Lua
+as your primary domain. For this, declare <code class="docutils literal notranslate"><span class="pre">primary_domain</span></code> in your <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">primary_domain</span> <span class="o">=</span> <span class="s2">&quot;lua&quot;</span>
+</pre></div>
+</div>
+<p>This will significantly reduce boilerplate in documentation:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-2">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span>Cross-reference to <span class="na">:lua:</span><span class="nv">`Sound`</span>.
+
+<span class="p">..</span> <span class="ow">class</span><span class="p">::</span> Sound
+
+   A sound that can be played by the sound board.
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-3">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-myst notranslate"><div class="highlight"><pre><span></span>Cross-reference to <span class="p">{</span><span class="ow">lua</span><span class="p">}</span><span class="sb">`Sound`</span>.
+
+```{class} Sound
+A sound that can be played by the sound board.
+```
+</pre></div>
+</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Setting up primary domain in EmmyLua</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">To enable accurate Go To Definition behavior for comments,
+add <code class="docutils literal notranslate"><span class="pre">rstPrimaryDomain</span></code> setting to your <code class="docutils literal notranslate"><span class="pre">.emmyrc.json</span></code>:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-4">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rst&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rstPrimaryDomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lua&quot;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-5">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myst&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rstPrimaryDomain&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lua&quot;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+</section>
+<section id="cross-referencing-objects">
+<h2>Cross-referencing objects<a class="headerlink" href="#cross-referencing-objects" title="Link to this heading">¶</a></h2>
+<p>Reference documented entities using the <a class="reference internal" href="roles.html#role-lua-data" title="lua:data role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:data</span></code></a>, <a class="reference internal" href="roles.html#role-lua-func" title="lua:func role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:func</span></code></a>,
+and <a class="reference internal" href="roles.html#role-lua-class" title="lua:class role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:class</span></code></a> roles:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-6" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-6">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span>Here&#39;s a reference to the <span class="na">:lua:class:</span><span class="nv">`soundboard.Sound`</span> class.
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-7" name="sd-tab-set-3" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-7">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-myst notranslate"><div class="highlight"><pre><span></span>Here&#39;s a reference to the <span class="p">{</span><span class="ow">lua:class</span><span class="p">}</span><span class="sb">`soundboard.Sound`</span> class.
+</pre></div>
+</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Example output</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">Here’s a reference to the <a class="reference internal" href="#lua-soundboard.Sound" title="soundboard.Sound"><code class="xref lua lua-class docutils literal notranslate"><span class="pre">soundboard.Sound</span></code></a> class.</p>
+</div>
+</details><div class="admonition tip" id="default-role">
+<p class="admonition-title">Tip</p>
+<p><strong>Setting the default role</strong></p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-8" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-8">
+RST</label><div class="sd-tab-content docutils">
+<p>When you use backticks without explicitly specifying a role, Sphinx uses the default
+role to resolve it. Setting <a class="reference internal" href="roles.html#role-lua-obj" title="lua:obj role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:obj</span></code></a> as the default
+role can reduce boilerplate in documentation.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">conf.py</span></code>, declare <code class="docutils literal notranslate"><span class="pre">default_role</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">default_role</span> <span class="o">=</span> <span class="s2">&quot;lua:obj&quot;</span>
+</pre></div>
+</div>
+<p>Now, you can reference any object with just backticks:</p>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span>Reference to a <span class="nv">`logging.Logger.info`</span>.
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-9" name="sd-tab-set-4" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-9">
+Markdown</label><div class="sd-tab-content docutils">
+<p>MySt plugin doesn’t support default roles. However, if you set <code class="docutils literal notranslate"><span class="pre">lua</span></code>
+as the <a class="reference internal" href="#primary-domain"><span class="std std-ref">primary domain</span></a>, you’ll be able to use <a class="reference internal" href="roles.html#role-lua-lua" title="lua:lua role"><code class="xref rst rst-role docutils literal notranslate"><span class="pre">lua:lua</span></code></a> like so:</p>
+<div class="highlight-myst notranslate"><div class="highlight"><pre><span></span>Reference to a <span class="p">{</span><span class="ow">lua</span><span class="p">}</span><span class="sb">`logging.Logger.info`</span>.
+</pre></div>
+</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Setting up default role in EmmyLua</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<p class="sd-card-text">To enable accurate Go To Definition behavior for comments,
+add <code class="docutils literal notranslate"><span class="pre">rstDefaultRole</span></code> setting to your <code class="docutils literal notranslate"><span class="pre">.emmyrc.json</span></code>:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-10" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-10">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;rst&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rstDefaultRole&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lua:obj&quot;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-11" name="sd-tab-set-5" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-11">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">   </span><span class="nt">&quot;diagnostics&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;enables&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;unknown-doc-tag&quot;</span><span class="p">]</span>
+<span class="w">   </span><span class="p">},</span>
+<span class="w">   </span><span class="nt">&quot;doc&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;knownTags&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;doctype&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;doc&quot;</span><span class="p">],</span>
+<span class="w">      </span><span class="nt">&quot;syntax&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;myst&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;rstDefaultRole&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;lua:obj&quot;</span>
+<span class="w">   </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</details></div>
+</section>
+<section id="automatic-documentation-generation">
+<h2>Automatic documentation generation<a class="headerlink" href="#automatic-documentation-generation" title="Link to this heading">¶</a></h2>
+<p>Use <a class="reference internal" href="autodoc.html#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> to extract documentation from source code.
+Its options are similar to the ones used by python <code class="docutils literal notranslate"><span class="pre">autodoc</span></code>:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-12" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-12">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:autoobject</span><span class="p">::</span> logging.Logger
+   <span class="nc">:members:</span>
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-13" name="sd-tab-set-6" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-13">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-myst notranslate"><div class="highlight"><pre><span></span>```{lua:autoobject} logging.Logger
+:members:
+```
+</pre></div>
+</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Example output</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<dl class="lua class">
+<dt class="sig sig-object lua">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><br /></dt>
+<dt class="sig sig-object lua">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span><span class="k"><span class="pre">ctor</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">Logger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">level?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a><span class="p"><span class="pre">)</span></span><br /></dt>
+<dd><p class="sd-card-text">An object for logging messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p class="sd-card-text"><strong>name</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – name of the logger, will be added to every message.</p></li>
+<li><p class="sd-card-text"><strong>level?</strong> (<a class="reference internal" href="example.html#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a>) – level of the logger, equals to <a class="reference internal" href="example.html#lua-LOG_LEVEL" title="LOG_LEVEL"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code></a> by default.</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="lua method">
+<dt class="sig sig-object lua">
+<span class="sig-name descname"><span class="pre">debug</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
+<dd><p class="sd-card-text">Print a debug message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua method">
+<dt class="sig sig-object lua">
+<span class="sig-name descname"><span class="pre">info</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
+<dd><p class="sd-card-text">Print an info message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua method">
+<dt class="sig sig-object lua">
+<span class="sig-name descname"><span class="pre">warning</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
+<dd><p class="sd-card-text">Print a warning message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="lua method">
+<dt class="sig sig-object lua">
+<span class="sig-name descname"><span class="pre">error</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">msg</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code><span class="p"><span class="pre">)</span></span><br /></dt>
+<dd><p class="sd-card-text">Print an error message.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p class="sd-card-text"><strong>msg</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – message format string, will be processed by <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-string.format"><code class="xref lua lua-func docutils literal notranslate"><span class="pre">string.format</span></code></a>.</p></li>
+<li><p class="sd-card-text"><strong>...</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">any</span></code>) – parameters for message formatting.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</details></section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          <a class="next-page" href="directives.html">
+              <div class="page-info">
+                <div class="context">
+                  <span>Next</span>
+                </div>
+                <div class="title">Declaring objects</div>
+              </div>
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+            </a>
+          <a class="prev-page" href="installation.html">
+              <svg class="furo-related-icon"><use href="#svg-arrow-right"></use></svg>
+              <div class="page-info">
+                <div class="context">
+                  <span>Previous</span>
+                </div>
+                
+                <div class="title">Installation</div>
+                
+              </div>
+            </a>
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2025, Tamika Nomara
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Quickstart</a><ul>
+<li><a class="reference internal" href="#declaring-objects">Declaring objects</a><ul>
+<li><a class="reference internal" href="#lua-soundboard.Sound"><code class="docutils literal notranslate"><span class="pre">soundboard.Sound</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cross-referencing-objects">Cross-referencing objects</a></li>
+<li><a class="reference internal" href="#automatic-documentation-generation">Automatic documentation generation</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=e45ac663"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=46bd48cc"></script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    </body>
+</html>
