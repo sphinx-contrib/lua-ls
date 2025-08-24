@@ -467,7 +467,7 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
 
     @property
     def objtree(self) -> Object:
-        return self.env.domaindata["lua"]["objtree"]
+        return self.lua_domain.objtree
 
     @functools.cached_property
     def parent(self):
@@ -506,13 +506,10 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
                 and nodes
                 and isinstance(nodes[0], docutils.nodes.paragraph)
             ):
-                objects: dict[str, sphinx_lua_ls.domain.LuaDomain.ObjectEntry] = (
-                    self.env.domaindata["lua"]["objects"]
-                )
-                if fullname in objects:
-                    data = objects[fullname]
+                if fullname in self.lua_domain.objects:
+                    data = self.lua_domain.objects[fullname]
                     if not data.synopsis:
-                        objects[fullname] = dataclasses.replace(
+                        self.lua_domain.objects[fullname] = dataclasses.replace(
                             data, synopsis=nodes[0].astext()
                         )
 
@@ -894,7 +891,6 @@ class LuaModule(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaModule):
 
         api_docs = docutils.nodes.section("", names=[])
 
-        domain: sphinx_lua_ls.domain.LuaDomain = self.env.get_domain("lua")  # type: ignore
         prev_title = None
         for name, child in _iter_children(
             self.root, self.objtree, self.parent, self.options
@@ -904,7 +900,7 @@ class LuaModule(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaModule):
                 if child.is_toplevel:
                     title = "Global"
                 else:
-                    title = domain.object_types[kind.value].lname.title()
+                    title = self.lua_domain.object_types[kind.value].lname.title()
 
                 if prev_title != title:
                     if api_docs.children:
@@ -943,9 +939,7 @@ class AutoObjectDirective(AutodocUtilsMixin):
     has_content = True
 
     def run(self):
-        for name, option in self.env.domaindata["lua"]["config"][
-            "default_options"
-        ].items():
+        for name, option in self.lua_domain.config.default_options.items():
             if name not in self.options:
                 self.options[name] = option
 

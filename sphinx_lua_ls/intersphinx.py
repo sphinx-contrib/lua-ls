@@ -3,10 +3,14 @@ Linking to standard lua library.
 
 """
 
+import typing as _t
+
 import docutils.nodes
 import sphinx.addnodes
 import sphinx.application
 import sphinx.environment
+
+import sphinx_lua_ls.domain
 
 targets = {
     "_G": (["jit", "5.1", "5.2", "5.3", "5.4"], "pdf-_G"),
@@ -258,7 +262,12 @@ def resolve_std_reference(
     if node["refdomain"] == "lua" or node["reftype"] == "any":
         if target := targets.get(node["reftarget"], None):
             versions, anchor = target
-            version = env.domaindata["lua"]["config"]["lua_version"] or "5.4"
+            version = (
+                _t.cast(
+                    sphinx_lua_ls.domain.LuaDomain, env.get_domain("lua")
+                ).config.lua_version
+                or "5.4"
+            )
             if version in versions:
                 if version == "jit":
                     version = min(versions)

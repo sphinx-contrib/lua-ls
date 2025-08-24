@@ -1,3 +1,4 @@
+import typing as _t
 from collections import defaultdict
 
 import docutils.nodes
@@ -43,7 +44,7 @@ class InheritedMembersTransform(SphinxTransform):
 
     @property
     def domain(self) -> sphinx_lua_ls.domain.LuaDomain:
-        return self.env.get_domain("lua")  # type: ignore
+        return _t.cast(sphinx_lua_ls.domain.LuaDomain, self.env.get_domain("lua"))
 
     def apply(self, **kwargs):
         node: InheritedMethodsNode

@@ -8,6 +8,7 @@ See the original code here: https://github.com/boolangery/sphinx-luadomain
 """
 
 import dataclasses
+import typing as _t
 from collections.abc import Set
 from dataclasses import dataclass
 from typing import Any, Callable, ClassVar, Generic, Iterator, TypeVar
@@ -27,6 +28,8 @@ from sphinx.util.docfields import TypedField
 from sphinx.util.docutils import SphinxDirective
 from sphinx.util.nodes import make_id, make_refnode
 
+import sphinx_lua_ls.config
+import sphinx_lua_ls.objtree
 from sphinx_lua_ls import utils
 
 T = TypeVar("T")
@@ -213,6 +216,10 @@ class LuaTypedField(TypedField):
 
 
 class LuaContextManagerMixin(SphinxDirective):
+    @property
+    def lua_domain(self) -> "LuaDomain":
+        return _t.cast(LuaDomain, self.env.get_domain("lua"))
+
     def push_context(self, modname: str, classname: str, using: list[str] | None):
         classes = self.env.ref_context.setdefault("lua:classes", [])
         classes.append(self.env.ref_context.get("lua:class"))
@@ -320,9 +327,7 @@ class LuaObject(
     collected_bases: list[str] | None = None
 
     def run(self) -> list[nodes.Node]:
-        for name, option in self.env.domaindata["lua"]["config"][
-            "default_options"
-        ].items():
+        for name, option in self.lua_domain.config.default_options.items():
             if name not in self.options:
                 self.options[name] = option
         return super().run()
@@ -440,10 +445,9 @@ class LuaObject(
             signode["first"] = not self.names
             self.state.document.note_explicit_target(signode)
 
-            domaindata = self.env.domaindata["lua"]
-            objects: dict[str, LuaDomain.ObjectEntry] = domaindata["objects"]
-            globals: dict[str, LuaDomain.GlobalEntry] = domaindata["globals"]
-            members: dict[str, LuaDomain.MemberEntry] = domaindata["members"]
+            objects = self.lua_domain.objects
+            globals = self.lua_domain.globals
+            members = self.lua_domain.members
 
             if fullname in objects and self.env.docname != objects[fullname].docname:
                 self.state_machine.reporter.warning(
@@ -561,7 +565,7 @@ class LuaObject(
 
     @property
     def maximum_signature_line_length(self) -> int | None:
-        return self.env.domaindata["lua"]["config"]["maximum_signature_line_length"]
+        return self.lua_domain.config.maximum_signature_line_length
 
 
 class LuaFunction(
@@ -926,7 +930,7 @@ class LuaTable(LuaObject[None]):
         return prefix
 
 
-class LuaModule(SphinxDirective):
+class LuaModule(LuaContextManagerMixin):
     """
     Directive to mark description of a new module.
 
@@ -943,9 +947,7 @@ class LuaModule(SphinxDirective):
     }
 
     def run(self) -> list[nodes.Node]:
-        for name, option in self.env.domaindata["lua"]["config"][
-            "default_options"
-        ].items():
+        for name, option in self.lua_domain.config.default_options.items():
             if name not in self.options:
                 self.options[name] = option
 
@@ -963,10 +965,9 @@ class LuaModule(SphinxDirective):
         self.env.ref_context["lua:module"] = fullname
         ret = []
         if "no-index" not in self.options:
-            domaindata = self.env.domaindata["lua"]
-            objects: dict[str, LuaDomain.ObjectEntry] = domaindata["objects"]
-            globals: dict[str, LuaDomain.GlobalEntry] = domaindata["globals"]
-            members: dict[str, LuaDomain.MemberEntry] = domaindata["members"]
+            objects = self.lua_domain.objects
+            globals = self.lua_domain.globals
+            members = self.lua_domain.members
 
             if fullname in objects and self.env.docname != objects[fullname].docname:
                 self.state_machine.reporter.warning(
@@ -1171,8 +1172,20 @@ class LuaDomain(Domain):
     }
 
     @property
-    def config(self) -> dict[str, Any]:
-        return self.data.setdefault("config", {})
+    def config(self) -> sphinx_lua_ls.config.LuaDomainConfig:
+        return self.data["config"]
+
+    @config.setter
+    def config(self, config: sphinx_lua_ls.config.LuaDomainConfig):
+        self.data["config"] = config
+
+    @property
+    def objtree(self) -> sphinx_lua_ls.objtree.Object:
+        return self.data["objtree"]
+
+    @objtree.setter
+    def objtree(self, objtree: sphinx_lua_ls.objtree.Object):
+        self.data["objtree"] = objtree
 
     @property
     def objects(self) -> dict[str, "LuaDomain.ObjectEntry"]:
