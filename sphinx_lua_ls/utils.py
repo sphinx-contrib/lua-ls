@@ -242,13 +242,19 @@ _TYPE_PARSE_RE = re.compile(
     |
     # Name component, only matches when `ident` and `type` didn't match.
     # Example: `string: ...`.
-    (?P<name>[\w.][\w.-]*)
+    (?P<name>\w[\w.-]*)
     |
     # Punctuation that we separate with spaces.
     (?P<punct>[=:,|&])
     |
+    # Braces.
+    (?P<brace>[()[\]{}])
+    |
+    # Functional arrow (will be replaced with semicolon).
+    (?P<arrow>->)
+    |
     # Punctuation that we copy as-is, without adding spaces.
-    (?P<other_punct>[-!#$%()*+/;<>?@[\]^_{}~]+)
+    (?P<other_punct>[-!#$%*+/\\;<>?@[\]^_{}~]+)
     |
     # Anything else is copied as-is.
     (?P<other>.)
@@ -300,6 +306,11 @@ def type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
                 res.append(addnodes.desc_sig_space())
             res.append(addnodes.desc_sig_punctuation(text, text))
             res.append(addnodes.desc_sig_space())
+        elif text := match.group("brace"):
+            res.append(addnodes.desc_sig_punctuation(text, text))
+        elif text := match.group("arrow"):
+            res.append(addnodes.desc_sig_punctuation(":", ":"))
+            res.append(addnodes.desc_sig_space())
         elif text := match.group("other_punct"):
             res.append(addnodes.desc_sig_punctuation(text, text))
         elif text := match.group("other"):
@@ -343,6 +354,10 @@ def normalize_type(typ: str) -> str:
                 res += " "
             res += text
             res += " "
+        elif text := match.group("brace"):
+            res += text
+        elif text := match.group("arrow"):
+            res += ": "
         elif text := match.group("other_punct"):
             res += text
         elif text := match.group("other"):
