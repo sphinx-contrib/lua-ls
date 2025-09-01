@@ -63,7 +63,11 @@ Directives
 
       Description
 
-   .. lua:function:: function_complex_types(T: integer, b: table<T, target_module.T>, c: fun(T: T, ...): (T: T, ...)) -> a: table<string, string>, ...: fun(a: integer, ...): (a: integer, ...)
+   .. lua:function:: function_complex_types(T: integer, b: table<T, target_module.T>, c: fun(T: T, ...) -> (T: T, ...)) -> a: table<string, string>, ...: fun(a: integer, ...) -> (a: integer, ...)
+
+      Description
+
+   .. lua:function:: function_complex_types(T: integer, b: table<T, target_module.T>, c: fun(T: T, ...): (T: T, ...)): a: table<string, string>, ...: fun(a: integer, ...): (a: integer, ...)
 
       Description
 
