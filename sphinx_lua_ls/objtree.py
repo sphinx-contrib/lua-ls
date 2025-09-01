@@ -543,7 +543,7 @@ class Function(Object):
             generics = f"<{generics}>"
         returns = ", ".join(map(str, self.returns))
         if returns:
-            returns = " -> " + returns
+            returns = ": " + returns
         return f"= function{generics}({params}){returns}"
 
     def _print_object_tail(self) -> str:
@@ -950,6 +950,10 @@ class EmmyLuaParser(Parser):
         "LuaLatest": "5.4",
     }
 
+    @staticmethod
+    def _norm_type(typ: str) -> str:
+        return (typ or "unknown").replace("->", ":")
+
     def parse(self, json, path: str | pathlib.Path):
         self.path = pathlib.Path(path).expanduser().resolve()
 
@@ -1018,7 +1022,7 @@ class EmmyLuaParser(Parser):
         self.add(data["name"], res)
 
     def _parse_enum(self, data):
-        res = Enum(type=data["typ"] or "unknown")
+        res = Enum(type=self._norm_type(data["typ"] or "unknown"))
         self._set_common(res, data)
         self._set_locs(res, data)
         self._parse_generics(res, data.get("generics", []))
@@ -1027,7 +1031,7 @@ class EmmyLuaParser(Parser):
         self.add(data["name"], res)
 
     def _parse_alias(self, data):
-        res = Alias(type=data["typ"] or "unknown")
+        res = Alias(type=self._norm_type(data["typ"]))
         self._set_common(res, data)
         self._set_locs(res, data)
         self._parse_generics(res, data.get("generics", []))
@@ -1051,7 +1055,7 @@ class EmmyLuaParser(Parser):
         self.add(data["name"], res)
 
     def _parse_global_field(self, data):
-        res = Data(type=data["typ"])
+        res = Data(type=self._norm_type(data["typ"]))
         self._set_common(res, data)
         self._set_loc(res, data)
         res.lit = data["literal"]
@@ -1072,11 +1076,11 @@ class EmmyLuaParser(Parser):
         self._parse_generics(res, data.get("generics", []))
         for param in data["params"]:
             res.params.append(
-                Param(name=param["name"], type=param["typ"], docstring=param["desc"])
+                Param(name=param["name"], type=self._norm_type(param["typ"]), docstring=param["desc"])
             )
         for param in data["returns"]:
             res.returns.append(
-                Param(name=param["name"], type=param["typ"], docstring=param["desc"])
+                Param(name=param["name"], type=self._norm_type(param["typ"]), docstring=param["desc"])
             )
         res.overloads = data["overloads"]
         res.implicit_self = data["is_meth"]
@@ -1086,7 +1090,7 @@ class EmmyLuaParser(Parser):
         self.add_child(parent, data["name"], res)
 
     def _parse_field(self, parent: Object, data):
-        res = Data(type=data["typ"])
+        res = Data(type=self._norm_type(data["typ"]))
         self._set_common(res, data)
         self._set_loc(res, data)
         res.lit = data["literal"]
