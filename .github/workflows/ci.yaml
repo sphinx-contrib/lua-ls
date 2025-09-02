@@ -155,7 +155,7 @@ jobs:
     name: Build docs
     needs:
       - test
-    if: ${{ !(github.event_name == 'pull_request' && github.event.action == 'closed') }}
+    if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && !contains(github.event.ref, '.dev') }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -186,38 +186,6 @@ jobs:
           name: html_output
           path: docs/build/html
           include-hidden-files: true
-
-  # Publishes documentation preview and posts a comment to the initiating PR.
-  #
-  # This job runs on all pull request actions. If also runs when a pull request is closed,
-  # in this case it deletes the preview.
-  #
-  # Since the default condition -- `success()` -- only runs if all dependencies succeeded,
-  # we use `!failure() && !cancelled()`, which also runs when any dependencies were skipped.
-  publish_docs_preview:
-    name: Publish docs preview to GitHub Pages
-    needs:
-      - build_docs
-    if: ${{ !failure() && !cancelled() && github.event_name == 'pull_request' }}
-    concurrency:
-      group: publish-docs-${{ github.ref }}
-      cancel-in-progress: true
-    permissions: write-all
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Download artifact
-        if: ${{ needs.build_docs.result == 'success' }}  # only download docs if build wasn't skipped
-        uses: actions/download-artifact@v4
-        with:
-          name: html_output
-          path: docs/build/html
-      - name: Publish HTML
-        uses: rossjrw/pr-preview-action@v1
-        with:
-          source-dir: docs/build/html
-          umbrella-dir: pr-preview
 
   # Builds and publishes production docs.
   #
