@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.2.0
+
+- Updated a few dependencies. Most notably, restricted `sphinx` to `<9`.
+
+- Fixed dashes in types being parsed as type names ([#18] by [@bkoropoff]).
+
+- Added normalization for function syntax (`fun() -> T` is converted to `fun(): T`).
+
+- Done some internal refactorings.
+
+[#18]: https://github.com/taminomara/sphinx-lua-ls/pull/18
+[@bkoropoff]: https://github.com/bkoropoff
+
 ## v3.1.0
 
 - Added pygments lexer for Lua that highlights documentation tags.

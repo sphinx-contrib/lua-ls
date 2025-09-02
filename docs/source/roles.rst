@@ -6,7 +6,7 @@ Cross-referencing objects
 
    You can reference any documented object through the :rst:role:`lua:obj` role.
 
-   Given an object path, Lua domain will first search for an object with this path
+   Given an object path, Sphinx-LuaLs will first search for an object with this path
    in the outer-most class, then in the current module, and finally
    in the global namespace.
 
@@ -17,7 +17,6 @@ Cross-referencing objects
 
    If you specify a fully qualified object name, and would like to hide its prefix,
    you can add a tilde (``~``) to the object's path:
-
 
    .. tab-set::
       :sync-group: lang
