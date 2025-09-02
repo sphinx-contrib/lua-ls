@@ -229,7 +229,7 @@ _TYPE_PARSE_RE = re.compile(
     # Ident not followed by an open brace, semicolon, etc.
     # Example: `module.Type`.
     # Doesn't match: `name?: ...`, `name( ...`, etc.
-    (?P<ident>[\w-]+(?:\.[\w-]+)*)
+    (?P<ident>\w[\w-]*(?:\.\w[\w-]*)*)
     \s*(?P<ident_qm>\??)\s*
     (?![:(\w.?-])
     |
@@ -242,7 +242,7 @@ _TYPE_PARSE_RE = re.compile(
     |
     # Name component, only matches when `ident` and `type` didn't match.
     # Example: `string: ...`.
-    (?P<name>[\w.-]+)
+    (?P<name>[\w.][\w.-]*)
     |
     # Punctuation that we separate with spaces.
     (?P<punct>[=:,|&])
