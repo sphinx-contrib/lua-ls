@@ -379,7 +379,15 @@ class LuaObject(
 
         if prefix:
             signode += addnodes.desc_addname(prefix, prefix)
-        signode += addnodes.desc_name(descname, descname)
+
+        if descname.startswith("[") and descname.endswith("]"):
+            signode += addnodes.desc_sig_punctuation("[", "[")
+            signode += addnodes.desc_type(
+                "", "", *utils.type_to_nodes(descname[1:-1], self.state.inliner)
+            )
+            signode += addnodes.desc_sig_punctuation("]", "]")
+        else:
+            signode += addnodes.desc_name(descname, descname)
 
         return fullname, modname, classname, name, sigdata
 
