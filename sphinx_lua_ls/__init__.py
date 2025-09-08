@@ -9,6 +9,7 @@ import sphinx.builders
 import sphinx.builders.html
 import sphinx.domains
 import sphinx.errors
+from sphinx.util import logging
 from sphinx.util.display import progress_message
 from sphinx.util.fileutil import copy_asset_file
 
@@ -21,8 +22,11 @@ import sphinx_lua_ls.inherited
 import sphinx_lua_ls.intersphinx
 import sphinx_lua_ls.lua_ls
 import sphinx_lua_ls.objtree
+import sphinx_lua_ls.utils
 from sphinx_lua_ls._version import __version__, __version_tuple__
 from sphinx_lua_ls.pygments import LuaLexer
+
+logger = logging.getLogger("sphinx_lua_ls")
 
 
 def run_lua_ls(app: sphinx.application.Sphinx):
@@ -88,10 +92,22 @@ def run_lua_ls(app: sphinx.application.Sphinx):
         configs.append(path)
     parser.files.update(configs)
 
+    vcs_root = sphinx_lua_ls.utils.find_topmost_vcs_root(root_dir)
+
     for dir in project_directories:
+        if vcs_root and not dir.is_relative_to(vcs_root):
+            logger.warning(
+                "project directory %s appears to be outside of your VCS root %s",
+                dir,
+                vcs_root,
+                type="lua-ls",
+            )
+
         try:
             relpath = dir.relative_to(cwd, walk_up=True)
         except ValueError:
+            relpath = dir
+        if str(relpath).endswith(".."):
             relpath = dir
         with progress_message(f"running lua language server in {relpath or '.'}"):
             parser.class_default_function_name = (

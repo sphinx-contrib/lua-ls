@@ -1,4 +1,5 @@
 import functools
+import pathlib
 import re
 
 import sphinx.config
@@ -387,3 +388,21 @@ def parse_list_option(value: str):
         return True
     else:
         return separate_sig(value)
+
+
+_VCS_MARKERS = [".git", ".hg", ".svn"]
+
+
+def find_topmost_vcs_root(path: pathlib.Path) -> pathlib.Path | None:
+    path = path.expanduser().resolve()
+    vcs_root = None
+
+    while path:
+        for marker in _VCS_MARKERS:
+            if (path / marker).exists():
+                vcs_root = path
+        if path == path.parent:
+            break
+        path = path.parent
+
+    return vcs_root
