@@ -8,9 +8,9 @@ Document Lua projects using Lua Language Server's output. This plugin features:
 ## Resources
 
 - [Documentation](https://taminomara.github.io/sphinx-lua-ls/)
-- [Installation](https://taminomara.github.io/sphinx-lua-ls/#installation)
-- [Quickstart](https://taminomara.github.io/sphinx-lua-ls/#quickstart)
-- [Example output](https://taminomara.github.io/sphinx-lua-ls/#example-output)
+- [Installation](https://taminomara.github.io/sphinx-lua-ls/installation.html)
+- [Quickstart](https://taminomara.github.io/sphinx-lua-ls/quickstart.html)
+- [Example output](https://taminomara.github.io/sphinx-lua-ls/example.html)
 
 ## Requirements
 
