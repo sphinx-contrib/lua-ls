@@ -12,6 +12,7 @@ release = version = sphinx_lua_ls.__version__
 
 extensions = [
     "sphinx.ext.githubpages",
+    "sphinx.ext.intersphinx",
     "sphinx_design",
     "sphinx_lua_ls",
     "myst_parser",
@@ -23,8 +24,13 @@ exclude_patterns = []
 primary_domain = "lua"
 default_role = "lua:obj"
 
-lua_ls_project_root = "../example"
+lua_ls_project_root = "example"
 lua_ls_backend = "emmylua"
+
+intersphinx_mapping = {
+    "python": ("https://docs.python.org/3", None),
+    "sphinx": ("https://www.sphinx-doc.org/", None),
+}
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

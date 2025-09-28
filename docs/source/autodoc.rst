@@ -16,10 +16,10 @@ can be slightly different:
       comments.
 
       When generating documentation for a module, Sphinx-LuaLs will include
-      all module's objects returned by `require`, as well as all types located
+      all module's objects returned by ``require``, as well as all types located
       in the same namespace.
 
-      That is, for module `meow`, it will list everything in the ``require("meow")``,
+      That is, for module ``meow``, it will list everything in the ``require("meow")``,
       as well as all classes, aliases, and enums that have prefix ``meow.*``.
 
       Thus, a typical Lua module will look like this:
@@ -185,7 +185,7 @@ Autodoc directive
    .. rst:directive:option:: undoc-members
 
       Include undocumented members to the object's description. By default,
-      they are skipped even if :rst:dir:`members` is passed.
+      they are skipped even if :rst:dir:`members <lua:autoobject:members>` is passed.
 
       Accepts a comma-separated list of names; if list is empty,
       adds all undoc members.
