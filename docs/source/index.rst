@@ -22,9 +22,8 @@ See an example output: `logging`.
    settings
    example
 
+.. toctree::
+    :hidden:
+    :caption: Links
 
-Indices and tables
-------------------
-
-* :ref:`genindex`
-* :ref:`search`
+    GitHub <https://github.com/taminomara/sphinx-lua-ls/>
