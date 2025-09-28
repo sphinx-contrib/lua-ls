@@ -23,6 +23,8 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -79,6 +81,8 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
@@ -128,6 +132,8 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up python 3.12
         uses: actions/setup-python@v4
         with:
@@ -160,6 +166,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Set up python 3.12
         uses: actions/setup-python@v4
         with:
@@ -175,7 +183,7 @@ jobs:
           path: ~/lua_ls_release
       - name: Build docs
         env:
-          SPHINXOPTS: "-j auto"
+          SPHINXOPTS: "-j auto -n"
           LUA_LS_CACHE_PATH: ~/lua_ls_release/ubuntu-latest
         run: |
           cd docs
@@ -203,6 +211,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Download artifact
         uses: actions/download-artifact@v4
         with:
