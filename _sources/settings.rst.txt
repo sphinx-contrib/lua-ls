@@ -56,6 +56,25 @@ Settings
           # And so on...
       }
 
+   If using defaults for the ``:members:``, ``:exclude-members:``, and other
+   list options, setting the option on a directive will override the default.
+   Instead, to extend the default list with the per-directive option,
+   the list may be prepended with a plus sign (``+``), as follows:
+
+   .. code-block:: rst
+
+      .. lua:autoobject:: Noodle
+         :members: eat
+         :private-members: +_spicy, _garlickly
+
+   Also, the defaults can be disabled per-directive with the negated form,
+   ``:no-option:`` as an option of the directive:
+
+   .. code-block:: rst
+
+      .. lua:autoobject:: foo
+         :no-undoc-members:
+
 .. py:data:: class_default_function_name
    :type: str
 
@@ -70,14 +89,14 @@ Settings
 .. py:data:: class_default_force_non_colon
    :type:
 
-   If `true`, Sphinx-LuaLs will remove ``self`` from class constructor's signature.
+   If ``True``, Sphinx-LuaLs will remove ``self`` from class constructor's signature.
 
    If using EmmyLua as lua analyzer, this option will be inferred from ``.emmyrc.json``.
 
 .. py:data:: class_default_force_return_self
    :type:
 
-   If `true`, Sphinx-LuaLs will replace class constructor's return type with ``self``.
+   If ``True``, Sphinx-LuaLs will replace class constructor's return type with ``self``.
 
    If using EmmyLua as lua analyzer, this option will be inferred from ``.emmyrc.json``.
 
@@ -90,7 +109,7 @@ Settings
    Can be either ``"5.1"``, ``"5.2"``, ``"5.3"``, ``"5.4"``, or ``"jit"``.
 
    By default, Sphinx-LuaLs will choose this setting
-   based on your `.emmyrc.json`/`.luarc.json` file.
+   based on your ``.emmyrc.json``/``.luarc.json`` file.
 
 .. py:data:: lua_ls_apidoc_roots
    :type: dict[str, str | dict[str, Any]]
@@ -146,7 +165,7 @@ Settings
       This option might not work correctly on case-insensitive file systems.
 
       It will generate a separate file for every member of a module;
-      if there are members that only differ in case (i.e. `Class` vs `class`),
+      if there are members that only differ in case (i.e. ``Class`` vs ``class``),
       one of them will overwrite the file for another.
 
       If you're on Windows, and you experience difficulties because of it,
@@ -196,7 +215,7 @@ Settings
 
    Default value is ``50``, which is suitable for most Sphinx themes.
 
-   Setting this value to `None` will cause signature formatter
+   Setting this value to ``None`` will cause signature formatter
    to use Sphinx's global setting ``maximum_signature_line_length``.
    If ``maximum_signature_line_length`` is also ``None``,
    signature wrapping will be disabled.
