@@ -33,7 +33,7 @@ dev = [
     "sphinx-lua-ls[test,lint,doc]",
 ]
 lint = [
-    "black==25.1.0",
+    "black==25.9.0",
     "isort==6.0.1",
     "pre-commit==4.3.0",
 ]
