@@ -172,7 +172,7 @@ def set_options(app: sphinx.application.Sphinx):
     config = app.config
 
     project_root = _path(
-        "lua_ls_project_root", config["lua_ls_project_root"] or "", app.srcdir
+        "lua_ls_project_root", config["lua_ls_project_root"] or "", app.confdir
     )
 
     domain_config = LuaDomainConfig(project_root=project_root)
@@ -260,7 +260,7 @@ def set_options(app: sphinx.application.Sphinx):
     domain_config.apidoc_roots = _api_roots(
         "lua_ls_apidoc_roots",
         config["lua_ls_apidoc_roots"],
-        app.srcdir,
+        app.confdir,
         domain_config.apidoc_max_depth,
         domain_config.apidoc_default_options,
         domain_config.apidoc_ignored_modules,

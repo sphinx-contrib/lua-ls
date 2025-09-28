@@ -2,6 +2,22 @@
 
 ## [unreleased]
 
+- **Potential breaking change:** use `confdir` instead of `srcdir` as base path
+  for `lua_ls_project_root`.
+
+  Prior to this change, `lua_ls_project_root` was resolved relative to the directory
+  containing source `.rst` files. Documentation, however, was saying that it's resolved
+  relative to the directory with `conf.py`.
+
+  This is not an issue, because in most projects `conf.py` and source `.rst` files
+  are located in the same directory. Still, I've decided to be consistent with
+  other Sphinx extensions and use `confdir` instead of `srcdir`.
+
+  This is a breaking change, but I don't believe there are any projects that
+  use separate `confdir` and `srcdir` (the only reason to do this is if you're
+  hosting multiple documentation sites in the same repo.) For this reason,
+  this change is released as a minor version change.
+
 ## [3.3.0]
 
 - Added an option to extend list options (like `:exclude-members:`) without overriding
