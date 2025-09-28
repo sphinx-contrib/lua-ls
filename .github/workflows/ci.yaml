@@ -88,7 +88,7 @@ jobs:
       # Tests
       - name: Install test dependencies
         if: ${{ matrix.type == 'test' }}
-        run: python -m pip install '.[test]'
+        run: python -m pip install . --group test
       - name: Download LuaLs
         if: ${{ matrix.type == 'test' }}
         uses: actions/download-artifact@v4
@@ -106,7 +106,7 @@ jobs:
       # Lint
       - name: Install lint dependencies
         if: ${{ matrix.type == 'code style' }}
-        run: python -m pip install '.[lint]'
+        run: python -m pip install . --group lint
       - name: Check code style
         if: ${{ matrix.type == 'code style' }}
         run: pre-commit run -a
@@ -167,7 +167,7 @@ jobs:
       - name: Install package
         run: |
           python -m pip install --upgrade pip
-          python -m pip install '.[doc]'
+          python -m pip install . --group doc
       - name: Download LuaLs
         uses: actions/download-artifact@v4
         with:

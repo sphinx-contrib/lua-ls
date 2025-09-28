@@ -27,10 +27,12 @@ dependencies = [
     "requests~=2.31",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest-cov==7.0.0",
-    "sphinx-lua-ls[test,lint,doc]",
+    {include-group = "test"},
+    {include-group = "lint"},
+    {include-group = "doc"},
 ]
 lint = [
     "black==25.9.0",
