@@ -1,5 +1,25 @@
 # Changelog
 
+## v3.3.0
+
+- Added an option to extend list options (like `:exclude-members:`) without overriding
+  defaults:
+
+  ```rst
+  .. lua:autoobject::
+     :exclude-members: +foo
+  ```
+
+  Also added `:no-*:` options to ignore defaults.
+
+- Improved display of members which use types instead of names,
+  i.e. `[<type>]` ([#19] by [@bkoropoff]).
+
+- Added a warning for situations when `lua_ls_project_directories` contains directories
+  outside of the current VCS root.
+
+[#19]: https://github.com/taminomara/sphinx-lua-ls/pull/19
+
 ## v3.2.0
 
 - Updated a few dependencies. Most notably, restricted `sphinx` to `<9`.
