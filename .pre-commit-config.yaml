@@ -5,28 +5,22 @@ repos:
         name: black
         language: system
         entry: black
-        types: [python]
-        files: ^(?!docs)
+        types_or: [python, pyi]
         require_serial: true
       - id: isort
         name: isort
         language: system
-        entry: isort
-        types: [python]
-        files: ^(?!docs)
+        entry: isort --filter-files
+        types_or: [python, pyi]
         require_serial: true
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
     hooks:
       - id: trailing-whitespace
-        require_serial: true
       - id: end-of-file-fixer
-        require_serial: true
       - id: fix-byte-order-marker
-        require_serial: true
       - id: mixed-line-ending
         args: [--fix=lf]
-        require_serial: true
       - id: check-added-large-files
       - id: check-yaml
       - id: check-toml

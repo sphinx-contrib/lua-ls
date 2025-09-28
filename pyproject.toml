@@ -90,10 +90,6 @@ reportUnnecessaryIsInstance = "none"
 reportConstantRedefinition = "none"
 reportRedeclaration = "none"
 
-[tool.black]
-extend-exclude = '^/docs'
-
 [tool.isort]
 profile = "black"
-extend_skip_glob = ["docs/*"]
 skip_gitignore = true
