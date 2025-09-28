@@ -87,7 +87,11 @@ def _options(name: str, value) -> dict[str, _t.Any]:
     for key, option in value.items():
         parser = sphinx_lua_ls.autodoc.AutoObjectDirective.option_spec.get(key, None)
         if parser is None:
-            raise ConfigError(f"unknown option in {name}: {key}")
+            raise ConfigError(f"unknown option in {name}: :{key}:")
+        if key not in sphinx_lua_ls.domain.GLOBAL_OPTIONS:
+            raise ConfigError(
+                f"incorrect option in {name}: :{key}: can't be set from config"
+            )
         _type(f"{name}[{key!r}]", option, str)
         try:
             new_value[key] = parser(option)

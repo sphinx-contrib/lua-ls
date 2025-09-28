@@ -201,14 +201,14 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
     """
 
     option_spec: ClassVar[dict[str, Callable[[str], Any]]] = {  # type: ignore
-        "members": utils.parse_list_option,
-        "undoc-members": utils.parse_list_option,
-        "private-members": utils.parse_list_option,
-        "protected-members": utils.parse_list_option,
-        "package-members": utils.parse_list_option,
-        "special-members": utils.parse_list_option,
-        "inherited-members": utils.parse_list_option,
-        "exclude-members": utils.parse_list_option,
+        "members": utils.parse_list_option_or_true,
+        "undoc-members": utils.parse_list_option_or_true,
+        "private-members": utils.parse_list_option_or_true,
+        "protected-members": utils.parse_list_option_or_true,
+        "package-members": utils.parse_list_option_or_true,
+        "special-members": utils.parse_list_option_or_true,
+        "inherited-members": utils.parse_list_option_or_true,
+        "exclude-members": utils.parse_list_option_or_true,
         "title": directives.unchanged,
         "index-title": directives.unchanged,
         "recursive": directives.flag,
@@ -220,7 +220,7 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         "module-member-order": lambda x: directives.choice(
             x, ("alphabetical", "groupwise", "bysource")
         ),
-        "globals": utils.parse_list_option,
+        "globals": utils.parse_list_option_or_true,
         "class-doc-from": lambda x: directives.choice(
             x, ("class", "both", "ctor", "separate", "none")
         ),
@@ -232,8 +232,14 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         ),
         "require-function-name": directives.unchanged,
         "require-separator": directives.unchanged,
-        **sphinx_lua_ls.domain.LuaObject.option_spec,
     }
+    option_spec.update(
+        {
+            f"no-{key}": directives.flag
+            for key in sphinx_lua_ls.domain.GLOBAL_OPTIONS & set(option_spec)
+        }
+    )
+    option_spec.update(sphinx_lua_ls.domain.LuaObject.option_spec)
 
     def render(self, root: Object, name: str, top_level: bool = False):
         if root.kind is None:
@@ -383,25 +389,39 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         top_level: bool = False,
     ) -> SphinxDirective:
         if top_level:
-            options = self.options.copy()
+            options = self.orig_options.copy()
             options.pop("module", None)
         else:
             options = {}
             for key in [
                 "member-order",
+                "no-member-order",
                 "module-member-order",
+                "no-module-member-order",
                 "recursive",
+                "no-recursive",
                 "no-index",
+                "no-no-index",
+                "no-index-entry",
+                "no-no-index-entry",
+                "no-contents-entry",
+                "no-no-contents-entry",
                 "inherited-members-table",
+                "no-inherited-members-table",
                 "class-doc-from",
+                "no-class-doc-from",
                 "class-signature",
+                "no-class-signature",
                 "annotate-require",
+                "no-annotate-require",
                 "require-function-name",
+                "no-require-function-name",
                 "require-separator",
+                "no-require-separator",
             ]:
-                if key in self.options:
-                    options[key] = self.options[key]
-            if "recursive" in self.options:
+                if key in self.orig_options:
+                    options[key] = self.orig_options[key]
+            if "recursive" in self.orig_options:
                 for key in [
                     "members",
                     "globals",
@@ -411,9 +431,17 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
                     "package-members",
                     "special-members",
                     "inherited-members",
+                    "using",
                 ]:
-                    if key in self.options and self.options[key] is True:
-                        options[key] = self.options[key]
+                    if key in self.orig_options:
+                        if self.orig_options[key] is True:
+                            options[key] = self.orig_options[key]
+                        elif (
+                            self.orig_options[key] and self.orig_options[key][0] == "+"
+                        ):
+                            options[key] = self.orig_options[key]
+                            if f"no-{key}" in self.orig_options:
+                                options[f"no-{key}"] = self.orig_options[f"no-{key}"]
 
         match root.visibility:
             case Visibility.Private:
@@ -939,9 +967,7 @@ class AutoObjectDirective(AutodocUtilsMixin):
     has_content = True
 
     def run(self):
-        for name, option in self.lua_domain.config.default_options.items():
-            if name not in self.options:
-                self.options[name] = option
+        self.prepare_options()
 
         name = self.arguments[0].strip()
 

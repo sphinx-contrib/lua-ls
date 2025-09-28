@@ -293,19 +293,14 @@ Autodoc directive
       for all objects nested within the root. That is, object's members,
       their members, and so on.
 
-      If
-      :rst:dir:`lua:autoobject:members`,
-      :rst:dir:`lua:autoobject:globals`,
-      :rst:dir:`lua:autoobject:undoc-members`,
-      :rst:dir:`lua:autoobject:private-members`,
-      :rst:dir:`lua:autoobject:special-members`,
-      or :rst:dir:`lua:autoobject:inherited-members`
-      are given as flags, they are propagated to all documented objects.
+      Options like ``no-index`` or :rst:dir:`lua:autoobject:member-order` are always
+      passed down to all members.
 
-      If they're given as list, they are not propagated.
-
-      Options from :py:data:`lua_ls_default_options` are applied to all recursively
-      documented objects.
+      List options like :rst:dir:`lua:autoobject:members`
+      or :rst:dir:`lua:autoobject:globals`
+      are passed down if they're empty or start with ``+``
+      (see :py:data:`lua_ls_default_options` for info on ``+``
+      and overriding defaults).
 
    .. rst:directive:option:: member-order
 

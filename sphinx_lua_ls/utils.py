@@ -387,7 +387,22 @@ def parse_list_option(value: str):
     if not value:
         return True
     else:
-        return separate_sig(value)
+        value = value.strip()
+        if value.startswith("+"):
+            return ["+", *separate_sig(value.lstrip("+, "))]
+        else:
+            return separate_sig(value)
+
+
+def parse_list_option_or_true(value: str):
+    if not value:
+        return True
+    else:
+        value = value.strip()
+        if value.startswith("+"):
+            return ["+", *separate_sig(value.lstrip("+, "))]
+        else:
+            return separate_sig(value)
 
 
 _VCS_MARKERS = [".git", ".hg", ".svn"]

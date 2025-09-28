@@ -261,6 +261,54 @@ class LuaContextManagerMixin(SphinxDirective):
         else:
             self.env.ref_context.pop("lua:using", None)
 
+    def prepare_options(self):
+        self.orig_options = self.options.copy()
+        for name, option in self.lua_domain.config.default_options.items():
+            if f"no-{name}" in self.options:
+                continue
+            if name not in self.options:
+                self.options[name] = option
+            else:
+                given_option = self.options[name]
+                if (
+                    isinstance(given_option, list)
+                    and given_option
+                    and given_option[0] == "+"
+                ):
+                    if isinstance(option, list):
+                        self.options[name] = option + given_option[1:]
+                    else:
+                        self.options[name] = given_option[1:]
+
+
+GLOBAL_OPTIONS = {
+    "no-index",
+    "no-index-entry",
+    "no-contents-entry",
+    "using",
+    "members",
+    "undoc-members",
+    "private-members",
+    "protected-members",
+    "package-members",
+    "special-members",
+    "inherited-members",
+    "exclude-members",
+    "title",
+    "index-title",
+    "recursive",
+    "index-table",
+    "inherited-members-table",
+    "member-order",
+    "module-member-order",
+    "globals",
+    "class-doc-from",
+    "class-signature",
+    "annotate-require",
+    "require-function-name",
+    "require-separator",
+}
+
 
 class LuaObject(
     ObjectDescription[tuple[str, str, str, str]], LuaContextManagerMixin, Generic[T]
@@ -295,6 +343,9 @@ class LuaObject(
         "using": utils.parse_list_option,
         **ObjectDescription.option_spec,
     }
+    option_spec.update(
+        {f"no-{key}": directives.flag for key in GLOBAL_OPTIONS & set(option_spec)}
+    )
 
     doc_field_types = [
         LuaTypedField(
@@ -327,9 +378,7 @@ class LuaObject(
     collected_bases: list[str] | None = None
 
     def run(self) -> list[nodes.Node]:
-        for name, option in self.lua_domain.config.default_options.items():
-            if name not in self.options:
-                self.options[name] = option
+        self.prepare_options()
         return super().run()
 
     def parse_signature(self, sig: str) -> tuple[str, T]:
@@ -955,9 +1004,7 @@ class LuaModule(LuaContextManagerMixin):
     }
 
     def run(self) -> list[nodes.Node]:
-        for name, option in self.lua_domain.config.default_options.items():
-            if name not in self.options:
-                self.options[name] = option
+        self.prepare_options()
 
         if self.env.ref_context.get("lua:class", None):
             raise self.severe("lua:module only available on top level")

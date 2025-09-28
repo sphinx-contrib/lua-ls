@@ -134,12 +134,6 @@ def test_autodoc_regression_emmylua(app, src, file_regression):
                 confoverrides={"lua_ls_default_options": {"members": "meep"}}
             ),
         ),
-        pytest.param(
-            "annotation",
-            marks=pytest.mark.sphinx(
-                confoverrides={"lua_ls_default_options": {"members": "", "private": ""}}
-            ),
-        ),
     ],
 )
 def test_autodoc_settings(app, name, file_regression):
@@ -150,7 +144,29 @@ def test_autodoc_settings(app, name, file_regression):
     assert content
     file_regression.check(
         content.prettify(),
-        basename=f"autodoc-settings-{name}.html",
+        basename=f"autodoc-settings-{name}",
+        extension=".html",
+        encoding="utf8",
+    )
+
+
+@pytest.mark.sphinx("html", testroot="autodoc-settings-override")
+@pytest.mark.test_params(shared_result="test_autodoc_settings_override")
+@pytest.mark.parametrize(
+    "src",
+    [
+        "index.html",
+    ],
+)
+def test_autodoc_settings_override(app, src, file_regression):
+    app.build()
+    path = pathlib.Path(app.outdir) / src
+    soup = BeautifulSoup(path.read_text("utf8"), "html.parser")
+    content = soup.select_one("div.regression")
+    assert content
+    file_regression.check(
+        content.prettify(),
+        basename="autodoc-emmylua-" + pathlib.Path(src).stem,
         extension=".html",
         encoding="utf8",
     )
@@ -186,7 +202,7 @@ def test_autodoc_roots(app, name, file_regression):
     assert content
     file_regression.check(
         content.prettify(),
-        basename=f"autodoc-roots-{name}.html",
+        basename=f"autodoc-roots-{name}",
         extension=".html",
         encoding="utf8",
     )

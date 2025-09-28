@@ -56,6 +56,25 @@ Settings
           # And so on...
       }
 
+   If using defaults for the ``:members:``, ``:exclude-members:``, and other
+   list options, setting the option on a directive will override the default.
+   Instead, to extend the default list with the per-directive option,
+   the list may be prepended with a plus sign (``+``), as follows:
+
+   .. code-block:: rst
+
+      .. lua:autoobject:: Noodle
+         :members: eat
+         :private-members: +_spicy, _garlickly
+
+   Also, the defaults can be disabled per-directive with the negated form,
+   ``:no-option:`` as an option of the directive:
+
+   .. code-block:: rst
+
+      .. lua:autoobject:: foo
+         :no-undoc-members:
+
 .. py:data:: class_default_function_name
    :type: str
 
