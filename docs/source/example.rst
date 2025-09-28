@@ -31,15 +31,18 @@ This output is generated with the following directive:
          :module-member-order: groupwise
          ```
 
-See ``logging.lua`` `on github`_.
+.. tab-set::
 
-.. _on github: https://github.com/taminomara/sphinx-lua-ls/blob/main/docs/example/logging.lua
+   .. tab-item:: Result
 
-----
+      .. lua:autoobject:: logging
+         :members:
+         :globals:
+         :recursive:
+         :index-table:
+         :module-member-order: groupwise
 
-.. lua:autoobject:: logging
-   :members:
-   :globals:
-   :recursive:
-   :index-table:
-   :module-member-order: groupwise
+   .. tab-item:: logging.lua
+
+      .. literalinclude:: /example/logging.lua
+         :language: lua
