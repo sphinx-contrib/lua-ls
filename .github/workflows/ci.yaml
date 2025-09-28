@@ -148,25 +148,25 @@ jobs:
         uses: mindsers/changelog-reader-action@v2
         with:
           version: ${{ steps.metadata.outputs.version }}
-      - name: Set up python 3.12
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.12
-      - name: Install build
-        run: |
-          pip install build
-      - name: Build project
-        run: |
-          python3 -m build .
-      - name: Publish to test pypi
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          attestations: false
-      - name: Publish to pypi
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          attestations: false
+      # - name: Set up python 3.12
+      #   uses: actions/setup-python@v4
+      #   with:
+      #     python-version: 3.12
+      # - name: Install build
+      #   run: |
+      #     pip install build
+      # - name: Build project
+      #   run: |
+      #     python3 -m build .
+      # - name: Publish to test pypi
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     repository-url: https://test.pypi.org/legacy/
+      #     attestations: false
+      # - name: Publish to pypi
+      #   uses: pypa/gh-action-pypi-publish@release/v1
+      #   with:
+      #     attestations: false
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
