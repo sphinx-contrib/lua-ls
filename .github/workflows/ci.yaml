@@ -173,7 +173,7 @@ jobs:
           prerelease: ${{ steps.changelog.outputs.status == 'prereleased' }}
           draft: ${{ steps.changelog.outputs.status == 'unreleased' }}
           body: |
-            *Changelog:*
+            ## Changelog
 
             ${{ steps.changelog.outputs.changes }}
 
