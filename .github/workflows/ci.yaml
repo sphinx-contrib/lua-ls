@@ -128,12 +128,26 @@ jobs:
       name: pypi
       url: https://pypi.org/p/sphinx-lua-ls
     permissions:
+      contents: write
       id-token: write
     steps:
       - name: Checkout source
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Generate release metadata
+        id: metadata
+        run: |
+          ref="${{ github.ref }}";
+          version=${ref#refs/tags/v};
+          link="https://pypi.org/p/${{ github.repository }}/${version}";
+          echo "version=${version}" >> $GITHUB_OUTPUT
+          echo "link=${link}" >> $GITHUB_OUTPUT
+      - name: Parse Changelog
+        id: changelog
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          version: ${{ steps.metadata.outputs.version }}
       - name: Set up python 3.12
         uses: actions/setup-python@v4
         with:
@@ -153,6 +167,17 @@ jobs:
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
           attestations: false
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          prerelease: ${{ steps.changelog.outputs.status == 'prereleased' }}
+          draft: ${{ steps.changelog.outputs.status == 'unreleased' }}
+          body: |
+            *Changelog:*
+
+            ${{ steps.changelog.outputs.changes }}
+
+            [See release on PyPi](${{ steps.metadata.outputs.link }})
 
   # Builds sphinx documentation.
   #

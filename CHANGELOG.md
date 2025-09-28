@@ -1,6 +1,8 @@
 # Changelog
 
-## v3.3.0
+## [unreleased]
+
+## [3.3.0]
 
 - Added an option to extend list options (like `:exclude-members:`) without overriding
   defaults:
@@ -20,7 +22,7 @@
 
 [#19]: https://github.com/taminomara/sphinx-lua-ls/pull/19
 
-## v3.2.0
+## [3.2.0]
 
 - Updated a few dependencies. Most notably, restricted `sphinx` to `<9`.
 
@@ -33,7 +35,7 @@
 [#18]: https://github.com/taminomara/sphinx-lua-ls/pull/18
 [@bkoropoff]: https://github.com/bkoropoff
 
-## v3.1.0
+## [3.1.0]
 
 - Added pygments lexer for Lua that highlights documentation tags.
 
@@ -46,7 +48,7 @@
 
 - Fixed some edge cases in parsing of type expressions.
 
-## v3.0.0
+## [3.0.0]
 
 - **Breaking change:** changed how `apidoc` generates file names to avoid collisions.
 
@@ -114,18 +116,18 @@
 [EmmyLua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
 [#3]: https://github.com/taminomara/sphinx-lua-ls/issues/3
 
-**Migrating to 3.0.0:**
+### Migrating to 3.0.0
 
 - If you're using `apidoc`, you'll need to update links to your documentation.
 
 - You'll need to explicitly specify which language server to use
   by including `lua_ls_backend` to your `conf.py`.
 
-## v2.0.1
+## [2.0.1]
 
 - Fixed documentation not being rebuilt after changing lua source code.
 
-## v2.0.0
+## [2.0.0]
 
 - **Breaking change:** don't implicitly convert classes that're derived from `table`
   to modules. Users should use a `!doctype` comment instead.
@@ -138,7 +140,7 @@
 
 - Improved test coverage and fixed found bugs.
 
-**Migrating to 2.0.0:**
+### Migrating to 2.0.0
 
 In your Lua code base, perform global replace by regexp:
 
@@ -157,7 +159,7 @@ Make sure that you only use `!doctype module` on the top-level
 tables that can be imported via `require`. On other objects,
 use `!doctype table` instead, otherwise you'll get errors that modules are not allowed within other objects.
 
-## v1.1.0
+## [1.1.0]
 
 - Added support for `!doc` and `!doctype` comments.
 
@@ -176,6 +178,16 @@ use `!doctype table` instead, otherwise you'll get errors that modules are not a
 
 - Fixed types when `lua:autoobject` would infer incorrect types for `data`.
 
-## v1.0.0
+## [1.0.0]
 
 Initial release.
+
+[unreleased]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.3.0...HEAD
+[3.3.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.2.0...v3.3.0
+[3.2.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.1.0...v3.2.0
+[3.1.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.0.0...v3.1.0
+[3.0.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v2.0.1...v3.0.0
+[2.0.1]: https://github.com/taminomara/sphinx-lua-ls/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v1.1.0...v2.0.0
+[1.1.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/taminomara/sphinx-lua-ls/releases/tag/v1.0.0
