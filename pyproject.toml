@@ -44,12 +44,12 @@ test = [
     "pytest==8.4.2",
     "sybil==9.2.0",
     "pytest-regressions==2.8.3",
-    "beautifulsoup4==4.13.5",
+    "beautifulsoup4==4.14.0",
     "myst-parser==4.0.1"
 ]
 doc = [
     "sybil==9.2.0",
-    "furo==2025.7.19",
+    "furo==2025.9.25",
     "sphinx_design==0.6.1",
     "myst-parser==4.0.1"
 ]
