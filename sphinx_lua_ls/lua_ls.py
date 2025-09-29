@@ -5,6 +5,7 @@ Wrapper around the Lua-LS executable; able to download lua-ls if it's not instal
 
 import datetime
 import json
+import math
 import os
 import pathlib
 import platform
@@ -306,8 +307,9 @@ class SphinxProgressReporter(DefaultProgressReporter):
 def resolve(
     *,
     backend: _t.Literal["emmylua", "luals"],
+    min_version: str,
+    max_version: str | None,
     cache_path: _PathLike | None = None,
-    min_version: str = "3.0.0",
     quiet: bool = True,
     env: dict[str, str] | None = None,
     cwd: _PathLike | None = None,
@@ -369,6 +371,7 @@ def resolve(
         bin_path, path = _check_and_install(
             backend,
             min_version,
+            max_version,
             cache_path,
             _get_path(env),
             install,
@@ -418,9 +421,18 @@ def _get_path(env: dict[str, str] | None) -> str:
 
 
 def _check_version(
-    version: str, bin_path: _PathLike
+    min_version: str, max_version: str | None, bin_path: _PathLike
 ) -> _t.Tuple[bool, _t.Optional[str]]:
-    version_tuple = tuple(int(c) for c in version.split("."))
+    min_version_tuple = tuple(int(c) for c in min_version.split("."))
+    if max_version:
+        max_version_tuple = tuple(int(c) for c in max_version.split("."))
+        if max_version_tuple <= min_version_tuple:
+            raise LuaLsError(
+                "lua_ls_min_version is greater or equal to lua_ls_max_version: "
+                f"{min_version} > {max_version}"
+            )
+    else:
+        max_version_tuple = (math.inf,)
     try:
         _logger.debug("checking version of %a", bin_path, type="lua-ls")
         system_version_text_b = subprocess.check_output([bin_path, "--version"])
@@ -428,14 +440,15 @@ def _check_version(
         if match := re.search(r"(\d+\.\d+\.\d+)", system_version_text):
             system_version = match.group(1)
             system_version_tuple = tuple(int(c) for c in system_version.split("."))
-            if system_version_tuple >= version_tuple:
+            if min_version_tuple <= system_version_tuple < max_version_tuple:
                 return True, system_version
             else:
                 _logger.debug(
-                    "%s is outdated (got %s, required %s)",
+                    "%s is outdated (got %s, required %s..%s)",
                     bin_path,
                     system_version,
-                    version,
+                    min_version,
+                    max_version,
                     type="lua-ls",
                 )
                 return False, system_version
@@ -457,7 +470,8 @@ def _check_version(
 
 def _check_and_install(
     backend: _t.Literal["emmylua", "luals"],
-    version: str,
+    min_version: str,
+    max_version: str | None,
     cache_path: pathlib.Path,
     path: str,
     install: bool,
@@ -465,8 +479,10 @@ def _check_and_install(
     timeout: int,
     retry: urllib3.Retry,
 ) -> _t.Tuple[pathlib.Path, str]:
-    if version.startswith("v"):
-        version = version[1:]
+    if min_version.startswith("v"):
+        min_version = min_version[1:]
+    if max_version and max_version.startswith("v"):
+        max_version = max_version[1:]
 
     if backend == "emmylua":
         bin_name = "emmylua_doc_cli"
@@ -476,7 +492,9 @@ def _check_and_install(
     system_bin_path = shutil.which(bin_name, path=path)
     system_version = None
     if system_bin_path:
-        can_use_system_lua_ls, system_version = _check_version(version, system_bin_path)
+        can_use_system_lua_ls, system_version = _check_version(
+            min_version, max_version, system_bin_path
+        )
         if can_use_system_lua_ls:
             _logger.debug(
                 "using pre-installed %s at %s",
@@ -504,7 +522,8 @@ def _check_and_install(
 
     if backend == "emmylua":
         return _install_emmylua(
-            version,
+            min_version,
+            max_version,
             cache_path,
             path,
             install,
@@ -518,7 +537,8 @@ def _check_and_install(
         )
     else:
         return _install_lua_ls(
-            version,
+            min_version,
+            max_version,
             cache_path,
             path,
             install,
@@ -532,8 +552,16 @@ def _check_and_install(
         )
 
 
+def _make_version_message(min_version: str, max_version: str | None) -> str:
+    if max_version:
+        return f"a version between {min_version} and {max_version}"
+    else:
+        return f"version {min_version} or newer"
+
+
 def _install_lua_ls(
-    version: str,
+    min_version: str,
+    max_version: str | None,
     cache_path: pathlib.Path,
     path: str,
     install: bool,
@@ -559,9 +587,10 @@ def _install_lua_ls(
     release_name = release_names.get((platform, machine), None)
     if not install or not release_name:
         if system_bin_path:
+            version = _make_version_message(min_version, max_version)
             raise LuaLsError(
                 f"you have lua-language-server {system_version}, "
-                f"but version {version} or newer is required; "
+                f"but {version} is required; "
                 f"see upgrade instructions "
                 f"at https://lua_ls.github.io/#other-install"
             )
@@ -582,7 +611,7 @@ def _install_lua_ls(
         bin_path = cache_path / "bin/lua-language-server"
     if bin_path.exists():
         bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
-        can_use_cached_binary, _ = _check_version(version, bin_path)
+        can_use_cached_binary, _ = _check_version(min_version, max_version, bin_path)
         if can_use_cached_binary:
             _logger.debug("using cached lua-language-server", type="lua-ls")
             return bin_path, path
@@ -597,7 +626,9 @@ def _install_lua_ls(
         tmp_dir = pathlib.Path(tmp_dir_s)
 
         try:
-            tmp_file = _download_latest_release(
+            tmp_file = _download_release(
+                min_version,
+                max_version,
                 api,
                 timeout,
                 retry,
@@ -629,11 +660,15 @@ def _install_lua_ls(
             )
 
     if verify:
-        can_use_cached_lua_ls, _ = _check_version(version, bin_path)
+        can_use_cached_lua_ls, cached_version = _check_version(
+            min_version, max_version, bin_path
+        )
         if not can_use_cached_lua_ls:
+            version = _make_version_message(min_version, max_version)
             raise LuaLsError(
-                "downloaded latest lua-language-server is outdated; "
-                "are you sure min_lua_ls_version is correct?",
+                f"downloaded lua-language-server printed version {cached_version}, "
+                f"but {version} is required; are you sure lua_ls_min_version "
+                f"and lua_ls_max_version are correct?",
             )
     elif not bin_path.exists():
         raise LuaLsError(
@@ -645,7 +680,8 @@ def _install_lua_ls(
 
 
 def _install_emmylua(
-    version: str,
+    min_version: str,
+    max_version: str | None,
     cache_path: pathlib.Path,
     path: str,
     install: bool,
@@ -669,9 +705,9 @@ def _install_emmylua(
     release_name = release_names.get((platform, machine), None)
     if not install or not release_name:
         if system_bin_path:
+            version = _make_version_message(min_version, max_version)
             raise LuaLsError(
-                f"you have emmylua_doc_cli {system_version}, "
-                f"but version {version} or newer is required; "
+                f"you have emmylua_doc_cli {system_version}, but {version} is required; "
                 f"see upgrade instructions "
                 f"at https://github.com/EmmyLuaLs/emmylua-analyzer-rust?tab=readme-ov-file#-installation"
             )
@@ -692,7 +728,7 @@ def _install_emmylua(
         bin_path = cache_path / "emmylua_doc_cli"
     if bin_path.exists():
         bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
-        can_use_cached_binary, _ = _check_version(version, bin_path)
+        can_use_cached_binary, _ = _check_version(min_version, max_version, bin_path)
         if can_use_cached_binary:
             _logger.debug("using cached emmylua_doc_cli", type="lua-ls")
             return bin_path, path
@@ -709,7 +745,9 @@ def _install_emmylua(
         tmp_dir = pathlib.Path(tmp_dir_s)
 
         try:
-            tmp_file = _download_latest_release(
+            tmp_file = _download_release(
+                min_version,
+                max_version,
                 api,
                 timeout,
                 retry,
@@ -741,11 +779,15 @@ def _install_emmylua(
             )
 
     if verify:
-        can_use_cached_lua_ls, _ = _check_version(version, bin_path)
+        can_use_cached_lua_ls, cached_version = _check_version(
+            min_version, max_version, bin_path
+        )
         if not can_use_cached_lua_ls:
+            version = _make_version_message(min_version, max_version)
             raise LuaLsError(
-                "downloaded latest emmylua_doc_cli is outdated; "
-                "are you sure min_lua_ls_version is correct?",
+                f"downloaded emmylua_doc_cli printed version {cached_version}, "
+                f"but {version} is required; are you sure lua_ls_min_version "
+                f"and lua_ls_max_version are correct?",
             )
     elif not bin_path.exists():
         raise LuaLsError(
@@ -755,7 +797,9 @@ def _install_emmylua(
     return bin_path, path
 
 
-def _download_latest_release(
+def _download_release(
+    min_version: str,
+    max_version: str | None,
     api: github.Github,
     timeout: int,
     retry: urllib3.Retry,
@@ -767,6 +811,12 @@ def _download_latest_release(
     platform: str,
     machine: str,
 ):
+    min_version_tuple = tuple(int(c) for c in min_version.split("."))
+    if max_version:
+        max_version_tuple = tuple(int(c) for c in max_version.split("."))
+    else:
+        max_version_tuple = (math.inf,)
+
     reporter.progress(f"resolving {name}", 0, 0, 0)
 
     repo = api.get_repo(repo_name)
@@ -776,6 +826,18 @@ def _download_latest_release(
             continue
 
         _logger.debug("found %s release %s", name, release.tag_name, type="lua-ls")
+
+        if match := re.search(r"(\d+\.\d+\.\d+)", release.tag_name):
+            release_version = match.group(1)
+            release_version_tuple = tuple(int(c) for c in release_version.split("."))
+            if not (min_version_tuple <= release_version_tuple < max_version_tuple):
+                _logger.debug(
+                    "release is outside of allowed version range", type="lua-ls"
+                )
+                continue
+        else:
+            _logger.debug("can't parse release tag", type="lua-ls")
+            continue
 
         for asset in release.assets:
             _logger.debug("trying %s asset %s", name, asset.name, type="lua-ls")
@@ -789,7 +851,8 @@ def _download_latest_release(
 
         break
     else:
-        raise LuaLsError(f"unable to find latest {name} release")
+        version = _make_version_message(min_version, max_version)
+        raise LuaLsError(f"unable to find {name} release for {version}")
 
     _logger.debug("downloading %s from %s", name, browser_download_url, type="lua-ls")
 
@@ -836,6 +899,8 @@ if __name__ == "__main__":
         parser.add_argument("--runtime", choices=["luals", "emmylua"], default="luals")
         parser.add_argument("platform")
         parser.add_argument("machine")
+        parser.add_argument("--min", default="0.0.0")
+        parser.add_argument("--max", default=None)
         parser.add_argument("path", type=pathlib.Path)
 
         _logger.setLevel("DEBUG")
@@ -848,7 +913,8 @@ if __name__ == "__main__":
         match args.runtime:
             case "luals":
                 _install_lua_ls(
-                    "0.0.0",
+                    args.min,
+                    args.max,
                     args.path,
                     _get_path(None),
                     True,
@@ -863,7 +929,8 @@ if __name__ == "__main__":
                 )
             case "emmylua":
                 _install_emmylua(
-                    "0.0.0",
+                    args.min,
+                    args.max,
                     args.path,
                     _get_path(None),
                     True,

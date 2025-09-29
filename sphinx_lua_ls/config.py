@@ -24,6 +24,7 @@ class LuaDomainConfig:
     auto_install: bool = True
     auto_install_location: pathlib.Path | None = None
     min_version: str | None = None
+    max_version: str | None = None
     lua_version: str | None = None
     default_options: dict[str, _t.Any] = dataclasses.field(default_factory=dict)
     apidoc_default_options: dict[str, _t.Any] = dataclasses.field(default_factory=dict)
@@ -213,6 +214,10 @@ def set_options(app: sphinx.application.Sphinx):
     if config["lua_ls_min_version"] is not None:
         domain_config.min_version = _version(
             "lua_ls_min_version", config["lua_ls_min_version"]
+        )
+    if config["lua_ls_max_version"] is not None:
+        domain_config.max_version = _version(
+            "lua_ls_max_version", config["lua_ls_max_version"]
         )
 
     if config["lua_ls_lua_version"]:

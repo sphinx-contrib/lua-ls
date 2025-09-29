@@ -64,12 +64,19 @@ def run_lua_ls(app: sphinx.application.Sphinx):
             min_version = "3.0.0"
         else:
             min_version = "0.11.0"
+    max_version = domain.config.max_version
+    if max_version == "__auto__":
+        if domain.config.backend == "luals":
+            max_version = "4.0.0"
+        else:
+            max_version = "2.0.0"
 
     cwd = pathlib.Path.cwd()
     try:
         runner = sphinx_lua_ls.lua_ls.resolve(
             backend=domain.config.backend,
             min_version=min_version,
+            max_version=max_version,
             cwd=root_dir,
             reporter=sphinx_lua_ls.lua_ls.SphinxProgressReporter(app.verbosity),
             install=domain.config.auto_install,
@@ -187,6 +194,7 @@ def setup(app: sphinx.application.Sphinx):
     app.add_config_value("lua_ls_auto_install", True, rebuild="")
     app.add_config_value("lua_ls_auto_install_location", None, rebuild="")
     app.add_config_value("lua_ls_min_version", None, rebuild="env")
+    app.add_config_value("lua_ls_max_version", "__auto__", rebuild="env")
     app.add_config_value("lua_ls_lua_version", None, rebuild="html")
     app.add_config_value("lua_ls_default_options", None, rebuild="env")
     app.add_config_value("lua_ls_apidoc_roots", None, rebuild="")

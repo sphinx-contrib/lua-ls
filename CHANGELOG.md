@@ -10,6 +10,9 @@
   They also allow overriding object's signature, which may be useful when
   automatically generated signature is too long.
 
+- Added `lua_ls_max_version` config option to safeguard against incompatible changes
+  to documentation export format.
+
 ## [3.4.0]
 
 - **Potential breaking change:** use `confdir` instead of `srcdir` as base path
