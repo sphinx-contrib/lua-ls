@@ -2,6 +2,8 @@
 
 ## [unreleased]
 
+## [v3.5.0]
+
 - Added `autodata`, `autoattribute`, `autoclass`, and other `auto*` directives.
 
   They work like `autoobject`, but apply their doctype to the documented object
@@ -213,7 +215,8 @@ use `!doctype table` instead, otherwise you'll get errors that modules are not a
 
 Initial release.
 
-[unreleased]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.4.0...HEAD
+[unreleased]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.5.0...HEAD
+[3.5.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.4.0...v3.5.0
 [3.4.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.3.0...v3.4.0
 [3.3.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.2.0...v3.3.0
 [3.2.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.1.0...v3.2.0
