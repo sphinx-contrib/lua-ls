@@ -13,6 +13,8 @@
 - Added `lua_ls_max_version` config option to safeguard against incompatible changes
   to documentation export format.
 
+- Fixed a few more minor bugs in highlighting of Lua types.
+
 ## [3.4.0]
 
 - **Potential breaking change:** use `confdir` instead of `srcdir` as base path

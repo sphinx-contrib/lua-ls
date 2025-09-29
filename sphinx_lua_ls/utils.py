@@ -11,7 +11,7 @@ logger = logging.getLogger("sphinx_lua_ls")
 
 
 #: Regexp for parsing a single Lua identifier.
-_OBJECT_NAME_RE = re.compile(r"^\s*(?P<name>[\w-]+)")
+_OBJECT_NAME_RE = re.compile(r"^\s*(?P<name>[\w-]+)\s*")
 
 #: A single function parameter name.
 _PARAM_NAME_RE = re.compile(r"^\s*[\w-]+\s*$")
@@ -29,7 +29,7 @@ def handle_signature_errors(handler):
                 sig,
                 e,
                 type="lua-ls",
-                location=(signode.source, signode.line),
+                location=signode,
             )
             raise
 
@@ -49,7 +49,7 @@ def separate_name_prefix(sig: str) -> tuple[str, str]:
             name_components.append(f"[{normalize_type(name)}]")
         elif match := _OBJECT_NAME_RE.match(sig):
             name_components.append(match.group("name"))
-            sig = sig[match.span()[1] :]
+            sig = sig[match.end() :]
         else:
             if seen_dot_prefix:
                 raise ValueError("incorrect object name")
@@ -230,32 +230,33 @@ _TYPE_PARSE_RE = re.compile(
     # Ident not followed by an open brace, semicolon, etc.
     # Example: `module.Type`.
     # Doesn't match: `name?: ...`, `name( ...`, etc.
-    (?P<ident>\w[\w-]*(?:\.\w[\w-]*)*)
-    \s*(?P<ident_qm>\??)\s*
-    (?![:(\w.?-])
+    (?P<ident>\w[\w-]*\s*(?:\.\s*\w[\w-]*\s*)*)
+    (?P<ident_qm>(?:\?\s*)*)
+    (?![:(\w.-])
     |
     # Built-in type not followed by an open brace, semicolon, etc.
     # Example: `string`, `string?`.
     # Doesn't match: `string?: ...`, `string( ...`, etc.
     (?P<type>nil|any|boolean|string|number|integer|function|table|thread|userdata|lightuserdata)
-    \b\s*(?P<type_qm>\??)\s*
-    (?![:(\w.?-])
+    \b\s*(?P<type_qm>(?:\?\s*)*)
+    (?![:(\w.-])
     |
     # Name component, only matches when `ident` and `type` didn't match.
     # Example: `string: ...`.
-    (?P<name>\w[\w.-]*)
+    (?P<name>\w[\w-]*\s*(?:\.\s*\w[\w-]*\s*)*)
     |
     # Punctuation that we separate with spaces.
     (?P<punct>[=:,|&])
     |
     # Braces.
-    (?P<brace>[()[\]{}])
+    # Match them separately, otherwise greedy `other_punct` might eat functional arrow.
+    (?P<brace>[()[\]{}<>])
     |
     # Functional arrow (will be replaced with semicolon).
     (?P<arrow>->)
     |
     # Punctuation that we copy as-is, without adding spaces.
-    (?P<other_punct>[-!#$%*+/\\;<>?@[\]^_{}~]+)
+    (?P<other_punct>[-!#$%*+/\\;?@^_~]+)
     |
     # Anything else is copied as-is.
     (?P<other>.)
@@ -285,6 +286,7 @@ def type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
         elif text := match.group("type"):
             res.append(addnodes.desc_sig_keyword_type(text, text))
             if qm := match.group("type_qm"):
+                qm = re.sub(r"\s", "", qm)
                 res.append(addnodes.desc_sig_punctuation(qm, qm))
         elif text := match.group("string"):
             res.append(addnodes.desc_sig_literal_string(text, text))
@@ -293,14 +295,17 @@ def type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
         elif text := match.group("ident"):
             import sphinx_lua_ls.domain
 
+            text = re.sub(r"\s", "", text)
             ref_nodes, warn_nodes = sphinx_lua_ls.domain.LuaXRefRole()(
                 "lua:_auto", text, text, 0, inliner
             )
             res.extend(ref_nodes)
             res.extend(warn_nodes)
             if qm := match.group("ident_qm"):
+                qm = re.sub(r"\s", "", qm)
                 res.append(addnodes.desc_sig_punctuation(qm, qm))
         elif text := match.group("name"):
+            text = re.sub(r"\s", "", text)
             res.append(addnodes.desc_sig_name(text, text))
         elif text := match.group("punct"):
             if text in "=|&":
@@ -315,7 +320,10 @@ def type_to_nodes(typ: str, inliner) -> list[nodes.Node]:
         elif text := match.group("other_punct"):
             res.append(addnodes.desc_sig_punctuation(text, text))
         elif text := match.group("other"):
-            res.append(nodes.Text(text))
+            if res and isinstance(res[-1], nodes.Text):
+                res[-1] += text
+            else:
+                res.append(nodes.Text(text))
 
     return res
 
@@ -339,17 +347,17 @@ def normalize_type(typ: str) -> str:
         elif text := match.group("type"):
             res += text
             if qm := match.group("type_qm"):
-                res += qm
+                res += re.sub(r"\s", "", qm)
         elif text := match.group("string"):
             res += text
         elif text := match.group("number"):
             res += text
         elif text := match.group("ident"):
-            res += text
+            res += re.sub(r"\s", "", text)
             if qm := match.group("ident_qm"):
-                res += qm
+                res += re.sub(r"\s", "", qm)
         elif text := match.group("name"):
-            res += text
+            res += re.sub(r"\s", "", text)
         elif text := match.group("punct"):
             if text in "=|":
                 res += " "

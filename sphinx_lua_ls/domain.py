@@ -384,7 +384,7 @@ class LuaObject(
     def parse_signature(self, sig: str) -> tuple[str, T]:
         raise NotImplementedError()
 
-    def use_semicolon_path(self) -> bool:
+    def use_colon_path(self) -> bool:
         return False
 
     def handle_signature_prefix(
@@ -403,7 +403,7 @@ class LuaObject(
         prefix = "" if classname else ".".join(filter(None, [modname, classname]))
 
         descname = name
-        if self.use_semicolon_path():
+        if self.use_colon_path():
             if "[" in descname:
                 descname_components = utils.separate_sig(descname, ".")
             else:
@@ -696,7 +696,7 @@ class LuaFunction(
     def needs_arg_list(self) -> bool:
         return True
 
-    def use_semicolon_path(self) -> bool:
+    def use_colon_path(self) -> bool:
         return self.objtype in ("method", "classmethod")
 
     def get_signature_prefix(
@@ -724,9 +724,6 @@ class LuaData(LuaObject[str]):
     def parse_signature(self, sig):
         name, sig = utils.separate_name_prefix(sig)
 
-        if sig.startswith("=") or sig.startswith(":"):
-            sig = sig[1:]
-
         return name, sig.strip()
 
     @utils.handle_signature_errors
@@ -740,7 +737,15 @@ class LuaData(LuaObject[str]):
         sw = _SigWriter(signode, self.maximum_signature_line_length)
 
         if typ:
-            sw.punctuation(":")
+            if typ.startswith("="):
+                sw.space()
+                sw.punctuation("=")
+                typ = typ[1:]
+            elif typ.startswith(":"):
+                sw.punctuation(":")
+                typ = typ[1:]
+            else:
+                sw.punctuation(":")
             sw.space()
             sw.typ(typ, self.state.inliner)
 
