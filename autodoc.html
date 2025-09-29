@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Generating API references" href="apidoc.html"><link rel="prev" title="Cross-referencing objects" href="roles.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>Generating documentation for objects - Sphinx-LuaLs 3.4.0 documentation</title>
+        <title>Generating documentation for objects - Sphinx-LuaLs 3.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.4.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.5.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Sphinx-LuaLs 3.4.0 documentation</span>
+  <span class="sidebar-brand-text">Sphinx-LuaLs 3.5.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -395,8 +395,8 @@ We recommend using <code class="docutils literal notranslate"><span class="pre">
 </div>
 </div>
 </div>
-<section id="autodoc-directive">
-<h2>Autodoc directive<a class="headerlink" href="#autodoc-directive" title="Link to this heading">¶</a></h2>
+<section id="autodoc-directives">
+<h2>Autodoc directives<a class="headerlink" href="#autodoc-directives" title="Link to this heading">¶</a></h2>
 <dl class="rst directive">
 <dt class="sig sig-object rst" id="directive-lua-autoobject">
 <span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:autoobject::</span></span><span class="sig-prename descclassname"> <span class="pre">name</span></span><a class="headerlink" href="#directive-lua-autoobject" title="Link to this definition">¶</a></dt>
@@ -405,7 +405,7 @@ We recommend using <code class="docutils literal notranslate"><span class="pre">
 as well as some additional ones:</p>
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-members">
-<span class="sig-name descname"><span class="pre">:members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-members" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:members:</span></span><em class="property"> <span class="pre">[&lt;name&gt;,</span> <span class="pre">...]</span></em><a class="headerlink" href="#directive-option-lua-autoobject-members" title="Link to this definition">¶</a></dt>
 <dd><p>If enabled, autodoc will also document object’s members. You can pass a list
 of comma-separated names to specify which members should be documented.
 Otherwise, this option will document all public non-special members
@@ -414,7 +414,7 @@ which have a description.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-undoc-members">
-<span class="sig-name descname"><span class="pre">:undoc-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-undoc-members" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:undoc-members:</span></span><em class="property"> <span class="pre">[&lt;name&gt;,</span> <span class="pre">...]</span></em><a class="headerlink" href="#directive-option-lua-autoobject-undoc-members" title="Link to this definition">¶</a></dt>
 <dd><p>Include undocumented members to the object’s description. By default,
 they are skipped even if <a class="reference internal" href="#directive-option-lua-autoobject-members" title="lua:autoobject:members directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">members</span></code></a> is passed.</p>
 <p>Accepts a comma-separated list of names; if list is empty,
@@ -423,11 +423,11 @@ adds all undoc members.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-private-members">
-<span class="sig-name descname"><span class="pre">:private-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-private-members" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:private-members:</span></span><em class="property"> <span class="pre">[&lt;name&gt;,</span> <span class="pre">...]</span></em><a class="headerlink" href="#directive-option-lua-autoobject-private-members" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-protected-members">
-<span class="sig-name descname"><span class="pre">:protected-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-protected-members" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:protected-members:</span></span><em class="property"> <span class="pre">[&lt;name&gt;,</span> <span class="pre">...]</span></em><a class="headerlink" href="#directive-option-lua-autoobject-protected-members" title="Link to this definition">¶</a></dt>
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-package-members">
-<span class="sig-name descname"><span class="pre">:package-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-package-members" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:package-members:</span></span><em class="property"> <span class="pre">[&lt;name&gt;,</span> <span class="pre">...]</span></em><a class="headerlink" href="#directive-option-lua-autoobject-package-members" title="Link to this definition">¶</a></dt>
 <dd><p>Include non-public members to the object’s description.</p>
 <p>Accepts a comma-separated list of names; if list is empty,
 adds all non-public members.</p>
@@ -435,7 +435,7 @@ adds all non-public members.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-special-members">
-<span class="sig-name descname"><span class="pre">:special-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-special-members" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:special-members:</span></span><em class="property"> <span class="pre">[&lt;name&gt;,</span> <span class="pre">...]</span></em><a class="headerlink" href="#directive-option-lua-autoobject-special-members" title="Link to this definition">¶</a></dt>
 <dd><p>Include members whose names start with double underscore
 to the object’s description.</p>
 <p>Accepts a comma-separated list of names; if list is empty,
@@ -444,7 +444,7 @@ adds all special members.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-inherited-members">
-<span class="sig-name descname"><span class="pre">:inherited-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-inherited-members" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:inherited-members:</span></span><em class="property"> <span class="pre">[&lt;name&gt;,</span> <span class="pre">...]</span></em><a class="headerlink" href="#directive-option-lua-autoobject-inherited-members" title="Link to this definition">¶</a></dt>
 <dd><p>For classes, include members inherited from base classes.</p>
 <p>Accepts a comma-separated list of names; if list is empty,
 adds all inherited members.</p>
@@ -452,13 +452,13 @@ adds all inherited members.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-exclude-members">
-<span class="sig-name descname"><span class="pre">:exclude-members:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-exclude-members" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:exclude-members:</span></span><em class="property"> <span class="pre">[&lt;name&gt;,</span> <span class="pre">...]</span></em><a class="headerlink" href="#directive-option-lua-autoobject-exclude-members" title="Link to this definition">¶</a></dt>
 <dd><p>A comma-separated list of members that should not be documented.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-globals">
-<span class="sig-name descname"><span class="pre">:globals:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-globals" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:globals:</span></span><em class="property"> <span class="pre">[&lt;name&gt;,</span> <span class="pre">...]</span></em><a class="headerlink" href="#directive-option-lua-autoobject-globals" title="Link to this definition">¶</a></dt>
 <dd><p>Will include global variables declared in the corresponding module.</p>
 <p>Accepts a comma-separated list of names; if list is empty,
 adds all global variables.</p>
@@ -466,7 +466,7 @@ adds all global variables.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-class-doc-from">
-<span class="sig-name descname"><span class="pre">:class-doc-from:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-class-doc-from" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:class-doc-from:</span></span><em class="property"> <span class="pre">class</span> <span class="pre">|</span> <span class="pre">ctor</span> <span class="pre">|</span> <span class="pre">both</span> <span class="pre">|</span> <span class="pre">separate</span></em><a class="headerlink" href="#directive-option-lua-autoobject-class-doc-from" title="Link to this definition">¶</a></dt>
 <dd><p>Specifies how to generate documentation for classes
 if <a class="reference internal" href="settings.html#class_default_function_name" title="class_default_function_name"><code class="xref py py-data docutils literal notranslate"><span class="pre">class_default_function_name</span></code></a> is configured.</p>
 <p>Options are:</p>
@@ -482,7 +482,7 @@ document class constructor as a separate method.</p></li>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-class-signature">
-<span class="sig-name descname"><span class="pre">:class-signature:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-class-signature" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:class-signature:</span></span><em class="property"> <span class="pre">bases</span> <span class="pre">|</span> <span class="pre">ctor</span> <span class="pre">|</span> <span class="pre">both</span> <span class="pre">|</span> <span class="pre">minimal</span></em><a class="headerlink" href="#directive-option-lua-autoobject-class-signature" title="Link to this definition">¶</a></dt>
 <dd><p>Specifies how to generate signatures for classes
 if <a class="reference internal" href="settings.html#class_default_function_name" title="class_default_function_name"><code class="xref py py-data docutils literal notranslate"><span class="pre">class_default_function_name</span></code></a> is configured.</p>
 <p>Options are:</p>
@@ -545,7 +545,7 @@ and overriding defaults).</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-member-order">
-<span class="sig-name descname"><span class="pre">:member-order:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-member-order" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:member-order:</span></span><em class="property"> <span class="pre">alphabetical</span> <span class="pre">|</span> <span class="pre">groupwise</span> <span class="pre">|</span> <span class="pre">bysource</span></em><a class="headerlink" href="#directive-option-lua-autoobject-member-order" title="Link to this definition">¶</a></dt>
 <dd><p>Controls how members are sorted. There are three options available:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">alphabetical</span></code>: members are sorted in lexicographical order of their names;</p></li>
@@ -558,13 +558,13 @@ This is the default option.</p></li>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-module-member-order">
-<span class="sig-name descname"><span class="pre">:module-member-order:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-module-member-order" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:module-member-order:</span></span><em class="property"> <span class="pre">alphabetical</span> <span class="pre">|</span> <span class="pre">groupwise</span> <span class="pre">|</span> <span class="pre">bysource</span></em><a class="headerlink" href="#directive-option-lua-autoobject-module-member-order" title="Link to this definition">¶</a></dt>
 <dd><p>Overrides <a class="reference internal" href="#directive-option-lua-autoobject-member-order" title="lua:autoobject:member-order directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:member-order</span></code></a> for modules.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-title">
-<span class="sig-name descname"><span class="pre">:title:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-title" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:title:</span></span><em class="property"> <span class="pre">&lt;text&gt;</span></em><a class="headerlink" href="#directive-option-lua-autoobject-title" title="Link to this definition">¶</a></dt>
 <dd><p>For modules, controls whether a title is inserted between module description
 and documentation of its members.</p>
 </dd></dl>
@@ -577,7 +577,7 @@ and documentation of its members.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-index-title">
-<span class="sig-name descname"><span class="pre">:index-title:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-index-title" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:index-title:</span></span><em class="property"> <span class="pre">&lt;text&gt;</span></em><a class="headerlink" href="#directive-option-lua-autoobject-index-title" title="Link to this definition">¶</a></dt>
 <dd><p>Allows overriding title of the <a class="reference internal" href="#directive-lua-autoindex" title="lua:autoindex directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoindex</span></code></a> section.</p>
 </dd></dl>
 
@@ -589,7 +589,7 @@ and documentation of its members.</p>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-annotate-require">
-<span class="sig-name descname"><span class="pre">:annotate-require:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-annotate-require" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:annotate-require:</span></span><em class="property"> <span class="pre">always</span> <span class="pre">|</span> <span class="pre">never</span> <span class="pre">|</span> <span class="pre">auto</span> <span class="pre">|</span> <span class="pre">force</span></em><a class="headerlink" href="#directive-option-lua-autoobject-annotate-require" title="Link to this definition">¶</a></dt>
 <dd><p>Adds information about how to require a module.</p>
 <p>Options are:</p>
 <ul class="simple">
@@ -608,19 +608,66 @@ even if lua analyzer didn’t export this information.</p></li>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-require-function-name">
-<span class="sig-name descname"><span class="pre">:require-function-name:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-require-function-name" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:require-function-name:</span></span><em class="property"> <span class="pre">&lt;name&gt;</span></em><a class="headerlink" href="#directive-option-lua-autoobject-require-function-name" title="Link to this definition">¶</a></dt>
 <dd><p>Allows overriding name of the <a class="reference external" href="https://www.lua.org/manual/5.4/manual.html#pdf-require"><code class="xref lua lua-obj docutils literal notranslate"><span class="pre">require</span></code></a> function
 for <a class="reference internal" href="#directive-option-lua-autoobject-annotate-require" title="lua:autoobject:annotate-require directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:annotate-require</span></code></a>.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-lua-autoobject-require-separator">
-<span class="sig-name descname"><span class="pre">:require-separator:</span></span><a class="headerlink" href="#directive-option-lua-autoobject-require-separator" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:require-separator:</span></span><em class="property"> <span class="pre">&lt;str&gt;</span></em><a class="headerlink" href="#directive-option-lua-autoobject-require-separator" title="Link to this definition">¶</a></dt>
 <dd><p>Allows overriding separator
 for <a class="reference internal" href="#directive-option-lua-autoobject-annotate-require" title="lua:autoobject:annotate-require directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:annotate-require</span></code></a>.</p>
 </dd></dl>
 
 </dd></dl>
+
+<dl class="rst directive">
+<dt class="sig sig-object rst" id="directive-lua-auto">
+<span class="sig-name descname"><span class="pre">..</span> <span class="pre">lua:auto*::</span></span><a class="headerlink" href="#directive-lua-auto" title="Link to this definition">¶</a></dt>
+<dd><p>In addition to <a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a>, there are <code class="docutils literal notranslate"><span class="pre">lua:autodata</span></code>,
+<code class="docutils literal notranslate"><span class="pre">lua:autoattribute</span></code>, <code class="docutils literal notranslate"><span class="pre">lua:autoclass</span></code>, and other <code class="docutils literal notranslate"><span class="pre">lua:auto*</span></code> directives.</p>
+<p>They work like <code class="docutils literal notranslate"><span class="pre">lua:autoobject</span></code>, but apply their doctype to the documented object
+(if <code class="docutils literal notranslate"><span class="pre">!doctype</span></code> was <a class="reference internal" href="#doc-comments"><span class="std std-ref">set in source code</span></a>,
+it shouldn’t conflict with the used directive).</p>
+<p>They also allow overriding object’s signature, which may be useful when
+automatically generated signature is too long:</p>
+<div class="sd-tab-set docutils">
+<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="rst" for="sd-tab-item-2">
+RST</label><div class="sd-tab-content docutils">
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span><span class="p">..</span> <span class="ow">lua:autofunction</span><span class="p">::</span> logging.getLogger(name: string?): logging.Logger
+</pre></div>
+</div>
+</div>
+<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
+<label class="sd-tab-label" data-sync-group="lang" data-sync-id="md" for="sd-tab-item-3">
+Markdown</label><div class="sd-tab-content docutils">
+<div class="highlight-myst notranslate"><div class="highlight"><pre><span></span>```{lua:autofunction} logging.getLogger(name: string? = ...): logging.Logger
+```
+</pre></div>
+</div>
+</div>
+</div>
+<details class="sd-sphinx-override sd-dropdown sd-card sd-mb-3">
+<summary class="sd-summary-title sd-card-header">
+<span class="sd-summary-text">Example output</span><span class="sd-summary-state-marker sd-summary-chevron-right"><svg version="1.1" width="1.5em" height="1.5em" class="sd-octicon sd-octicon-chevron-right" viewBox="0 0 24 24" aria-hidden="true"><path d="M8.72 18.78a.75.75 0 0 1 0-1.06L14.44 12 8.72 6.28a.751.751 0 0 1 .018-1.042.751.751 0 0 1 1.042-.018l6.25 6.25a.75.75 0 0 1 0 1.06l-6.25 6.25a.75.75 0 0 1-1.06 0Z"></path></svg></span></summary><div class="sd-summary-content sd-card-body docutils">
+<dl class="lua function">
+<dt class="sig sig-object lua">
+<span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">getLogger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">?</span></span><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="n"><span class="pre">...</span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="example.html#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Logger</span></code></a><br /></dt>
+<dd><p class="sd-card-text">Get logger with the given name, or create one if it doesn’t exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p class="sd-card-text"><strong>name?</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – logger name. Uses current module name if empty.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p class="sd-card-text"><strong>logger</strong> (<a class="reference internal" href="example.html#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Logger</span></code></a>) – logger with the given name.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</details></dd></dl>
 
 <dl class="rst directive">
 <dt class="sig sig-object rst" id="directive-lua-autoindex">
@@ -646,13 +693,13 @@ will use current class.</p>
 
 </section>
 <section id="controlling-generation-from-code-comments">
-<h2>Controlling generation from code comments<a class="headerlink" href="#controlling-generation-from-code-comments" title="Link to this heading">¶</a></h2>
+<span id="doc-comments"></span><h2>Controlling generation from code comments<a class="headerlink" href="#controlling-generation-from-code-comments" title="Link to this heading">¶</a></h2>
 <p>When using <a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> in recursive mode, it is sometimes necessary
 to override its options for some objects. To do this, you can include specially
 formatted comments to your documentation.</p>
 <div class="sd-tab-set docutils">
-<input checked="checked" id="sd-tab-item-2" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" data-sync-group="backend" data-sync-id="emmylua" for="sd-tab-item-2">
+<input checked="checked" id="sd-tab-item-4" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="backend" data-sync-id="emmylua" for="sd-tab-item-4">
 EmmyLua</label><div class="sd-tab-content docutils">
 <p>To override any <a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> setting for a particular object,
 use <code class="docutils literal notranslate"><span class="pre">&#64;doc</span></code> comments. For example, here we enable <a class="reference internal" href="#directive-option-lua-autoobject-special-members" title="lua:autoobject:special-members directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:special-members</span></code></a>
@@ -681,8 +728,8 @@ However, we recommend switching to <code class="docutils literal notranslate"><s
 because EmmyLua provides a proper syntax highlighting for them.</p>
 </div>
 </div>
-<input id="sd-tab-item-3" name="sd-tab-set-1" type="radio">
-<label class="sd-tab-label" data-sync-group="backend" data-sync-id="luals" for="sd-tab-item-3">
+<input id="sd-tab-item-5" name="sd-tab-set-2" type="radio">
+<label class="sd-tab-label" data-sync-group="backend" data-sync-id="luals" for="sd-tab-item-5">
 LuaLs</label><div class="sd-tab-content docutils">
 <p>To override any <a class="reference internal" href="#directive-lua-autoobject" title="lua:autoobject directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject</span></code></a> setting for a particular object,
 use <code class="docutils literal notranslate"><span class="pre">!doc</span></code> comments. For example, here we enable <a class="reference internal" href="#directive-option-lua-autoobject-special-members" title="lua:autoobject:special-members directive:option"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoobject:special-members</span></code></a>
@@ -765,7 +812,7 @@ that a certain variable should be documented as <a class="reference internal" hr
           <div class="toc-tree">
             <ul>
 <li><a class="reference internal" href="#">Generating documentation for objects</a><ul>
-<li><a class="reference internal" href="#autodoc-directive">Autodoc directive</a><ul>
+<li><a class="reference internal" href="#autodoc-directives">Autodoc directives</a><ul>
 <li><a class="reference internal" href="#directive-lua-autoobject"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:autoobject::</span></code></a><ul>
 <li><a class="reference internal" href="#directive-option-lua-autoobject-members"><code class="docutils literal notranslate"><span class="pre">:members:</span></code></a></li>
 <li><a class="reference internal" href="#directive-option-lua-autoobject-undoc-members"><code class="docutils literal notranslate"><span class="pre">:undoc-members:</span></code></a></li>
@@ -790,6 +837,7 @@ that a certain variable should be documented as <a class="reference internal" hr
 <li><a class="reference internal" href="#directive-option-lua-autoobject-require-separator"><code class="docutils literal notranslate"><span class="pre">:require-separator:</span></code></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#directive-lua-auto"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:auto*::</span></code></a></li>
 <li><a class="reference internal" href="#directive-lua-autoindex"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:autoindex::</span></code></a></li>
 <li><a class="reference internal" href="#directive-lua-other-inherited-members"><code class="docutils literal notranslate"><span class="pre">..</span> <span class="pre">lua:other-inherited-members::</span></code></a></li>
 </ul>
@@ -806,7 +854,7 @@ that a certain variable should be documented as <a class="reference internal" hr
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=b0e360d0"></script>
+</div><script src="_static/documentation_options.js?v=c1362a89"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

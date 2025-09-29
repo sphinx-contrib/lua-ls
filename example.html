@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="prev" title="Settings" href="settings.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>Example output - Sphinx-LuaLs 3.4.0 documentation</title>
+        <title>Example output - Sphinx-LuaLs 3.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.4.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.5.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Sphinx-LuaLs 3.4.0 documentation</span>
+  <span class="sidebar-brand-text">Sphinx-LuaLs 3.5.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -297,6 +297,18 @@ Result</label><div class="sd-tab-content docutils">
 </tr>
 </tbody>
 </table>
+<p><strong>Function</strong></p>
+<table class="table lua-index-table docutils align-default">
+<colgroup>
+<col style="width: 33.3%" />
+<col style="width: 66.7%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lua-logging.getLogger" title="logging.getLogger"><code class="docutils literal notranslate"><span class="pre">getLogger()</span></code></a></p></td>
+<td><p>Get logger with the given name, or create one if it doesn't exist.</p></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Class</strong></p>
 <table class="table lua-index-table docutils align-default">
 <colgroup>
@@ -329,6 +341,23 @@ Result</label><div class="sd-tab-content docutils">
 <dt class="sig sig-object lua" id="lua-LOG_LEVEL">
 <em class="property"><span class="k"><span class="pre">global</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">LOG_LEVEL</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Level" title="logging.Level"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Level</span></code></a><a class="headerlink" href="#lua-LOG_LEVEL" title="Link to this definition">¶</a><br /></dt>
 <dd><p>Default log level.</p>
+</dd></dl>
+
+</section>
+<section id="function">
+<h2>Function<a class="headerlink" href="#function" title="Link to this heading">¶</a></h2>
+<dl class="lua function">
+<dt class="sig sig-object lua" id="lua-logging.getLogger">
+<span class="sig-prename descclassname"><span class="pre">logging.</span></span><span class="sig-name descname"><span class="pre">getLogger</span></span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">name?</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="n"><span class="pre">logger</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference internal" href="#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Logger</span></code></a><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#lua-logging.getLogger" title="Link to this definition">¶</a><br /></dt>
+<dd><p>Get logger with the given name, or create one if it doesn’t exist.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name?</strong> (<code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">string</span></code>) – logger name. Uses current module name if empty.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>logger</strong> (<a class="reference internal" href="#lua-logging.Logger" title="logging.Logger"><code class="xref lua lua-_auto docutils literal notranslate"><span class="pre">logging.Logger</span></code></a>) – logger with the given name.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -504,6 +533,12 @@ logging.lua</label><div class="sd-tab-content docutils">
 <span class="cm">--- </span><span class="k k-Comment">@param</span><span class="cm"> ... any parameters for message formatting.</span>
 <span class="kr">function</span><span class="w"> </span><span class="nc">logging</span><span class="p">.</span><span class="nc">Logger</span><span class="p">:</span><span class="nf">error</span><span class="p">(</span><span class="nv">msg</span><span class="p">,</span><span class="w"> </span><span class="p">...)</span><span class="w"> </span><span class="kr">end</span>
 
+<span class="c1">--- Get logger with the given name, or create one if it doesn&#39;t exist.</span>
+<span class="c1">---</span>
+<span class="cm">--- </span><span class="k k-Comment">@param</span><span class="cm"> name string? logger name. Uses current module name if empty.</span>
+<span class="cm">--- </span><span class="k k-Comment">@return</span><span class="cm"> Logger logger logger with the given name.</span>
+<span class="kr">function</span><span class="w"> </span><span class="nc">logging</span><span class="p">.</span><span class="nf">getLogger</span><span class="p">(</span><span class="nv">name</span><span class="p">)</span><span class="w"> </span><span class="kr">end</span>
+
 <span class="kr">return</span><span class="w"> </span><span class="nv">logging</span>
 </pre></div>
 </div>
@@ -560,6 +595,7 @@ logging.lua</label><div class="sd-tab-content docutils">
             <ul>
 <li><a class="reference internal" href="#">Example output</a><ul>
 <li><a class="reference internal" href="#lua-LOG_LEVEL"><code class="docutils literal notranslate"><span class="pre">LOG_LEVEL</span></code></a></li>
+<li><a class="reference internal" href="#lua-logging.getLogger"><code class="docutils literal notranslate"><span class="pre">logging.getLogger()</span></code></a></li>
 <li><a class="reference internal" href="#lua-logging.Logger"><code class="docutils literal notranslate"><span class="pre">logging.Logger</span></code></a><ul>
 <li><a class="reference internal" href="#lua-logging.Logger.debug"><code class="docutils literal notranslate"><span class="pre">debug()</span></code></a></li>
 <li><a class="reference internal" href="#lua-logging.Logger.info"><code class="docutils literal notranslate"><span class="pre">info()</span></code></a></li>
@@ -585,7 +621,7 @@ logging.lua</label><div class="sd-tab-content docutils">
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=b0e360d0"></script>
+</div><script src="_static/documentation_options.js?v=c1362a89"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

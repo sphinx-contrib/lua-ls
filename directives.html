@@ -6,7 +6,7 @@
 <link rel="index" title="Index" href="genindex.html"><link rel="search" title="Search" href="search.html"><link rel="next" title="Cross-referencing objects" href="roles.html"><link rel="prev" title="Quickstart" href="quickstart.html">
 
     <!-- Generated with Sphinx 8.2.3 and Furo 2025.09.25 -->
-        <title>Declaring objects - Sphinx-LuaLs 3.4.0 documentation</title>
+        <title>Declaring objects - Sphinx-LuaLs 3.5.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=d111a655" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=580074bf" />
     <link rel="stylesheet" type="text/css" href="_static/lua.css" />
@@ -163,7 +163,7 @@
       </label>
     </div>
     <div class="header-center">
-      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.4.0 documentation</div></a>
+      <a href="index.html"><div class="brand">Sphinx-LuaLs 3.5.0 documentation</div></a>
     </div>
     <div class="header-right">
       <div class="theme-toggle-container theme-toggle-header">
@@ -184,7 +184,7 @@
       
       <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
   
-  <span class="sidebar-brand-text">Sphinx-LuaLs 3.4.0 documentation</span>
+  <span class="sidebar-brand-text">Sphinx-LuaLs 3.5.0 documentation</span>
   
 </a><form class="sidebar-search-container" method="get" action="search.html" role="search">
   <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
@@ -560,9 +560,13 @@ Verbosity level of a log message.
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-no-index">
 <span class="sig-name descname"><span class="pre">:no-index:</span></span><a class="headerlink" href="#directive-option-no-index" title="Link to this definition">¶</a></dt>
-<dd><p>Render the documentation, but don’t add it to the index
-and don’t create anchors. You will not be able to reference
-un-indexed objects.</p>
+<dt class="sig sig-object rst" id="directive-option-no-index-entry">
+<span class="sig-name descname"><span class="pre">:no-index-entry:</span></span><a class="headerlink" href="#directive-option-no-index-entry" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="directive-option-no-contents-entry">
+<span class="sig-name descname"><span class="pre">:no-contents-entry:</span></span><a class="headerlink" href="#directive-option-no-contents-entry" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object rst" id="directive-option-no-typesetting">
+<span class="sig-name descname"><span class="pre">:no-typesetting:</span></span><a class="headerlink" href="#directive-option-no-typesetting" title="Link to this definition">¶</a></dt>
+<dd><p>The <a class="reference external" href="https://www.sphinx-doc.org/en/master/usage/domains/index.html#basic-markup">standard Sphinx options</a> available to all object descriptions.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
@@ -617,7 +621,7 @@ Fetches content from the given url.
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-annotation">
-<span class="sig-name descname"><span class="pre">:annotation:</span></span><a class="headerlink" href="#directive-option-annotation" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:annotation:</span></span><em class="property"> <span class="pre">&lt;text&gt;</span></em><a class="headerlink" href="#directive-option-annotation" title="Link to this definition">¶</a></dt>
 <dd><p>Allows adding custom short annotations.</p>
 </dd></dl>
 
@@ -676,14 +680,14 @@ Person&#39;s full name.
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-synopsis">
-<span class="sig-name descname"><span class="pre">:synopsis:</span></span><a class="headerlink" href="#directive-option-synopsis" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:synopsis:</span></span><em class="property"> <span class="pre">&lt;text&gt;</span></em><a class="headerlink" href="#directive-option-synopsis" title="Link to this definition">¶</a></dt>
 <dd><p>Allows adding a small description that’s reflected
 in the <a class="reference internal" href="autodoc.html#directive-lua-autoindex" title="lua:autoindex directive"><code class="xref rst rst-dir docutils literal notranslate"><span class="pre">lua:autoindex</span></code></a> output.</p>
 </dd></dl>
 
 <dl class="rst directive:option">
 <dt class="sig sig-object rst" id="directive-option-module">
-<span class="sig-name descname"><span class="pre">:module:</span></span><a class="headerlink" href="#directive-option-module" title="Link to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">:module:</span></span><em class="property"> <span class="pre">&lt;name&gt;</span></em><a class="headerlink" href="#directive-option-module" title="Link to this definition">¶</a></dt>
 <dd><p>Allows overriding current module for a single object. This is useful
 for documenting global variables that are declared in a module.</p>
 </dd></dl>
@@ -768,6 +772,9 @@ for documenting global variables that are declared in a module.</p>
 </li>
 <li><a class="reference internal" href="#parameters">Parameters</a><ul>
 <li><a class="reference internal" href="#directive-option-no-index"><code class="docutils literal notranslate"><span class="pre">:no-index:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-no-index-entry"><code class="docutils literal notranslate"><span class="pre">:no-index-entry:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-no-contents-entry"><code class="docutils literal notranslate"><span class="pre">:no-contents-entry:</span></code></a></li>
+<li><a class="reference internal" href="#directive-option-no-typesetting"><code class="docutils literal notranslate"><span class="pre">:no-typesetting:</span></code></a></li>
 <li><a class="reference internal" href="#directive-option-private"><code class="docutils literal notranslate"><span class="pre">:private:</span></code></a></li>
 <li><a class="reference internal" href="#directive-option-protected"><code class="docutils literal notranslate"><span class="pre">:protected:</span></code></a></li>
 <li><a class="reference internal" href="#directive-option-package"><code class="docutils literal notranslate"><span class="pre">:package:</span></code></a></li>
@@ -792,7 +799,7 @@ for documenting global variables that are declared in a module.</p>
       
     </aside>
   </div>
-</div><script src="_static/documentation_options.js?v=b0e360d0"></script>
+</div><script src="_static/documentation_options.js?v=c1362a89"></script>
     <script src="_static/doctools.js?v=9bcbadda"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/scripts/furo.js?v=46bd48cc"></script>

@@ -165,8 +165,8 @@ can be slightly different:
                }
 
 
-Autodoc directive
------------------
+Autodoc directives
+------------------
 
 .. rst:directive:: .. lua:autoobject:: name
 
@@ -175,14 +175,14 @@ Autodoc directive
    :rst:dir:`lua:autoobject` supports same settings as other lua directives,
    as well as some additional ones:
 
-   .. rst:directive:option:: members
+   .. rst:directive:option:: members: [<name>, ...]
 
       If enabled, autodoc will also document object's members. You can pass a list
       of comma-separated names to specify which members should be documented.
       Otherwise, this option will document all public non-special members
       which have a description.
 
-   .. rst:directive:option:: undoc-members
+   .. rst:directive:option:: undoc-members: [<name>, ...]
 
       Include undocumented members to the object's description. By default,
       they are skipped even if :rst:dir:`members <lua:autoobject:members>` is passed.
@@ -190,16 +190,16 @@ Autodoc directive
       Accepts a comma-separated list of names; if list is empty,
       adds all undoc members.
 
-   .. rst:directive:option:: private-members
-                             protected-members
-                             package-members
+   .. rst:directive:option:: private-members: [<name>, ...]
+                             protected-members: [<name>, ...]
+                             package-members: [<name>, ...]
 
       Include non-public members to the object's description.
 
       Accepts a comma-separated list of names; if list is empty,
       adds all non-public members.
 
-   .. rst:directive:option:: special-members
+   .. rst:directive:option:: special-members: [<name>, ...]
 
       Include members whose names start with double underscore
       to the object's description.
@@ -207,25 +207,25 @@ Autodoc directive
       Accepts a comma-separated list of names; if list is empty,
       adds all special members.
 
-   .. rst:directive:option:: inherited-members
+   .. rst:directive:option:: inherited-members: [<name>, ...]
 
       For classes, include members inherited from base classes.
 
       Accepts a comma-separated list of names; if list is empty,
       adds all inherited members.
 
-   .. rst:directive:option:: exclude-members
+   .. rst:directive:option:: exclude-members: [<name>, ...]
 
       A comma-separated list of members that should not be documented.
 
-   .. rst:directive:option:: globals
+   .. rst:directive:option:: globals: [<name>, ...]
 
       Will include global variables declared in the corresponding module.
 
       Accepts a comma-separated list of names; if list is empty,
       adds all global variables.
 
-   .. rst:directive:option:: class-doc-from
+   .. rst:directive:option:: class-doc-from: class | ctor | both | separate
 
       Specifies how to generate documentation for classes
       if :py:data:`class_default_function_name` is configured.
@@ -242,7 +242,7 @@ Autodoc directive
       - ``separate``: only use documentation from ``@class`` annotation,
         document class constructor as a separate method.
 
-   .. rst:directive:option:: class-signature
+   .. rst:directive:option:: class-signature: bases | ctor | both | minimal
 
       Specifies how to generate signatures for classes
       if :py:data:`class_default_function_name` is configured.
@@ -302,7 +302,7 @@ Autodoc directive
       (see :py:data:`lua_ls_default_options` for info on ``+``
       and overriding defaults).
 
-   .. rst:directive:option:: member-order
+   .. rst:directive:option:: member-order: alphabetical | groupwise | bysource
 
       Controls how members are sorted. There are three options available:
 
@@ -314,11 +314,11 @@ Autodoc directive
       - ``bysource``: members are sorted in the same order as they appear in code.
         This is the default option.
 
-   .. rst:directive:option:: module-member-order
+   .. rst:directive:option:: module-member-order: alphabetical | groupwise | bysource
 
       Overrides :rst:dir:`lua:autoobject:member-order` for modules.
 
-   .. rst:directive:option:: title
+   .. rst:directive:option:: title: <text>
 
       For modules, controls whether a title is inserted between module description
       and documentation of its members.
@@ -327,7 +327,7 @@ Autodoc directive
 
       Adds :rst:dir:`lua:autoindex` to the toplevel module.
 
-   .. rst:directive:option:: index-title
+   .. rst:directive:option:: index-title: <text>
 
       Allows overriding title of the :rst:dir:`lua:autoindex` section.
 
@@ -335,7 +335,7 @@ Autodoc directive
 
       Adds :rst:dir:`lua:other-inherited-members` to all classes.
 
-   .. rst:directive:option:: annotate-require
+   .. rst:directive:option:: annotate-require: always | never | auto | force
 
       Adds information about how to require a module.
 
@@ -355,15 +355,50 @@ Autodoc directive
 
          LuaLs only supports ``never`` and ``force``.
 
-   .. rst:directive:option:: require-function-name
+   .. rst:directive:option:: require-function-name: <name>
 
       Allows overriding name of the `require` function
       for :rst:dir:`lua:autoobject:annotate-require`.
 
-   .. rst:directive:option:: require-separator
+   .. rst:directive:option:: require-separator: <str>
 
       Allows overriding separator
       for :rst:dir:`lua:autoobject:annotate-require`.
+
+.. rst:directive:: .. lua:auto*::
+
+   In addition to :rst:dir:`lua:autoobject`, there are ``lua:autodata``,
+   ``lua:autoattribute``, ``lua:autoclass``, and other ``lua:auto*`` directives.
+
+   They work like ``lua:autoobject``, but apply their doctype to the documented object
+   (if ``!doctype`` was :ref:`set in source code <doc_comments>`,
+   it shouldn't conflict with the used directive).
+
+   They also allow overriding object's signature, which may be useful when
+   automatically generated signature is too long:
+
+   .. tab-set::
+      :sync-group: lang
+
+      .. tab-item:: RST
+         :sync: rst
+
+         .. code-block:: rst
+
+            .. lua:autofunction:: logging.getLogger(name: string?): logging.Logger
+
+      .. tab-item:: Markdown
+         :sync: md
+
+         .. code-block:: myst
+
+            ```{lua:autofunction} logging.getLogger(name: string? = ...): logging.Logger
+            ```
+
+   .. dropdown:: Example output
+
+      .. lua:autofunction:: logging.getLogger(name: string? = ...): logging.Logger
+         :no-index:
 
 .. rst:directive:: .. lua:autoindex:: module-name
 
@@ -387,6 +422,7 @@ Autodoc directive
    If given, class name must be absolute, even if this directive appears after
    :rst:dir:`lua:module`.
 
+.. _doc_comments:
 
 Controlling generation from code comments
 -----------------------------------------

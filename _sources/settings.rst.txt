@@ -36,7 +36,21 @@ Settings
 .. py:data:: lua_ls_min_version
    :type: str
 
-   Controls the minimal version of the used lua analyzer.
+   Controls the minimum version of the used lua analyzer.
+
+   Analyzer version should be greater than or equal to this version.
+
+   For LuaLs, default value is ``3.0.0``, for EmmyLua it's ``0.11.0``.
+
+.. py:data:: lua_ls_max_version
+   :type: str | None
+
+   Controls the maximum version of the used lua analyzer.
+
+   Analyzer version should be strictly less than this version.
+
+   For LuaLs, default value is ``4.0.0``, for EmmyLua it's ``2.0.0``.
+   Use ``None`` to allow any version.
 
 .. py:data:: lua_ls_default_options
    :type: dict[str, str]
