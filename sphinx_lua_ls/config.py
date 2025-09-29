@@ -216,8 +216,10 @@ def set_options(app: sphinx.application.Sphinx):
             "lua_ls_min_version", config["lua_ls_min_version"]
         )
     if config["lua_ls_max_version"] is not None:
-        domain_config.max_version = _version(
-            "lua_ls_max_version", config["lua_ls_max_version"]
+        domain_config.max_version = (
+            _version("lua_ls_max_version", config["lua_ls_max_version"])
+            if config["lua_ls_max_version"] != "__auto__"
+            else "__auto__"
         )
 
     if config["lua_ls_lua_version"]:
