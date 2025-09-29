@@ -115,6 +115,47 @@ jobs:
         if: ${{ matrix.type == 'code style' }}
         run: pre-commit run -a
 
+  # Builds sphinx documentation.
+  #
+  # Runs on all events except when closing a pull request.
+  build_docs:
+    name: Build docs
+    needs:
+      - test
+    if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && !contains(github.event.ref, '.dev') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up python 3.12
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.12
+      - name: Install package
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install . --group doc
+      - name: Download LuaLs
+        uses: actions/download-artifact@v4
+        with:
+          name: lua_ls_release
+          path: ~/lua_ls_release
+      - name: Build docs
+        env:
+          SPHINXOPTS: "-j auto -n"
+          LUA_LS_CACHE_PATH: ~/lua_ls_release/ubuntu-latest
+        run: |
+          cd docs
+          make html
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: html_output
+          path: docs/build/html
+          include-hidden-files: true
+
   # Builds and publishes python packages.
   #
   # Only runs on tag pushes.
@@ -122,6 +163,7 @@ jobs:
     name: Publish package to PyPi
     needs:
       - test
+      - build_docs
     if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
     runs-on: ubuntu-latest
     environment:
@@ -179,47 +221,6 @@ jobs:
 
             [See release on PyPi](${{ steps.metadata.outputs.link }})
 
-  # Builds sphinx documentation.
-  #
-  # Runs on all events except when closing a pull request.
-  build_docs:
-    name: Build docs
-    needs:
-      - test
-    if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && !contains(github.event.ref, '.dev') }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Set up python 3.12
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.12
-      - name: Install package
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install . --group doc
-      - name: Download LuaLs
-        uses: actions/download-artifact@v4
-        with:
-          name: lua_ls_release
-          path: ~/lua_ls_release
-      - name: Build docs
-        env:
-          SPHINXOPTS: "-j auto -n"
-          LUA_LS_CACHE_PATH: ~/lua_ls_release/ubuntu-latest
-        run: |
-          cd docs
-          make html
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: html_output
-          path: docs/build/html
-          include-hidden-files: true
-
   # Builds and publishes production docs.
   #
   # Only runs on tag pushes.
@@ -227,6 +228,7 @@ jobs:
     name: Publish docs to GitHub Pages
     needs:
       - build_docs
+      - publish_to_pypi
     if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') && !contains(github.event.ref, '.dev') }}
     concurrency:
       group: publish-docs-${{ github.ref }}
