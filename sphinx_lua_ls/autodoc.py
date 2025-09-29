@@ -241,78 +241,135 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
     )
     option_spec.update(sphinx_lua_ls.domain.LuaObject.option_spec)
 
-    def render(self, root: Object, name: str, top_level: bool = False):
+    def render(
+        self,
+        root: Object,
+        name: str,
+        top_level: bool = False,
+        kind_override: Kind | None = None,
+        doctype_override: str | None = None,
+        signature_override: list[str] | None = None,
+    ):
         if root.kind is None:
             what = root.__class__.__name__.lower()
             modname = self.env.ref_context.get("lua:module")
             classname = self.env.ref_context.get("lua:classname")
             fullname = ".".join(filter(None, [modname, classname, name]))
             raise self.error(
-                f"incorrect !doctype for {what} {fullname}: {root.parsed_doctype}"
+                f"{what} {fullname} can't have !doctype {root.parsed_doctype}"
             )
+        if kind_override and (
+            (kind_override != root.kind)
+            or (root.parsed_doctype and doctype_override != root.parsed_doctype)
+        ):
+            what = root.parsed_doctype or root.kind.value
+            modname = self.env.ref_context.get("lua:module")
+            classname = self.env.ref_context.get("lua:classname")
+            fullname = ".".join(filter(None, [modname, classname, name]))
+            msg = f"lua:auto{doctype_override} can't be used on {what} {fullname}. please, "
+            if root.get_kind(doctype_override) is not None:
+                msg += f"either set !doctype {doctype_override} for {fullname}, or "
+            msg += f"use lua:auto{what} instead"
+            raise self.error(msg)
 
         match root.kind:
             case Kind.Data:
-                return self.render_data(root, name, top_level)
+                return self._render_data(
+                    root, name, top_level, doctype_override, signature_override
+                )
             case Kind.Table:
-                return self.render_table(root, name, top_level)
+                return self._render_table(
+                    root, name, top_level, doctype_override, signature_override
+                )
             case Kind.Module:
-                return self.render_module(root, name, top_level)
+                return self._render_module(
+                    root, name, top_level, doctype_override, signature_override
+                )
             case Kind.Function:
-                return self.render_function(root, name, top_level)
+                return self._render_function(
+                    root, name, top_level, doctype_override, signature_override
+                )
             case Kind.Class:
-                return self.render_class(root, name, top_level)
+                return self._render_class(
+                    root, name, top_level, doctype_override, signature_override
+                )
             case Kind.Alias:
-                return self.render_alias(root, name, top_level)
+                return self._render_alias(
+                    root, name, top_level, doctype_override, signature_override
+                )
             case Kind.Enum:
-                return self.render_enum(root, name, top_level)
+                return self._render_enum(
+                    root, name, top_level, doctype_override, signature_override
+                )
 
-    def render_module(self, root: Object, name: str, top_level: bool = False):
+    def _render_module(
+        self,
+        root: Object,
+        name: str,
+        top_level: bool = False,
+        doctype_override: str | None = None,
+        signature_override: list[str] | None = None,
+    ):
         if top_level:
             modname = self.env.ref_context.get("lua:module")
             classname = self.env.ref_context.get("lua:classname")
             fullname = ".".join(filter(None, [modname, classname, name]))
 
             return self._create_directive(
-                fullname,
-                LuaModule,
-                "lua:module",
-                root,
-                top_level,
+                fullname, LuaModule, "lua:module", root, top_level, signature_override
             ).run()
         else:
             # Non-toplevel modules are rendered as tables.
             # They still have objtype "module", though.
             return self._create_directive(
-                name,
-                LuaTable,
-                "lua:module",
-                root,
-                top_level,
+                name, LuaTable, "lua:module", root, top_level, signature_override
             ).run()
 
-    def render_table(self, root: Object, name: str, top_level: bool = False):
+    def _render_table(
+        self,
+        root: Object,
+        name: str,
+        top_level: bool = False,
+        doctype_override: str | None = None,
+        signature_override: list[str] | None = None,
+    ):
         return self._create_directive(
             name,
             LuaTable,
-            "lua:" + (root.parsed_doctype or "table"),
+            "lua:" + (doctype_override or root.parsed_doctype or "table"),
             root,
             top_level,
+            signature_override,
         ).run()
 
-    def render_data(self, root: Object, name: str, top_level: bool = False):
+    def _render_data(
+        self,
+        root: Object,
+        name: str,
+        top_level: bool = False,
+        doctype_override: str | None = None,
+        signature_override: list[str] | None = None,
+    ):
         return self._create_directive(
             name,
             LuaData,
-            "lua:" + (root.parsed_doctype or "data"),
+            "lua:" + (doctype_override or root.parsed_doctype or "data"),
             root,
             top_level,
+            signature_override,
         ).run()
 
-    def render_function(self, root: Object, name: str, top_level: bool = False):
+    def _render_function(
+        self,
+        root: Object,
+        name: str,
+        top_level: bool = False,
+        doctype_override: str | None = None,
+        signature_override: list[str] | None = None,
+    ):
         assert isinstance(root, sphinx_lua_ls.objtree.Function)
-        if root.parsed_doctype:
-            objtype = root.parsed_doctype
+        if doctype := doctype_override or root.parsed_doctype:
+            objtype = doctype
         elif self.parent and self.parent.kind == Kind.Class:
             if not root.params or root.params[0].name != "self":
                 objtype = "staticmethod"
@@ -321,50 +378,60 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         else:
             objtype = "function"
 
-        directive = self._create_directive(
-            name,
-            LuaFunction,
-            "lua:" + objtype,
-            root,
-            top_level,
-        )
-
-        directive.arguments += root.overloads
-
-        return directive.run()
-
-    def render_class(self, root: Object, name: str, top_level: bool = False):
-        assert isinstance(root, sphinx_lua_ls.objtree.Class)
-
-        directive = self._create_directive(
-            name,
-            LuaClass,
-            "lua:" + (root.parsed_doctype or "class"),
-            root,
-            top_level,
-        )
-
-        if root.constructor and root.constructor.is_async:
-            directive.options["async"] = True
-
-        return directive.run()
-
-    def render_alias(self, root: Object, name: str, top_level: bool = False):
         return self._create_directive(
-            name,
-            LuaAlias,
-            "lua:" + (root.parsed_doctype or "alias"),
-            root,
-            top_level,
+            name, LuaFunction, "lua:" + objtype, root, top_level, signature_override
         ).run()
 
-    def render_enum(self, root: Object, name: str, top_level: bool = False):
+    def _render_class(
+        self,
+        root: Object,
+        name: str,
+        top_level: bool = False,
+        doctype_override: str | None = None,
+        signature_override: list[str] | None = None,
+    ):
+        assert isinstance(root, sphinx_lua_ls.objtree.Class)
+        return self._create_directive(
+            name,
+            LuaClass,
+            "lua:" + (doctype_override or root.parsed_doctype or "class"),
+            root,
+            top_level,
+            signature_override,
+        ).run()
+
+    def _render_alias(
+        self,
+        root: Object,
+        name: str,
+        top_level: bool = False,
+        doctype_override: str | None = None,
+        signature_override: list[str] | None = None,
+    ):
         return self._create_directive(
             name,
             LuaAlias,
-            "lua:" + (root.parsed_doctype or "enum"),
+            "lua:" + (doctype_override or root.parsed_doctype or "alias"),
             root,
             top_level,
+            signature_override,
+        ).run()
+
+    def _render_enum(
+        self,
+        root: Object,
+        name: str,
+        top_level: bool = False,
+        doctype_override: str | None = None,
+        signature_override: list[str] | None = None,
+    ):
+        return self._create_directive(
+            name,
+            LuaAlias,
+            "lua:" + (doctype_override or root.parsed_doctype or "enum"),
+            root,
+            top_level,
+            signature_override,
         ).run()
 
     def render_docs(
@@ -386,7 +453,8 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         cls: Type[AutodocDirectiveMixin],
         directive_name: str,
         root: Object,
-        top_level: bool = False,
+        top_level: bool,
+        signature_override: list[str] | None,
     ) -> SphinxDirective:
         if top_level:
             options = self.orig_options.copy()
@@ -491,6 +559,7 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
             self.state,
             self.state_machine,
             root=root,
+            signature_override=signature_override,
         )
 
     @property
@@ -507,9 +576,10 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
 
 
 class AutodocDirectiveMixin(AutodocUtilsMixin):
-    def __init__(self, *args, root: Object):
+    def __init__(self, *args, root: Object, signature_override: list[str] | None):
         super().__init__(*args)
         self.root = root
+        self.signature_override = signature_override
 
     def run(self) -> list[docutils.nodes.Node]:
         for file in self.root.files:
@@ -616,6 +686,24 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
 
 
 class AutodocObjectMixin(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaObject[Any]):
+    def get_signatures(self) -> list[str]:
+        if self.signature_override is not None:
+            return self.signature_override
+        else:
+            return self.make_signatures()
+
+    def make_signatures(self) -> list[str]:
+        return self.arguments
+
+    def parse_signature(self, sig: str) -> tuple[str, Any]:
+        if self.signature_override is not None:
+            return super().parse_signature(sig)
+        else:
+            return self.parse_made_signature(sig)
+
+    def parse_made_signature(self, sig: str) -> tuple[str, Any]:
+        raise NotImplementedError()
+
     def transform_content(self, content_node: sphinx.addnodes.desc_content) -> None:
         fullname = self.names[-1][0] if self.names else None
         self.render_root_docstring(content_node, fullname)
@@ -627,10 +715,11 @@ class AutodocObjectMixin(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaObject[A
 
 
 class LuaFunction(AutodocObjectMixin, sphinx_lua_ls.domain.LuaFunction):
-    def get_signatures(self) -> list[str]:
-        return self.arguments
+    def make_signatures(self) -> list[str]:
+        assert isinstance(self.root, sphinx_lua_ls.objtree.Function)
+        return super().make_signatures() + self.root.overloads
 
-    def parse_signature(self, sig):
+    def parse_made_signature(self, sig):
         if sig == self.arguments[0]:
             assert isinstance(self.root, sphinx_lua_ls.objtree.Function)
             return (
@@ -642,7 +731,10 @@ class LuaFunction(AutodocObjectMixin, sphinx_lua_ls.domain.LuaFunction):
                 ),
             )
         else:
-            return self.arguments[0], super().parse_signature(sig)[1]
+            return (
+                self.arguments[0],
+                sphinx_lua_ls.domain.LuaFunction.parse_signature(self, sig)[1],
+            )
 
     def transform_content(self, content_node: sphinx.addnodes.desc_content) -> None:
         assert isinstance(self.root, sphinx_lua_ls.objtree.Function)
@@ -726,7 +818,7 @@ class LuaFunction(AutodocObjectMixin, sphinx_lua_ls.domain.LuaFunction):
 
 
 class LuaData(AutodocObjectMixin, sphinx_lua_ls.domain.LuaData):
-    def parse_signature(self, sig):
+    def parse_made_signature(self, sig):
         return (
             self.arguments[0],
             self.root.type if isinstance(self.root, sphinx_lua_ls.objtree.Data) else "",
@@ -734,12 +826,12 @@ class LuaData(AutodocObjectMixin, sphinx_lua_ls.domain.LuaData):
 
 
 class LuaTable(AutodocObjectMixin, sphinx_lua_ls.domain.LuaTable):
-    def parse_signature(self, sig):
+    def parse_made_signature(self, sig):
         return (self.arguments[0], None)
 
 
 class LuaAlias(AutodocObjectMixin, sphinx_lua_ls.domain.LuaAlias):
-    def parse_signature(self, sig):
+    def parse_made_signature(self, sig):
         if isinstance(self.root, sphinx_lua_ls.objtree.Alias):
             if _FIX_FLAKY_ALIAS_TESTS:
                 return self.arguments[0], ([], "__alias_base_type")
@@ -757,7 +849,7 @@ class LuaAlias(AutodocObjectMixin, sphinx_lua_ls.domain.LuaAlias):
 
 
 class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
-    def get_signatures(self) -> list[str]:
+    def make_signatures(self) -> list[str]:
         assert isinstance(self.root, sphinx_lua_ls.objtree.Class)
 
         self.collected_bases = self.root.bases
@@ -771,6 +863,9 @@ class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
                     break
             else:
                 self.constructor_sig = None
+
+        if self.constructor_sig is not None and self.constructor_sig.is_async:
+            self.options["async"] = True
 
         signatures = []
 
@@ -800,7 +895,7 @@ class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
 
         return signatures
 
-    def parse_signature(self, sig):
+    def parse_made_signature(self, sig):
         assert isinstance(self.root, sphinx_lua_ls.objtree.Class)
 
         if sig == self.arguments[0]:
@@ -864,11 +959,11 @@ class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
                         "lua:function",
                         self.root.constructor,
                         False,
+                        None,
                     ),
                 )
 
                 directive.options["no-index"] = ""
-                directive.arguments += self.root.constructor.overloads
 
                 ctor_nodes = directive.run()
                 for node in ctor_nodes:
@@ -891,6 +986,9 @@ class LuaModule(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaModule):
     option_spec: ClassVar[dict[str, Callable[[str], Any]]]
 
     def run(self) -> list[docutils.nodes.Node]:
+        if self.signature_override is not None:
+            raise self.error("modules can't have signature overrides")
+
         nodes = super().run()
 
         nodes.extend(self.parse_content_to_nodes(allow_section_headings=True))
@@ -964,12 +1062,29 @@ class LuaModule(AutodocDirectiveMixin, sphinx_lua_ls.domain.LuaModule):
 
 class AutoObjectDirective(AutodocUtilsMixin):
     required_arguments = 1
+    final_argument_whitespace = True
     has_content = True
+
+    kind_override: Kind | None = None
+    doctype_override: str | None = None
 
     def run(self):
         self.prepare_options()
 
-        name = self.arguments[0].strip()
+        signatures: list[str] = []
+        has_signature_overrides = False
+        name = None
+        for sig in self.get_signatures():
+            sig_name, sig_rest = utils.separate_name_prefix(sig)
+            signatures.append(sig_rest)
+            if sig_rest:
+                has_signature_overrides = True
+            if name is not None and sig_name != name:
+                raise self.error(
+                    f"got multiple different names for a single autodoc directive: "
+                    f"{name!r} and {sig_name!r}"
+                )
+            name = sig_name
 
         if not name:
             raise self.error(f"got an empty object name")
@@ -980,16 +1095,32 @@ class AutoObjectDirective(AutodocUtilsMixin):
 
         root, modname, classname, objname = found
 
+        if has_signature_overrides:
+            signature_override = [f"{objname}{sig}" for sig in signatures]
+        else:
+            signature_override = None
+
         if root.is_toplevel:
             # Preserve parent modname so that globals can link to their modules.
             modname = self.env.ref_context.get("lua:module")
             self.push_context(modname or "", "", root.using)
         else:
             self.push_context(modname, classname, root.using)
+
         try:
-            return self.render(root, objname, top_level=True)
+            return self.render(
+                root,
+                objname,
+                top_level=True,
+                kind_override=self.kind_override,
+                doctype_override=self.doctype_override,
+                signature_override=signature_override,
+            )
         finally:
             self.pop_context()
+
+    def get_signatures(self) -> list[str]:
+        return sphinx_lua_ls.domain.LuaObject.get_signatures(self)  # type: ignore
 
     def get_root(self, name: str) -> tuple[Object, str, str, str] | None:
         modname = self.options.get("module", self.env.ref_context.get("lua:module"))
@@ -1007,3 +1138,63 @@ class AutoObjectDirective(AutodocUtilsMixin):
         for candidate in candidates:
             if found := self.objtree.find_path(candidate):
                 return found
+
+
+class AutoFunctionDirective(AutoObjectDirective):
+    kind_override = Kind.Function
+    doctype_override = "function"
+
+
+class AutoDataDirective(AutoObjectDirective):
+    kind_override = Kind.Data
+    doctype_override = "data"
+
+
+class AutoConstDirective(AutoObjectDirective):
+    kind_override = Kind.Data
+    doctype_override = "const"
+
+
+class AutoClassDirective(AutoObjectDirective):
+    kind_override = Kind.Class
+    doctype_override = "class"
+
+
+class AutoAliasDirective(AutoObjectDirective):
+    kind_override = Kind.Alias
+    doctype_override = "alias"
+
+
+class AutoEnumDirective(AutoObjectDirective):
+    kind_override = Kind.Enum
+    doctype_override = "enum"
+
+
+class AutoMethodDirective(AutoObjectDirective):
+    kind_override = Kind.Function
+    doctype_override = "method"
+
+
+class AutoClassmethodDirective(AutoObjectDirective):
+    kind_override = Kind.Function
+    doctype_override = "classmethod"
+
+
+class AutoStaticmethodDirective(AutoObjectDirective):
+    kind_override = Kind.Function
+    doctype_override = "staticmethod"
+
+
+class AutoAttributeDirective(AutoObjectDirective):
+    kind_override = Kind.Data
+    doctype_override = "attribute"
+
+
+class AutoTableDirective(AutoObjectDirective):
+    kind_override = Kind.Table
+    doctype_override = "table"
+
+
+class AutoModuleDirective(AutoObjectDirective):
+    kind_override = Kind.Module
+    doctype_override = "module"

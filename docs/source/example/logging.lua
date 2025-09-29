@@ -58,4 +58,10 @@ function logging.Logger:warning(msg, ...) end
 --- @param ... any parameters for message formatting.
 function logging.Logger:error(msg, ...) end
 
+--- Get logger with the given name, or create one if it doesn't exist.
+---
+--- @param name string? logger name. Uses current module name if empty.
+--- @return Logger logger logger with the given name.
+function logging.getLogger(name) end
+
 return logging

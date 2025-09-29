@@ -2,6 +2,14 @@
 
 ## [unreleased]
 
+- Added `autodata`, `autoattribute`, `autoclass`, and other `auto*` directives.
+
+  They work like `autoobject`, but apply their doctype to the documented object
+  (if `!doctype` was set in source code, it shouldn't conflict with the used directive).
+
+  They also allow overriding object's signature, which may be useful when
+  automatically generated signature is too long.
+
 ## [3.4.0]
 
 - **Potential breaking change:** use `confdir` instead of `srcdir` as base path

@@ -204,6 +204,42 @@ def setup(app: sphinx.application.Sphinx):
         "lua", "autoobject", sphinx_lua_ls.autodoc.AutoObjectDirective
     )
     app.add_directive_to_domain(
+        "lua", "autofunction", sphinx_lua_ls.autodoc.AutoFunctionDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "autodata", sphinx_lua_ls.autodoc.AutoDataDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "autoconst", sphinx_lua_ls.autodoc.AutoConstDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "autoclass", sphinx_lua_ls.autodoc.AutoClassDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "autoalias", sphinx_lua_ls.autodoc.AutoAliasDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "autoenum", sphinx_lua_ls.autodoc.AutoEnumDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "automethod", sphinx_lua_ls.autodoc.AutoMethodDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "autoclassmethod", sphinx_lua_ls.autodoc.AutoClassmethodDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "autostaticmethod", sphinx_lua_ls.autodoc.AutoStaticmethodDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "autoattribute", sphinx_lua_ls.autodoc.AutoAttributeDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "autotable", sphinx_lua_ls.autodoc.AutoTableDirective
+    )
+    app.add_directive_to_domain(
+        "lua", "automodule", sphinx_lua_ls.autodoc.AutoModuleDirective
+    )
+    app.add_directive_to_domain(
         "lua", "autoindex", sphinx_lua_ls.autoindex.AutoIndexDirective
     )
     app.add_directive_to_domain(

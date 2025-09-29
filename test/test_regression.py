@@ -89,6 +89,7 @@ def test_autodoc_regression(app, src, file_regression):
     [
         "src/annotations.html",
         "src/autoindex.html",
+        "src/doctype.html",
         "src/global_tables.html",
         "src/globals.html",
         "src/incongruent_export.html",

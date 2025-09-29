@@ -106,7 +106,7 @@ class DocstringMixin:
         if not self.docstring:
             self._parsed_docstring = None
             self._parsed_options = {}
-            self._parsed_doctype = None
+            self._parsed_doctype = self.inferred_doctype
             return
 
         docs = self.docstring
@@ -306,11 +306,25 @@ class Object(DocstringMixin):
 
         """
 
-        if self.parsed_doctype in [None, "module"]:
+        return self.get_kind(self.parsed_doctype)
+
+    def get_kind(self, parsed_doctype: str | None) -> Kind | None:
+        """
+        Determine object's kind based on how lua-ls reported this object
+        and the given doctype override.
+
+        Return `None` if doctype override is incompatible with returned type.
+
+        Doctype overrides can come either from ``!doctype`` found in object's
+        docstring, or from autoobject directive options.
+
+        """
+
+        if parsed_doctype in [None, "module"]:
             return Kind.Module
-        elif self.parsed_doctype in ["data", "const", "attribute"]:
+        elif parsed_doctype in ["data", "const", "attribute"]:
             return Kind.Data
-        elif self.parsed_doctype in ["table"]:
+        elif parsed_doctype in ["table"]:
             return Kind.Table
         else:
             return None
@@ -453,13 +467,12 @@ class Data(Object):
     #: Variable literal.
     lit: str | None = None
 
-    @functools.cached_property
-    def kind(self) -> Kind | None:
-        if self.parsed_doctype in [None, "data", "const", "attribute"]:
+    def get_kind(self, parsed_doctype: str | None) -> Kind | None:
+        if parsed_doctype in [None, "data", "const", "attribute"]:
             return Kind.Data
-        elif self.parsed_doctype in ["table"]:
+        elif parsed_doctype in ["table"]:
             return Kind.Table
-        elif self.parsed_doctype in ["module"]:
+        elif parsed_doctype in ["module"]:
             return Kind.Module
         else:
             return None
@@ -481,13 +494,12 @@ class Table(Object):
 
     priority = 1
 
-    @functools.cached_property
-    def kind(self) -> Kind | None:
-        if self.parsed_doctype in [None, "table"]:
+    def get_kind(self, parsed_doctype: str | None) -> Kind | None:
+        if parsed_doctype in [None, "table"]:
             return Kind.Table
-        elif self.parsed_doctype in ["data", "const", "attribute"]:
+        elif parsed_doctype in ["data", "const", "attribute"]:
             return Kind.Data
-        elif self.parsed_doctype in ["module"]:
+        elif parsed_doctype in ["module"]:
             return Kind.Module
         else:
             return None
@@ -523,9 +535,8 @@ class Function(Object):
     #: Indicates that this function implicitly accepts ``self`` argument.
     implicit_self: bool = False
 
-    @functools.cached_property
-    def kind(self) -> Kind | None:
-        if self.parsed_doctype in [
+    def get_kind(self, parsed_doctype: str | None) -> Kind | None:
+        if parsed_doctype in [
             None,
             "function",
             "method",
@@ -571,15 +582,14 @@ class Class(Object):
     #: Function that will be invoked to initialize a class instance.
     constructor: Function | None = None
 
-    @functools.cached_property
-    def kind(self) -> Kind | None:
-        if self.parsed_doctype in [None, "class"]:
+    def get_kind(self, parsed_doctype: str | None) -> Kind | None:
+        if parsed_doctype in [None, "class"]:
             return Kind.Class
-        elif self.parsed_doctype in ["data", "const", "attribute"]:
+        elif parsed_doctype in ["data", "const", "attribute"]:
             return Kind.Data
-        elif self.parsed_doctype in ["table"]:
+        elif parsed_doctype in ["table"]:
             return Kind.Table
-        elif self.parsed_doctype in ["module"]:
+        elif parsed_doctype in ["module"]:
             return Kind.Module
         else:
             return None
@@ -609,15 +619,14 @@ class Alias(Object):
     #: Generic parameters of a class.
     generics: list[Param] = dataclasses.field(default_factory=list)
 
-    @functools.cached_property
-    def kind(self) -> Kind | None:
-        if self.parsed_doctype in [None, "alias"]:
+    def get_kind(self, parsed_doctype: str | None) -> Kind | None:
+        if parsed_doctype in [None, "alias"]:
             return Kind.Alias
-        elif self.parsed_doctype in ["data", "const", "attribute"]:
+        elif parsed_doctype in ["data", "const", "attribute"]:
             return Kind.Data
-        elif self.parsed_doctype in ["table"]:
+        elif parsed_doctype in ["table"]:
             return Kind.Table
-        elif self.parsed_doctype in ["module"]:
+        elif parsed_doctype in ["module"]:
             return Kind.Module
         else:
             return None
@@ -647,15 +656,14 @@ class Enum(Object):
     #: Generic parameters of a class.
     generics: list[Param] = dataclasses.field(default_factory=list)
 
-    @functools.cached_property
-    def kind(self) -> Kind | None:
-        if self.parsed_doctype in [None, "enum"]:
+    def get_kind(self, parsed_doctype: str | None) -> Kind | None:
+        if parsed_doctype in [None, "enum"]:
             return Kind.Enum
-        elif self.parsed_doctype in ["data", "const", "attribute"]:
+        elif parsed_doctype in ["data", "const", "attribute"]:
             return Kind.Data
-        elif self.parsed_doctype in ["table"]:
+        elif parsed_doctype in ["table"]:
             return Kind.Table
-        elif self.parsed_doctype in ["module"]:
+        elif parsed_doctype in ["module"]:
             return Kind.Module
         else:
             return None

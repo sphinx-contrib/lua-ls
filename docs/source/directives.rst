@@ -283,10 +283,13 @@ Parameters
 All directives that document Lua objects accept the standard parameters:
 
 .. rst:directive:option:: no-index
+                          no-index-entry
+                          no-contents-entry
+                          no-typesetting
 
-   Render the documentation, but don't add it to the index
-   and don't create anchors. You will not be able to reference
-   un-indexed objects.
+    The `standard Sphinx options`__ available to all object descriptions.
+
+    __ https://www.sphinx-doc.org/en/master/usage/domains/index.html#basic-markup
 
 .. rst:directive:option:: private
                           protected
@@ -329,7 +332,7 @@ All directives that document Lua objects accept the standard parameters:
 
          Fetches content from the given url.
 
-.. rst:directive:option:: annotation
+.. rst:directive:option:: annotation: <text>
 
    Allows adding custom short annotations.
 
@@ -384,12 +387,12 @@ All directives that document Lua objects accept the standard parameters:
 
             Use ``name`` and ``surname`` instead.
 
-.. rst:directive:option:: synopsis
+.. rst:directive:option:: synopsis: <text>
 
    Allows adding a small description that's reflected
    in the :rst:dir:`lua:autoindex` output.
 
-.. rst:directive:option:: module
+.. rst:directive:option:: module: <name>
 
    Allows overriding current module for a single object. This is useful
    for documenting global variables that are declared in a module.
