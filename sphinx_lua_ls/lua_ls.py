@@ -330,6 +330,8 @@ def resolve(
         path where LuaLs binaries should be downloaded to.
     :param min_version:
         minimal LuaLs version required.
+    :param max_version:
+        maximal LuaLs version required. Version is not limited is `None`.
     :param quiet:
         if true (default), any output from the LuaLs binary is hidden.
     :param env:
