@@ -2,7 +2,7 @@
 
 ## [unreleased]
 
-## [v3.5.0]
+## [3.5.0]
 
 - Added `autodata`, `autoattribute`, `autoclass`, and other `auto*` directives.
 
