@@ -55,10 +55,10 @@ doc = [
 ]
 
 [project.urls]
-Documentation = "https://taminomara.github.io/sphinx-lua-ls/"
-Issues = "https://github.com/taminomara/sphinx-lua-ls/issues"
-Source = "https://github.com/taminomara/sphinx-lua-ls/"
-Changelog = "https://github.com/taminomara/sphinx-lua-ls/blob/main/CHANGELOG.md"
+Documentation = "https://sphinx-lua-ls.readthedocs.io/en/stable/"
+Issues = "https://github.com/sphinx-contrib/lua-ls/issues"
+Source = "https://github.com/sphinx-contrib/lua-ls/"
+Changelog = "https://github.com/sphinx-contrib/lua-ls/blob/main/CHANGELOG.md"
 
 [build-system]
 requires = ["setuptools>=60", "setuptools_scm[toml]>=8", "wheel>=0.40"]

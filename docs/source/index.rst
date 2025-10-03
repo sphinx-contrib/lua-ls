@@ -26,4 +26,4 @@ See an example output: `logging`.
     :hidden:
     :caption: Links
 
-    GitHub <https://github.com/taminomara/sphinx-lua-ls/>
+    GitHub <https://github.com/sphinx-contrib/lua-ls/>

@@ -38,7 +38,7 @@ intersphinx_mapping = {
 html_theme = "furo"
 html_extra_path = ["_extra/robots.txt"]
 html_theme_options = {
-    "source_repository": "https://github.com/taminomara/sphinx-lua-ls",
+    "source_repository": "https://github.com/sphinx-contrib/lua-ls",
     "source_branch": "main",
     "source_directory": "docs/source",
 }

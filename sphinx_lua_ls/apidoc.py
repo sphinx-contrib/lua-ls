@@ -109,7 +109,7 @@ def generate(
         msg = (
             "Running Lua apidoc on case-insensitive file system."
             "\nIf you experience issues, see documentation for potential solutions:"
-            "\n    https://taminomara.github.io/sphinx-lua-ls/settings.html#lua_ls_apidoc_separate_members"
+            "\n    https://sphinx-lua-ls.readthedocs.io/en/stable/settings.html#lua_ls_apidoc_separate_members"
         )
         if sys.platform == "win32" and is_case_insensitive:
             msg += (

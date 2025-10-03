@@ -2,6 +2,12 @@
 
 ## [unreleased]
 
+## [3.5.0-post1]
+
+- Migrated documentation to Read the Docs.
+
+- Moved repository to [sphinx-contrib](https://github.com/sphinx-contrib) organization.
+
 ## [3.5.0]
 
 - Added `autodata`, `autoattribute`, `autoclass`, and other `auto*` directives.
@@ -53,7 +59,7 @@
 - Added a warning for situations when `lua_ls_project_directories` contains directories
   outside of the current VCS root.
 
-[#19]: https://github.com/taminomara/sphinx-lua-ls/pull/19
+[#19]: https://github.com/sphinx-contrib/lua-ls/pull/19
 
 ## [3.2.0]
 
@@ -65,7 +71,7 @@
 
 - Done some internal refactorings.
 
-[#18]: https://github.com/taminomara/sphinx-lua-ls/pull/18
+[#18]: https://github.com/sphinx-contrib/lua-ls/pull/18
 [@bkoropoff]: https://github.com/bkoropoff
 
 ## [3.1.0]
@@ -147,7 +153,7 @@
 - Added option to separate module members into their own files for `apidoc`.
 
 [EmmyLua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
-[#3]: https://github.com/taminomara/sphinx-lua-ls/issues/3
+[#3]: https://github.com/sphinx-contrib/lua-ls/issues/3
 
 ### Migrating to 3.0.0
 
@@ -215,14 +221,15 @@ use `!doctype table` instead, otherwise you'll get errors that modules are not a
 
 Initial release.
 
-[unreleased]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.5.0...HEAD
-[3.5.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.4.0...v3.5.0
-[3.4.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.3.0...v3.4.0
-[3.3.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.2.0...v3.3.0
-[3.2.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.1.0...v3.2.0
-[3.1.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v3.0.0...v3.1.0
-[3.0.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v2.0.1...v3.0.0
-[2.0.1]: https://github.com/taminomara/sphinx-lua-ls/compare/v2.0.0...v2.0.1
-[2.0.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v1.1.0...v2.0.0
-[1.1.0]: https://github.com/taminomara/sphinx-lua-ls/compare/v1.0.0...v1.1.0
-[1.0.0]: https://github.com/taminomara/sphinx-lua-ls/releases/tag/v1.0.0
+[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0-post1...HEAD
+[3.5.0-post1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0...v3.5.0-post1
+[3.5.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.4.0...v3.5.0
+[3.4.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.3.0...v3.4.0
+[3.3.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.2.0...v3.3.0
+[3.2.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.1.0...v3.2.0
+[3.1.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.0.0...v3.1.0
+[3.0.0]: https://github.com/sphinx-contrib/lua-ls/compare/v2.0.1...v3.0.0
+[2.0.1]: https://github.com/sphinx-contrib/lua-ls/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/sphinx-contrib/lua-ls/compare/v1.1.0...v2.0.0
+[1.1.0]: https://github.com/sphinx-contrib/lua-ls/compare/v1.0.0...v1.1.0
+[1.0.0]: https://github.com/sphinx-contrib/lua-ls/releases/tag/v1.0.0

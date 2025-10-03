@@ -7,10 +7,10 @@ Document Lua projects using Lua Language Server's output. This plugin features:
 
 ## Resources
 
-- [Documentation](https://taminomara.github.io/sphinx-lua-ls/)
-- [Installation](https://taminomara.github.io/sphinx-lua-ls/installation.html)
-- [Quickstart](https://taminomara.github.io/sphinx-lua-ls/quickstart.html)
-- [Example output](https://taminomara.github.io/sphinx-lua-ls/example.html)
+- [Documentation](https://sphinx-lua-ls.readthedocs.io/en/stable/)
+- [Installation](https://sphinx-lua-ls.readthedocs.io/en/stable/installation.html)
+- [Quickstart](https://sphinx-lua-ls.readthedocs.io/en/stable/quickstart.html)
+- [Example output](https://sphinx-lua-ls.readthedocs.io/en/stable/example.html)
 
 ## Requirements
 
