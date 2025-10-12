@@ -141,11 +141,6 @@ jobs:
       - name: Build project
         run: |
           python3 -m build .
-      - name: Publish to test pypi
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
-          attestations: false
       - name: Publish to pypi
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
