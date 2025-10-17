@@ -659,9 +659,9 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
 
             if self.root.require_type:
                 typ = utils.normalize_type(self.root.require_type)
-                ref_nodes, warn_nodes = sphinx_lua_ls.domain.LuaXRefRole()(
-                    "lua:obj", typ, typ, 0, self.state.inliner
-                )
+                ref_nodes, warn_nodes = sphinx_lua_ls.domain.LuaXRefRole(
+                    innernodeclass=sphinx.addnodes.desc_sig_name
+                )("lua:obj", typ, typ, 0, self.state.inliner)
                 content_node += docutils.nodes.paragraph(
                     "",
                     "",

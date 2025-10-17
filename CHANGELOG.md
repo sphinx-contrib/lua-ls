@@ -1,6 +1,9 @@
 # Changelog
 
-## [unreleased]
+## [Unreleased]
+
+- Adjusted styles for links in object signatures to match those produced
+  by python domain.9
 
 - Releases are no longer uploaded to test version of PyPi.
 
