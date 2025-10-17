@@ -2,8 +2,9 @@
 
 ## [Unreleased]
 
-- Adjusted styles for links in object signatures to match those produced
-  by python domain.9
+## [3.6.0] - 2025-10-17
+
+- Adjusted styles for links in object signatures to match those produced by python domain.
 
 - Releases are no longer uploaded to test version of PyPi.
 
@@ -246,6 +247,7 @@ Initial release.
 [3.4.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.3.0...v3.4.0
 [3.5.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.4.0...v3.5.0
 [3.5.0-post1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0...v3.5.0-post1
+[3.6.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0-post1...v3.6.0
 [@bkoropoff]: https://github.com/bkoropoff
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
-[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0-post1...HEAD
+[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.6.0...HEAD

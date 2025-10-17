@@ -95,3 +95,12 @@ reportRedeclaration = "none"
 [tool.isort]
 profile = "black"
 skip_gitignore = true
+
+[tool.changelog_keeper]
+ignore_missing_releases_before = "1.0.0"
+
+[tool.changelog_keeper.extra_change_categories_map]
+"(?i)migrating" = "migrating"
+
+[tool.changelog_keeper.extra_change_categories]
+migrating = ""
