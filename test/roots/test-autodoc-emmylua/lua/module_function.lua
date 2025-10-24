@@ -1,0 +1,2 @@
+--- Documentation.
+return function() end

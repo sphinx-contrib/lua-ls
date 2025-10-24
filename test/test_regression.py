@@ -94,6 +94,7 @@ def test_autodoc_regression(app, src, file_regression):
         "src/globals.html",
         "src/incongruent_export.html",
         "src/member_ordering.html",
+        "src/module_function.html",
         "src/module_title.html",
         "src/nested_modules.html",
         "src/nesting_recursive.html",
