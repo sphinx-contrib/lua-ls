@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Minor documentation tweaks.
+
 ## [3.7.0] - 2025-11-14
 
 - Fixed parsing of `@see` annotations with LuaLs backend.
