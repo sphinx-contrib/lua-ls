@@ -35,9 +35,9 @@ dev = [
     {include-group = "doc"},
 ]
 lint = [
-    "black==25.9.0",
+    "black==25.11.0",
     "isort==7.0.0",
-    "pre-commit==4.3.0",
+    "pre-commit==4.4.0",
 ]
 test = [
     "pyright==1.1.407",
