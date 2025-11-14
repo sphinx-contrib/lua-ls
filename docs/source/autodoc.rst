@@ -228,7 +228,7 @@ Autodoc directives
    .. rst:directive:option:: class-doc-from: class | ctor | both | separate
 
       Specifies how to generate documentation for classes
-      if :py:data:`class_default_function_name` is configured.
+      if :py:data:`lua_ls_class_default_function_name` is configured.
 
       Options are:
 
@@ -245,7 +245,7 @@ Autodoc directives
    .. rst:directive:option:: class-signature: bases | ctor | both | minimal
 
       Specifies how to generate signatures for classes
-      if :py:data:`class_default_function_name` is configured.
+      if :py:data:`lua_ls_class_default_function_name` is configured.
 
       Options are:
 

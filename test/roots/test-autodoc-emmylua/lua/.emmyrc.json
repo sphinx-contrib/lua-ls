@@ -34,12 +34,7 @@
     "requireLikeFunction": [],
     "frameworkVersions": [],
     "extensions": [],
-    "requirePattern": [],
-    "classDefaultCall": {
-      "functionName": "__init",
-      "forceNonColon": true,
-      "forceReturnSelf": true
-    }
+    "requirePattern": []
   },
   "workspace": {
     "ignoreDir": [],

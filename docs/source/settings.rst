@@ -89,7 +89,7 @@ Settings
       .. lua:autoobject:: foo
          :no-undoc-members:
 
-.. py:data:: class_default_function_name
+.. py:data:: lua_ls_class_default_function_name
    :type: str
 
    Allows specifying which class method represents a class constructor.
@@ -98,21 +98,15 @@ Settings
    :rst:dir:`lua:autoobject:class-doc-from`
    and :rst:dir:`lua:autoobject:class-signature` options.
 
-   If using EmmyLua as lua analyzer, this option will be inferred from ``.emmyrc.json``.
-
-.. py:data:: class_default_force_non_colon
+.. py:data:: lua_ls_class_default_force_non_colon
    :type:
 
    If ``True``, Sphinx-LuaLs will remove ``self`` from class constructor's signature.
 
-   If using EmmyLua as lua analyzer, this option will be inferred from ``.emmyrc.json``.
-
-.. py:data:: class_default_force_return_self
+.. py:data:: lua_ls_class_default_force_return_self
    :type:
 
    If ``True``, Sphinx-LuaLs will replace class constructor's return type with ``self``.
-
-   If using EmmyLua as lua analyzer, this option will be inferred from ``.emmyrc.json``.
 
 .. py:data:: lua_ls_lua_version
    :type: str

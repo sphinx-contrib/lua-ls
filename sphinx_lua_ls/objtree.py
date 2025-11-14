@@ -962,8 +962,8 @@ class EmmyLuaParser(Parser):
     def parse(self, json, path: str | pathlib.Path):
         self.path = pathlib.Path(path).expanduser().resolve()
 
-        class_default_config = json["config"]["runtime"]["classDefaultCall"]
-        if class_default_config["functionName"]:
+        class_default_config = json["config"]["runtime"].get("classDefaultCall")
+        if class_default_config and class_default_config.get("functionName"):
             self.class_default_function_name = class_default_config["functionName"]
             self.class_default_force_non_colon = class_default_config["forceNonColon"]
             self.class_default_force_return_self = class_default_config[
