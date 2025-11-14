@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [3.7.0] - 2025-11-14
+
 - Fixed parsing of `@see` annotations with LuaLs backend.
 
 - Fixed parsing of EmmyLua output after they removed `classDefaultCall` setting.
@@ -252,6 +254,7 @@ Initial release.
 [3.5.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.4.0...v3.5.0
 [3.5.0-post1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0...v3.5.0-post1
 [3.6.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0-post1...v3.6.0
+[3.7.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.6.0...v3.7.0
 [@bkoropoff]: https://github.com/bkoropoff
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
-[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.6.0...HEAD
+[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0...HEAD
