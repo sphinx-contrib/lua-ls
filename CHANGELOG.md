@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [3.7.0-post1] - 2025-11-14
+
 - Minor documentation tweaks.
 
 ## [3.7.0] - 2025-11-14
@@ -203,8 +205,6 @@ Make sure that you only use `!doctype module` on the top-level tables that can b
 via `require`. On other objects, use `!doctype table` instead, otherwise you'll get errors
 that modules are not allowed within other objects.
 
-## [2.0.0b0] - 2025-03-16
-
 ## [1.1.0] - 2025-03-11
 
 - Added support for `!doc` and `!doctype` comments.
@@ -245,8 +245,7 @@ Initial release.
 [0.0.4]: https://github.com/sphinx-contrib/lua-ls/compare/v0.0.3...v0.0.4
 [1.0.0]: https://github.com/sphinx-contrib/lua-ls/compare/v0.0.4...v1.0.0
 [1.1.0]: https://github.com/sphinx-contrib/lua-ls/compare/v1.0.0...v1.1.0
-[2.0.0]: https://github.com/sphinx-contrib/lua-ls/compare/v2.0.0b0...v2.0.0
-[2.0.0b0]: https://github.com/sphinx-contrib/lua-ls/compare/v1.1.0...v2.0.0b0
+[2.0.0]: https://github.com/sphinx-contrib/lua-ls/compare/v1.1.0...v2.0.0
 [2.0.1]: https://github.com/sphinx-contrib/lua-ls/compare/v2.0.0...v2.0.1
 [3.0.0]: https://github.com/sphinx-contrib/lua-ls/compare/v2.0.1...v3.0.0
 [3.1.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.0.0...v3.1.0
@@ -257,6 +256,7 @@ Initial release.
 [3.5.0-post1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0...v3.5.0-post1
 [3.6.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0-post1...v3.6.0
 [3.7.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.6.0...v3.7.0
+[3.7.0-post1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0...v3.7.0-post1
 [@bkoropoff]: https://github.com/bkoropoff
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
-[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0...HEAD
+[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0-post1...HEAD

@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=https://cl-keeper.readthedocs.io/en/latest/schema.json
-version_format: python
+version_format: python-semver
 ignore_missing_releases_before: "1.0.0"
 extra_change_categories_map:
   '(?i)migrating': "migrating"
