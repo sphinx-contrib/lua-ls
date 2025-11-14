@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Fixed parsing of `@see` annotations with LuaLs backend.
+
 ## [3.6.0] - 2025-10-17
 
 - Adjusted styles for links in object signatures to match those produced by python domain.

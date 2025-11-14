@@ -23,4 +23,6 @@ Annotations
 
    .. lua:autoobject:: see_many_broken
 
+   .. lua:autoobject:: see_no_text
+
    Ref: :lua:obj:`annotation_deprecated`.

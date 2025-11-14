@@ -153,7 +153,7 @@ class DocstringMixin:
                 else:
                     rejected_see_lines.append(see_line)
             else:
-                if match := re.match(
+                if match := re.search(
                     r"""
                     ^
                     See:[ ]
@@ -169,6 +169,7 @@ class DocstringMixin:
                 ):
                     typ = match.group("type") or match.group("rejected_type")
                     doc = match.group("doc") or match.group("rejected_doc") or ""
+                    doc = doc.strip()
                     if doc:
                         doc = ": " + doc
                     see_lines.append(f":lua:obj:`{typ}`{doc}")
