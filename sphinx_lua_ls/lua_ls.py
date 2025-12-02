@@ -666,12 +666,17 @@ def _install_lua_ls(
             min_version, max_version, bin_path
         )
         if not can_use_cached_lua_ls:
-            version = _make_version_message(min_version, max_version)
-            raise LuaLsError(
-                f"downloaded lua-language-server printed version {cached_version}, "
-                f"but {version} is required; are you sure lua_ls_min_version "
-                f"and lua_ls_max_version are correct?",
-            )
+            if cached_version is not None:
+                version = _make_version_message(min_version, max_version)
+                raise LuaLsError(
+                    f"downloaded lua-language-server printed version {cached_version}, "
+                    f"but {version} is required; are you sure lua_ls_min_version "
+                    f"and lua_ls_max_version are correct?",
+                )
+            else:
+                raise LuaLsError(
+                    "downloaded lua-language-server failed to print its version"
+                )
     elif not bin_path.exists():
         raise LuaLsError(
             f"downloaded latest lua-language-server is broken: "
@@ -785,12 +790,17 @@ def _install_emmylua(
             min_version, max_version, bin_path
         )
         if not can_use_cached_lua_ls:
-            version = _make_version_message(min_version, max_version)
-            raise LuaLsError(
-                f"downloaded emmylua_doc_cli printed version {cached_version}, "
-                f"but {version} is required; are you sure lua_ls_min_version "
-                f"and lua_ls_max_version are correct?",
-            )
+            if cached_version is not None:
+                version = _make_version_message(min_version, max_version)
+                raise LuaLsError(
+                    f"downloaded emmylua_doc_cli printed version {cached_version}, "
+                    f"but {version} is required; are you sure lua_ls_min_version "
+                    f"and lua_ls_max_version are correct?",
+                )
+            else:
+                raise LuaLsError(
+                    "downloaded emmylua_doc_cli failed to print its version"
+                )
     elif not bin_path.exists():
         raise LuaLsError(
             f"downloaded latest emmylua_doc_cli is broken: " f"can't find {bin_path}",
