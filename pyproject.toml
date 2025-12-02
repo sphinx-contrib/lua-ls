@@ -44,7 +44,7 @@ test = [
     "pytest==9.0.1",
     "sybil==9.2.0",
     "pytest-regressions==2.8.3",
-    "beautifulsoup4==4.14.2",
+    "beautifulsoup4==4.14.3",
     "myst-parser==4.0.1"
 ]
 doc = [
