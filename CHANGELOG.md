@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Support Sphinx 9.
+
 ## [3.7.0-post1] - 2025-11-14
 
 - Minor documentation tweaks.

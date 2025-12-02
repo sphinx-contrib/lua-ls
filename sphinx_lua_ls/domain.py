@@ -1153,7 +1153,7 @@ class LuaDomain(Domain):
 
     name = "lua"
     label = "Lua"
-    object_types: dict[str, ObjType] = {
+    object_types: _t.ClassVar[dict[str, ObjType]] = {
         "function": ObjType(_("function"), "func", "obj", "lua", "_auto"),
         "data": ObjType(_("data"), "data", "obj", "lua", "_auto"),
         "const": ObjType(_("const"), "attr", "const", "obj", "lua", "_auto"),
@@ -1225,7 +1225,7 @@ class LuaDomain(Domain):
         base_lookup_classname: str | None = None
         base_lookup_using: list[str] | None = None
 
-    initial_data: dict[str, dict[str, tuple[Any]]] = {
+    initial_data: _t.ClassVar[dict[str, dict[str, tuple[Any]]]] = {
         "objects": {},  # fullname -> ObjectEntry
         "globals": {},  # modname -> GlobalEntry
         "members": {},  # modname -> MemberEntry
