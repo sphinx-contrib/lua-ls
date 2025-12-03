@@ -4,7 +4,7 @@
 
 ## [3.8.0] - 2025-12-03
 
-- Added support Sphinx 9.
+- Added support for Sphinx 9.
 
 - Added `lua_ls_skip_versions` config option to selectively avoid certain language server
   releases.
