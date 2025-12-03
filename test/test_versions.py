@@ -1,4 +1,5 @@
 import pytest
+
 from sphinx_lua_ls.lua_ls import _should_skip
 
 

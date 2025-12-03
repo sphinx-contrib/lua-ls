@@ -874,7 +874,6 @@ def _download_release(
 
         _logger.debug("found %s release %s", name, release.tag_name, type="lua-ls")
 
-
         if match := re.search(r"(\d+\.\d+\.\d+)", release.tag_name):
             release_version = match.group(1)
             release_version_tuple = tuple(int(c) for c in release_version.split("."))
@@ -945,7 +944,7 @@ def _should_skip(version: tuple[int, ...], skip_versions: list[tuple[int, ...]])
     for skip_version in skip_versions:
         if len(version) < len(skip_version):
             version += (0,) * (len(skip_version) - len(version))
-        if skip_version == version[:len(skip_version)]:
+        if skip_version == version[: len(skip_version)]:
             return True
     return False
 
