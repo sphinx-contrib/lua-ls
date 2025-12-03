@@ -2,7 +2,10 @@
 
 ## [Unreleased]
 
-- Support Sphinx 9.
+- Added support Sphinx 9.
+
+- Added ``lua_ls_skip_versions`` config option to selectively avoid certain
+  language server releases.
 
 ## [3.7.0-post1] - 2025-11-14
 

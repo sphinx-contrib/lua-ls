@@ -26,11 +26,11 @@ jobs:
       - name: Install dependencies
         run: python -m pip install '.'
       - name: Download LuaLs for Linux
-        run: python sphinx_lua_ls/lua_ls.py linux x86_64 --runtime luals ~/lua_ls_release/ubuntu-latest
+        run: python sphinx_lua_ls/lua_ls.py linux x86_64 --runtime luals --skip 3.16.0 ~/lua_ls_release/ubuntu-latest
       - name: Download LuaLs for Windows
-        run: python sphinx_lua_ls/lua_ls.py win32 amd64 --runtime luals ~/lua_ls_release/windows-latest
+        run: python sphinx_lua_ls/lua_ls.py win32 amd64 --runtime luals --skip 3.16.0 ~/lua_ls_release/windows-latest
       - name: Download LuaLs for MacOs
-        run: python sphinx_lua_ls/lua_ls.py darwin arm --runtime luals ~/lua_ls_release/macos-latest
+        run: python sphinx_lua_ls/lua_ls.py darwin arm --runtime luals --skip 3.16.0 ~/lua_ls_release/macos-latest
       - name: Download EmmyLua for Linux
         run: python sphinx_lua_ls/lua_ls.py linux x86_64 --runtime emmylua ~/lua_ls_release/ubuntu-latest
       - name: Download EmmyLua for Windows

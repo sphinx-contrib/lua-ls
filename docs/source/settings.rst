@@ -52,6 +52,17 @@ Settings
    For LuaLs, default value is ``4.0.0``, for EmmyLua it's ``2.0.0``.
    Use ``None`` to allow any version.
 
+.. py:data:: lua_ls_skip_versions
+   :type: list[str] | None
+
+   List of lua analyzer versions that shouldn't be used.
+
+   For example, if ``lua_ls_skip_versions = ["3.16"]``, language server release
+   ``3.16`` (including all ``3.16.x`` releases) will not be used.
+
+   This setting can be used to avoid broken releases without limiting max version
+   of the lua analyzer.
+
 .. py:data:: lua_ls_default_options
    :type: dict[str, str]
 
@@ -99,12 +110,12 @@ Settings
    and :rst:dir:`lua:autoobject:class-signature` options.
 
 .. py:data:: lua_ls_class_default_force_non_colon
-   :type:
+   :type: bool
 
    If ``True``, Sphinx-LuaLs will remove ``self`` from class constructor's signature.
 
 .. py:data:: lua_ls_class_default_force_return_self
-   :type:
+   :type: bool
 
    If ``True``, Sphinx-LuaLs will replace class constructor's return type with ``self``.
 

@@ -14,6 +14,7 @@ import sphinx_lua_ls.domain
 _logger = logging.getLogger("sphinx_lua_ls")
 
 T = _t.TypeVar("T")
+A = _t.ParamSpec("A")
 
 
 @dataclass
@@ -25,6 +26,7 @@ class LuaDomainConfig:
     auto_install_location: pathlib.Path | None = None
     min_version: str | None = None
     max_version: str | None = None
+    skip_versions: list[str] | None = None
     lua_version: str | None = None
     default_options: dict[str, _t.Any] = dataclasses.field(default_factory=dict)
     apidoc_default_options: dict[str, _t.Any] = dataclasses.field(default_factory=dict)
@@ -73,11 +75,17 @@ def _path(name: str, value, root: str | pathlib.Path) -> pathlib.Path:
         raise ConfigError(f"incorrect lua_ls_project_root: {e}") from None
 
 
-def _paths(name: str, value, root: str | pathlib.Path) -> list[pathlib.Path]:
+def _list(
+    name: str,
+    value,
+    checker: _t.Callable[_t.Concatenate[str, object, A], T],
+    *args: A.args,
+    **kwargs: A.kwargs,
+) -> list[T]:
     if value is None:
         value = []
     _type(name, value, list)
-    return [_path(f"{name}[{i}]", v, root) for i, v in enumerate(value)]
+    return [checker(f"{name}[{i}]", v, *args, **kwargs) for i, v in enumerate(value)]
 
 
 def _options(name: str, value) -> dict[str, _t.Any]:
@@ -193,9 +201,10 @@ def set_options(app: sphinx.application.Sphinx):
         )
 
     if config["lua_ls_project_directories"] is not None:
-        domain_config.project_directories = _paths(
+        domain_config.project_directories = _list(
             "lua_ls_project_directories",
             config["lua_ls_project_directories"],
+            _path,
             domain_config.project_root,
         )
 
@@ -220,6 +229,10 @@ def set_options(app: sphinx.application.Sphinx):
             _version("lua_ls_max_version", config["lua_ls_max_version"])
             if config["lua_ls_max_version"] != "__auto__"
             else "__auto__"
+        )
+    if config["lua_ls_skip_versions"] is not None:
+        domain_config.skip_versions = _list(
+            "lua_ls_skip_versions", config["lua_ls_skip_versions"], _version
         )
 
     if config["lua_ls_lua_version"]:

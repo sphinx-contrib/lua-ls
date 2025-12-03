@@ -10,7 +10,11 @@
 
    ```shell
    pip install -e . --group dev
+   pip install -U sphinx
    ```
+
+   > *Note:* our tests run with Sphinx 9, but some dependencies are not yet updated
+   > for it; that's why you have to update Sphinx after installing it.
 
 4. Install pre-commit hooks:
 

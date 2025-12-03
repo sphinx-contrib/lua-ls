@@ -309,6 +309,7 @@ def resolve(
     backend: _t.Literal["emmylua", "luals"],
     min_version: str,
     max_version: str | None,
+    skip_versions: list[str],
     cache_path: _PathLike | None = None,
     quiet: bool = True,
     env: dict[str, str] | None = None,
@@ -332,6 +333,8 @@ def resolve(
         minimal LuaLs version required.
     :param max_version:
         maximal LuaLs version required. Version is not limited is `None`.
+    :param skip_versions:
+        list of known broken versions.
     :param quiet:
         if true (default), any output from the LuaLs binary is hidden.
     :param env:
@@ -374,6 +377,7 @@ def resolve(
             backend,
             min_version,
             max_version,
+            skip_versions,
             cache_path,
             _get_path(env),
             install,
@@ -423,9 +427,15 @@ def _get_path(env: dict[str, str] | None) -> str:
 
 
 def _check_version(
-    min_version: str, max_version: str | None, bin_path: _PathLike
+    min_version: str,
+    max_version: str | None,
+    skip_versions: list[str],
+    bin_path: _PathLike,
 ) -> _t.Tuple[bool, _t.Optional[str]]:
     min_version_tuple = tuple(int(c) for c in min_version.split("."))
+    skip_version_tuples = [
+        tuple(int(c) for c in version.split(".")) for version in skip_versions
+    ]
     if max_version:
         max_version_tuple = tuple(int(c) for c in max_version.split("."))
         if max_version_tuple <= min_version_tuple:
@@ -442,15 +452,19 @@ def _check_version(
         if match := re.search(r"(\d+\.\d+\.\d+)", system_version_text):
             system_version = match.group(1)
             system_version_tuple = tuple(int(c) for c in system_version.split("."))
-            if min_version_tuple <= system_version_tuple < max_version_tuple:
+            if (
+                min_version_tuple <= system_version_tuple < max_version_tuple
+                and not _should_skip(system_version_tuple, skip_version_tuples)
+            ):
                 return True, system_version
             else:
                 _logger.debug(
-                    "%s is outdated (got %s, required %s..%s)",
+                    "%s is outdated (got %s, required %s..%s, skip=%r)",
                     bin_path,
                     system_version,
                     min_version,
                     max_version,
+                    skip_versions,
                     type="lua-ls",
                 )
                 return False, system_version
@@ -474,6 +488,7 @@ def _check_and_install(
     backend: _t.Literal["emmylua", "luals"],
     min_version: str,
     max_version: str | None,
+    skip_versions: list[str],
     cache_path: pathlib.Path,
     path: str,
     install: bool,
@@ -485,6 +500,7 @@ def _check_and_install(
         min_version = min_version[1:]
     if max_version and max_version.startswith("v"):
         max_version = max_version[1:]
+    skip_versions = [version.removeprefix("v") for version in skip_versions]
 
     if backend == "emmylua":
         bin_name = "emmylua_doc_cli"
@@ -495,7 +511,7 @@ def _check_and_install(
     system_version = None
     if system_bin_path:
         can_use_system_lua_ls, system_version = _check_version(
-            min_version, max_version, system_bin_path
+            min_version, max_version, skip_versions, system_bin_path
         )
         if can_use_system_lua_ls:
             _logger.debug(
@@ -526,6 +542,7 @@ def _check_and_install(
         return _install_emmylua(
             min_version,
             max_version,
+            skip_versions,
             cache_path,
             path,
             install,
@@ -541,6 +558,7 @@ def _check_and_install(
         return _install_lua_ls(
             min_version,
             max_version,
+            skip_versions,
             cache_path,
             path,
             install,
@@ -554,16 +572,22 @@ def _check_and_install(
         )
 
 
-def _make_version_message(min_version: str, max_version: str | None) -> str:
+def _make_version_message(
+    min_version: str, max_version: str | None, skip_versions: list[str]
+) -> str:
     if max_version:
-        return f"a version between {min_version} and {max_version}"
+        msg = f"a version between {min_version} and {max_version}"
     else:
-        return f"version {min_version} or newer"
+        msg = f"version {min_version} or newer"
+    if skip_versions:
+        msg += ", and not " + ", ".join(skip_versions)
+    return msg
 
 
 def _install_lua_ls(
     min_version: str,
     max_version: str | None,
+    skip_versions: list[str],
     cache_path: pathlib.Path,
     path: str,
     install: bool,
@@ -589,7 +613,7 @@ def _install_lua_ls(
     release_name = release_names.get((platform, machine), None)
     if not install or not release_name:
         if system_bin_path:
-            version = _make_version_message(min_version, max_version)
+            version = _make_version_message(min_version, max_version, skip_versions)
             raise LuaLsError(
                 f"you have lua-language-server {system_version}, "
                 f"but {version} is required; "
@@ -613,7 +637,9 @@ def _install_lua_ls(
         bin_path = cache_path / "bin/lua-language-server"
     if bin_path.exists():
         bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
-        can_use_cached_binary, _ = _check_version(min_version, max_version, bin_path)
+        can_use_cached_binary, _ = _check_version(
+            min_version, max_version, skip_versions, bin_path
+        )
         if can_use_cached_binary:
             _logger.debug("using cached lua-language-server", type="lua-ls")
             return bin_path, path
@@ -631,6 +657,7 @@ def _install_lua_ls(
             tmp_file = _download_release(
                 min_version,
                 max_version,
+                skip_versions,
                 api,
                 timeout,
                 retry,
@@ -663,11 +690,11 @@ def _install_lua_ls(
 
     if verify:
         can_use_cached_lua_ls, cached_version = _check_version(
-            min_version, max_version, bin_path
+            min_version, max_version, skip_versions, bin_path
         )
         if not can_use_cached_lua_ls:
             if cached_version is not None:
-                version = _make_version_message(min_version, max_version)
+                version = _make_version_message(min_version, max_version, skip_versions)
                 raise LuaLsError(
                     f"downloaded lua-language-server printed version {cached_version}, "
                     f"but {version} is required; are you sure lua_ls_min_version "
@@ -689,6 +716,7 @@ def _install_lua_ls(
 def _install_emmylua(
     min_version: str,
     max_version: str | None,
+    skip_versions: list[str],
     cache_path: pathlib.Path,
     path: str,
     install: bool,
@@ -712,7 +740,7 @@ def _install_emmylua(
     release_name = release_names.get((platform, machine), None)
     if not install or not release_name:
         if system_bin_path:
-            version = _make_version_message(min_version, max_version)
+            version = _make_version_message(min_version, max_version, skip_versions)
             raise LuaLsError(
                 f"you have emmylua_doc_cli {system_version}, but {version} is required; "
                 f"see upgrade instructions "
@@ -735,7 +763,9 @@ def _install_emmylua(
         bin_path = cache_path / "emmylua_doc_cli"
     if bin_path.exists():
         bin_path.chmod(bin_path.stat().st_mode | stat.S_IEXEC)
-        can_use_cached_binary, _ = _check_version(min_version, max_version, bin_path)
+        can_use_cached_binary, _ = _check_version(
+            min_version, max_version, skip_versions, bin_path
+        )
         if can_use_cached_binary:
             _logger.debug("using cached emmylua_doc_cli", type="lua-ls")
             return bin_path, path
@@ -755,6 +785,7 @@ def _install_emmylua(
             tmp_file = _download_release(
                 min_version,
                 max_version,
+                skip_versions,
                 api,
                 timeout,
                 retry,
@@ -787,11 +818,11 @@ def _install_emmylua(
 
     if verify:
         can_use_cached_lua_ls, cached_version = _check_version(
-            min_version, max_version, bin_path
+            min_version, max_version, skip_versions, bin_path
         )
         if not can_use_cached_lua_ls:
             if cached_version is not None:
-                version = _make_version_message(min_version, max_version)
+                version = _make_version_message(min_version, max_version, skip_versions)
                 raise LuaLsError(
                     f"downloaded emmylua_doc_cli printed version {cached_version}, "
                     f"but {version} is required; are you sure lua_ls_min_version "
@@ -812,6 +843,7 @@ def _install_emmylua(
 def _download_release(
     min_version: str,
     max_version: str | None,
+    skip_versions: list[str],
     api: github.Github,
     timeout: int,
     retry: urllib3.Retry,
@@ -824,6 +856,9 @@ def _download_release(
     machine: str,
 ):
     min_version_tuple = tuple(int(c) for c in min_version.split("."))
+    skip_version_tuples = [
+        tuple(int(c) for c in version.split(".")) for version in skip_versions
+    ]
     if max_version:
         max_version_tuple = tuple(int(c) for c in max_version.split("."))
     else:
@@ -839,10 +874,14 @@ def _download_release(
 
         _logger.debug("found %s release %s", name, release.tag_name, type="lua-ls")
 
+
         if match := re.search(r"(\d+\.\d+\.\d+)", release.tag_name):
             release_version = match.group(1)
             release_version_tuple = tuple(int(c) for c in release_version.split("."))
-            if not (min_version_tuple <= release_version_tuple < max_version_tuple):
+            if not (
+                min_version_tuple <= release_version_tuple < max_version_tuple
+                and not _should_skip(release_version_tuple, skip_version_tuples)
+            ):
                 _logger.debug(
                     "release is outside of allowed version range", type="lua-ls"
                 )
@@ -863,7 +902,7 @@ def _download_release(
 
         break
     else:
-        version = _make_version_message(min_version, max_version)
+        version = _make_version_message(min_version, max_version, skip_versions)
         raise LuaLsError(f"unable to find {name} release for {version}")
 
     _logger.debug("downloading %s from %s", name, browser_download_url, type="lua-ls")
@@ -902,6 +941,15 @@ def _download_release(
     return dest / basename
 
 
+def _should_skip(version: tuple[int, ...], skip_versions: list[tuple[int, ...]]):
+    for skip_version in skip_versions:
+        if len(version) < len(skip_version):
+            version += (0,) * (len(skip_version) - len(version))
+        if skip_version == version[:len(skip_version)]:
+            return True
+    return False
+
+
 if __name__ == "__main__":
 
     def main():
@@ -913,6 +961,7 @@ if __name__ == "__main__":
         parser.add_argument("machine")
         parser.add_argument("--min", default="0.0.0")
         parser.add_argument("--max", default=None)
+        parser.add_argument("--skip", action="append", default=[])
         parser.add_argument("path", type=pathlib.Path)
 
         _logger.setLevel("DEBUG")
@@ -927,6 +976,7 @@ if __name__ == "__main__":
                 _install_lua_ls(
                     args.min,
                     args.max,
+                    args.skip,
                     args.path,
                     _get_path(None),
                     True,
@@ -943,6 +993,7 @@ if __name__ == "__main__":
                 _install_emmylua(
                     args.min,
                     args.max,
+                    args.skip,
                     args.path,
                     _get_path(None),
                     True,
