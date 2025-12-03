@@ -2,10 +2,12 @@
 
 ## [Unreleased]
 
+## [3.8.0] - 2025-12-03
+
 - Added support Sphinx 9.
 
-- Added ``lua_ls_skip_versions`` config option to selectively avoid certain
-  language server releases.
+- Added `lua_ls_skip_versions` config option to selectively avoid certain language server
+  releases.
 
 ## [3.7.0-post1] - 2025-11-14
 
@@ -262,6 +264,7 @@ Initial release.
 [3.6.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.5.0-post1...v3.6.0
 [3.7.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.6.0...v3.7.0
 [3.7.0-post1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0...v3.7.0-post1
+[3.8.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0-post1...v3.8.0
 [@bkoropoff]: https://github.com/bkoropoff
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
-[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0-post1...HEAD
+[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.0...HEAD
