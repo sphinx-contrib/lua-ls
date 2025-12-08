@@ -58,27 +58,13 @@ def run_lua_ls(app: sphinx.application.Sphinx):
     if not modified:
         return
 
-    min_version = domain.config.min_version
-    if min_version is None:
-        if domain.config.backend == "luals":
-            min_version = "3.0.0"
-        else:
-            min_version = "0.11.0"
-    max_version = domain.config.max_version
-    if max_version == "__auto__":
-        if domain.config.backend == "luals":
-            max_version = "4.0.0"
-        else:
-            max_version = "2.0.0"
-    skip_versions = domain.config.skip_versions
-
     cwd = pathlib.Path.cwd()
     try:
         runner = sphinx_lua_ls.lua_ls.resolve(
             backend=domain.config.backend,
-            min_version=min_version,
-            max_version=max_version,
-            skip_versions=skip_versions or [],
+            min_version=domain.config.min_version,
+            max_version=domain.config.max_version,
+            skip_versions=domain.config.skip_versions,
             cwd=root_dir,
             reporter=sphinx_lua_ls.lua_ls.SphinxProgressReporter(app.verbosity),
             install=domain.config.auto_install,

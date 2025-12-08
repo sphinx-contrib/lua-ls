@@ -63,6 +63,10 @@ Settings
    This setting can be used to avoid broken releases without limiting max version
    of the lua analyzer.
 
+   Default is to avoid known broken releases:
+
+   - LuaLs ``3.16.0`` — broken on Linux, fixed in ``3.16.1``.
+
 .. py:data:: lua_ls_default_options
    :type: dict[str, str]
 

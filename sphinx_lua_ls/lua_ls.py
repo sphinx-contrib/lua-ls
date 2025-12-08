@@ -26,6 +26,11 @@ from sphinx.errors import SphinxError
 from sphinx.util import logging
 from sphinx.util.console import bold, red  # type: ignore
 
+from sphinx_lua_ls.config import (
+    KNOWN_BROKEN_EMMYLUA_RELEASES,
+    KNOWN_BROKEN_LUA_LS_RELEASES,
+)
+
 _PathLike: _t.TypeAlias = str | os.PathLike[str]
 
 
@@ -307,9 +312,9 @@ class SphinxProgressReporter(DefaultProgressReporter):
 def resolve(
     *,
     backend: _t.Literal["emmylua", "luals"],
-    min_version: str,
+    min_version: str | None,
     max_version: str | None,
-    skip_versions: list[str],
+    skip_versions: list[str] | None,
     cache_path: _PathLike | None = None,
     quiet: bool = True,
     env: dict[str, str] | None = None,
@@ -370,6 +375,23 @@ def resolve(
 
     if retry is None:
         retry = urllib3.Retry(10, backoff_factor=0.1)
+
+    print(min_version, max_version, skip_versions)
+    if min_version is None:
+        if backend == "luals":
+            min_version = "3.0.0"
+        else:
+            min_version = "0.11.0"
+    if max_version == "__auto__":
+        if backend == "luals":
+            max_version = "4.0.0"
+        else:
+            max_version = "2.0.0"
+    if skip_versions is None:
+        if backend == "luals":
+            skip_versions = KNOWN_BROKEN_LUA_LS_RELEASES
+        else:
+            skip_versions = KNOWN_BROKEN_EMMYLUA_RELEASES
 
     reporter.start()
     try:
@@ -960,7 +982,7 @@ if __name__ == "__main__":
         parser.add_argument("machine")
         parser.add_argument("--min", default="0.0.0")
         parser.add_argument("--max", default=None)
-        parser.add_argument("--skip", action="append", default=[])
+        parser.add_argument("--skip", action="append", default=None)
         parser.add_argument("path", type=pathlib.Path)
 
         _logger.setLevel("DEBUG")
@@ -969,6 +991,12 @@ if __name__ == "__main__":
         )
 
         args = parser.parse_args()
+
+        if args.skip is None:
+            if args.runtime == "luals":
+                args.skip = KNOWN_BROKEN_LUA_LS_RELEASES
+            else:
+                args.skip = KNOWN_BROKEN_EMMYLUA_RELEASES
 
         match args.runtime:
             case "luals":

@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Added LuaLs 3.16.0 to the list of known broken releases ([LuaLS#3301]).
+
 ## [3.8.0] - 2025-12-03
 
 - Added support for Sphinx 9.
@@ -268,3 +270,4 @@ Initial release.
 [@bkoropoff]: https://github.com/bkoropoff
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
 [unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.0...HEAD
+[LuaLS#3301]: https://github.com/LuaLS/lua-language-server/issues/3301
