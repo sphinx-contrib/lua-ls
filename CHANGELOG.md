@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [3.8.1] - 2025-12-08
+
 - Added LuaLs 3.16.0 to the list of known broken releases ([LuaLS#3301]).
 
 ## [3.8.0] - 2025-12-03
@@ -267,7 +269,8 @@ Initial release.
 [3.7.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.6.0...v3.7.0
 [3.7.0-post1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0...v3.7.0-post1
 [3.8.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0-post1...v3.8.0
+[3.8.1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.0...v3.8.1
 [@bkoropoff]: https://github.com/bkoropoff
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
-[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.0...HEAD
-[LuaLS#3301]: https://github.com/LuaLS/lua-language-server/issues/3301
+[luals#3301]: https://github.com/LuaLS/lua-language-server/issues/3301
+[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.1...HEAD
