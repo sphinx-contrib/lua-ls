@@ -17,10 +17,6 @@ T = _t.TypeVar("T")
 A = _t.ParamSpec("A")
 
 
-KNOWN_BROKEN_LUA_LS_RELEASES = ["3.16.0"]
-KNOWN_BROKEN_EMMYLUA_RELEASES = []
-
-
 @dataclass
 class LuaDomainConfig:
     project_root: pathlib.Path

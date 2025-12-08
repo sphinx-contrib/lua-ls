@@ -26,10 +26,9 @@ from sphinx.errors import SphinxError
 from sphinx.util import logging
 from sphinx.util.console import bold, red  # type: ignore
 
-from sphinx_lua_ls.config import (
-    KNOWN_BROKEN_EMMYLUA_RELEASES,
-    KNOWN_BROKEN_LUA_LS_RELEASES,
-)
+KNOWN_BROKEN_LUA_LS_RELEASES = ["3.16.0"]
+KNOWN_BROKEN_EMMYLUA_RELEASES = []
+
 
 _PathLike: _t.TypeAlias = str | os.PathLike[str]
 
