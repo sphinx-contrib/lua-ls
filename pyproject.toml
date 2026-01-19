@@ -50,7 +50,7 @@ test = [
 doc = [
     "sybil==9.3.0",
     "furo==2025.9.25",
-    "sphinx_design==0.6.1",
+    "sphinx_design==0.7.0",
     "myst-parser==4.0.1"
 ]
 
