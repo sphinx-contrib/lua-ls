@@ -40,18 +40,18 @@ lint = [
     "pre-commit==4.5.0",
 ]
 test = [
-    "pyright==1.1.407",
+    "pyright==1.1.408",
     "pytest==9.0.2",
     "sybil==9.3.0",
-    "pytest-regressions==2.8.3",
+    "pytest-regressions==2.9.1",
     "beautifulsoup4==4.14.3",
-    "myst-parser==4.0.1"
+    "myst-parser==5.0.0"
 ]
 doc = [
     "sybil==9.3.0",
-    "furo==2025.9.25",
+    "furo==2025.12.19",
     "sphinx_design==0.7.0",
-    "myst-parser==4.0.1"
+    "myst-parser==5.0.0"
 ]
 
 [project.urls]
