@@ -21,6 +21,7 @@ import sphinx_lua_ls.domain
 import sphinx_lua_ls.inherited
 import sphinx_lua_ls.intersphinx
 import sphinx_lua_ls.lua_ls
+import sphinx_lua_ls.nodes
 import sphinx_lua_ls.objtree
 import sphinx_lua_ls.utils
 from sphinx_lua_ls._version import __version__, __version_tuple__
@@ -258,6 +259,14 @@ def setup(app: sphinx.application.Sphinx):
     app.add_lexer("lua", LuaLexer)
 
     app.add_css_file("lua.css")
+
+    app.add_node(
+        sphinx_lua_ls.nodes.SigIndentNode,
+        latex=(
+            sphinx_lua_ls.nodes.visit_sig_indent_latex,
+            sphinx_lua_ls.nodes.depart_sig_indent_latex,
+        ),
+    )
 
     return {
         "version": __version__,

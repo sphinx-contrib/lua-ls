@@ -29,6 +29,7 @@ from sphinx.util.docutils import SphinxDirective
 from sphinx.util.nodes import make_id, make_refnode
 
 import sphinx_lua_ls.config
+import sphinx_lua_ls.nodes
 import sphinx_lua_ls.objtree
 from sphinx_lua_ls import utils
 
@@ -49,18 +50,23 @@ class _SigWriter:
     ) -> None:
         self._signode = signode
         self._maximum_signature_line_length = maximum_signature_line_length
-        signode["is_multiline"] = True
-
-        self._line = addnodes.desc_signature_line(add_permalink=True)
-        signode += self._line
+        self._line = self._signode
 
     def br(self):
-        self._line["add_permalink"] = False
-        self._line = addnodes.desc_signature_line(add_permalink=True)
-        self._signode += self._line
+        if self._signode.get("is_multiline"):
+            self._line["add_permalink"] = False
+            self._line = addnodes.desc_signature_line(add_permalink=True)
+            self._signode += self._line
+        else:
+            self._signode["is_multiline"] = True
+            self._line = addnodes.desc_signature_line("", "", *self._signode.children)
+            self._signode.clear()
+            self._signode += self._line
+            self._line = addnodes.desc_signature_line(add_permalink=True)
+            self._signode += self._line
 
-    def ident(self):
-        self._line += addnodes.desc_sig_space("    ", "    ")
+    def indent(self):
+        self._line += sphinx_lua_ls.nodes.SigIndentNode()
 
     def name(self, txt: str):
         self._line += addnodes.desc_sig_name(txt, txt)
@@ -120,7 +126,7 @@ class _SigWriter:
         for i, (arg, typ) in enumerate(params):
             if multiline:
                 self.br()
-                self.ident()
+                self.indent()
 
             if handle_optionals and arg and typ and typ.endswith("?"):
                 arg, typ = arg + "?", typ[:-1]
@@ -165,7 +171,7 @@ class _SigWriter:
         for i, typ in enumerate(params):
             if multiline:
                 self.br()
-                self.ident()
+                self.indent()
 
             if typ:
                 self.typ(typ, inliner)
@@ -486,7 +492,10 @@ class LuaObject(
     ) -> str:
         *prefix_parts, _ = fullname.split(".")
         prefix = ".".join(prefix_parts)
-        return f"{name} ({self.objtype} in {prefix})"
+        if prefix:
+            return f"{name} ({self.objtype} in {prefix})"
+        else:
+            return f"{name} ({self.objtype})"
 
     def add_target_and_index(
         self,
