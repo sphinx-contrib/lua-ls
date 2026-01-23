@@ -2,6 +2,10 @@
 
 ## [Unreleased]
 
+## [3.9.0] - 2026-01-23
+
+- Fixed LaTeX build and improved rendering of multiline signatures in LaTeX ([#46]).
+
 ## [3.8.1] - 2025-12-08
 
 - Added LuaLs 3.16.0 to the list of known broken releases ([LuaLS#3301]).
@@ -247,6 +251,7 @@ Initial release.
 
 ## [0.0.1] - 2025-03-09
 
+[#46]:https://github.com/sphinx-contrib/lua-ls/issues/46
 [#18]: https://github.com/sphinx-contrib/lua-ls/pull/18
 [#19]: https://github.com/sphinx-contrib/lua-ls/pull/19
 [#3]: https://github.com/sphinx-contrib/lua-ls/issues/3
@@ -270,7 +275,8 @@ Initial release.
 [3.7.0-post1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0...v3.7.0-post1
 [3.8.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.7.0-post1...v3.8.0
 [3.8.1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.0...v3.8.1
+[3.9.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.1...v3.9.0
 [@bkoropoff]: https://github.com/bkoropoff
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
 [luals#3301]: https://github.com/LuaLS/lua-language-server/issues/3301
-[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.1...HEAD
+[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.9.0...HEAD
