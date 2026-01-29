@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- Added option to disable running lua-ls (`lua_ls_backend = "disable"`) for cases when
+  only manual documentation is required ([#47] by [@pieterlexis]).
+
 ## [3.9.0] - 2026-01-23
 
 - Fixed LaTeX build and improved rendering of multiline signatures in LaTeX ([#46]).
@@ -251,10 +254,11 @@ Initial release.
 
 ## [0.0.1] - 2025-03-09
 
-[#46]:https://github.com/sphinx-contrib/lua-ls/issues/46
 [#18]: https://github.com/sphinx-contrib/lua-ls/pull/18
 [#19]: https://github.com/sphinx-contrib/lua-ls/pull/19
 [#3]: https://github.com/sphinx-contrib/lua-ls/issues/3
+[#46]: https://github.com/sphinx-contrib/lua-ls/issues/46
+[#47]: https://github.com/sphinx-contrib/lua-ls/pull/47
 [0.0.1]: https://github.com/sphinx-contrib/lua-ls/releases/tag/v0.0.1
 [0.0.2]: https://github.com/sphinx-contrib/lua-ls/compare/v0.0.1...v0.0.2
 [0.0.3]: https://github.com/sphinx-contrib/lua-ls/compare/v0.0.2...v0.0.3
@@ -277,6 +281,7 @@ Initial release.
 [3.8.1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.0...v3.8.1
 [3.9.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.8.1...v3.9.0
 [@bkoropoff]: https://github.com/bkoropoff
+[@pieterlexis]: https://github.com/pieterlexis
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
 [luals#3301]: https://github.com/LuaLS/lua-language-server/issues/3301
 [unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.9.0...HEAD
