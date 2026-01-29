@@ -54,21 +54,25 @@ def test_intersphinx(app, ver):
 @pytest.mark.sphinx("html", testroot="autodoc")
 @pytest.mark.test_params(shared_result="test_autodoc_regression")
 @pytest.mark.parametrize(
-    "src",
+    "src,messages",
     [
-        "src/annotations.html",
-        "src/autoindex.html",
-        "src/globals.html",
-        "src/member_ordering.html",
-        "src/module_title.html",
-        "src/nested_modules.html",
-        "src/nesting_recursive.html",
-        "src/nesting.html",
-        "src/object_types.html",
-        "src/relative_resolve.html",
+        ("src/annotations.html", []),
+        ("src/autoindex.html", []),
+        ("src/globals.html", []),
+        ("src/member_ordering.html", []),
+        ("src/module_title.html", []),
+        ("src/nested_modules.html", []),
+        ("src/nesting_recursive.html", []),
+        ("src/nesting.html", []),
+        ("src/object_types.html", []),
+        ("src/relative_resolve.html", []),
+        (
+            "src/unknown_object.html",
+            ["ERROR: unknown lua object unknown_module.UnknownObject"],
+        ),
     ],
 )
-def test_autodoc_regression(app, src, file_regression):
+def test_autodoc_regression(app, src, messages, file_regression):
     app.build()
     path = pathlib.Path(app.outdir) / src
     soup = BeautifulSoup(path.read_text("utf8"), "html.parser")
@@ -80,6 +84,10 @@ def test_autodoc_regression(app, src, file_regression):
         extension=".html",
         encoding="utf8",
     )
+
+    warning = app.warning.getvalue()
+    for message in messages:
+        assert message in warning
 
 
 @pytest.mark.sphinx("html", testroot="autodoc-emmylua")
@@ -271,3 +279,35 @@ def test_apidoc(app, name, data_regression, file_regression):
         },
         basename=f"apidoc-{name}",
     )
+
+
+@pytest.mark.sphinx("html", testroot="autodoc-disabled")
+@pytest.mark.test_params(shared_result="test_autodoc_disabled")
+@pytest.mark.parametrize(
+    "src,messages",
+    [
+        (
+            "index.html",
+            [
+                "autoobject requested but the Lua language server is disabled",
+                "ERROR: autoobject requested but the Lua language server is disabled",
+            ],
+        ),
+    ],
+)
+def test_autodoc_disabled(app, src, messages, file_regression):
+    app.build()
+    path = pathlib.Path(app.outdir) / src
+    soup = BeautifulSoup(path.read_text("utf8"), "html.parser")
+    content = soup.select_one("div.regression")
+    assert content
+    file_regression.check(
+        content.prettify(),
+        basename="autodoc-disabled-" + pathlib.Path(src).stem,
+        extension=".html",
+        encoding="utf8",
+    )
+
+    warning = app.warning.getvalue()
+    for message in messages:
+        assert message in warning
