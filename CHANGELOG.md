@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [3.10.0] - 2026-01-29
+
 - Added option to disable running lua-ls (`lua_ls_backend = "disable"`) for cases when
   only manual documentation is required ([#47] by [@pieterlexis]).
 
@@ -269,6 +271,7 @@ Initial release.
 [2.0.1]: https://github.com/sphinx-contrib/lua-ls/compare/v2.0.0...v2.0.1
 [3.0.0]: https://github.com/sphinx-contrib/lua-ls/compare/v2.0.1...v3.0.0
 [3.1.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.0.0...v3.1.0
+[3.10.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.9.0...v3.10.0
 [3.2.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.1.0...v3.2.0
 [3.3.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.2.0...v3.3.0
 [3.4.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.3.0...v3.4.0
@@ -284,4 +287,4 @@ Initial release.
 [@pieterlexis]: https://github.com/pieterlexis
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
 [luals#3301]: https://github.com/LuaLS/lua-language-server/issues/3301
-[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.9.0...HEAD
+[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.10.0...HEAD
