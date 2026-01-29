@@ -33,6 +33,9 @@ logger = logging.getLogger("sphinx_lua_ls")
 def run_lua_ls(app: sphinx.application.Sphinx):
     domain: sphinx_lua_ls.domain.LuaDomain = app.env.get_domain("lua")  # type: ignore
 
+    if domain.config.backend == "disable":
+        return
+
     root_dir = domain.config.project_root
     project_directories = domain.config.project_directories
     if project_directories is None:
@@ -130,6 +133,12 @@ def run_apidoc(
     app: sphinx.application.Sphinx,
 ):
     domain = _t.cast(sphinx_lua_ls.domain.LuaDomain, app.env.get_domain("lua"))
+    if domain.config.backend == "disable":
+        logger.warning(
+            "apidoc requested, but the language server backend is disabled",
+            type="lua-ls",
+        )
+        return
     cwd = pathlib.Path.cwd()
     for name, params in domain.config.apidoc_roots.items():
         try:

@@ -1069,6 +1069,10 @@ class AutoObjectDirective(AutodocUtilsMixin):
     doctype_override: str | None = None
 
     def run(self):
+        if self.lua_domain.config.backend == "disable":
+            raise self.error(
+                "autoobject requested but the Lua language server is disabled"
+            )
         self.prepare_options()
 
         signatures: list[str] = []
