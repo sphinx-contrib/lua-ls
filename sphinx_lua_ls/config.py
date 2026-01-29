@@ -20,7 +20,7 @@ A = _t.ParamSpec("A")
 @dataclass
 class LuaDomainConfig:
     project_root: pathlib.Path
-    backend: _t.Literal["emmylua", "luals"] = "luals"
+    backend: _t.Literal["emmylua", "luals", "disable"] = "luals"
     project_directories: list[pathlib.Path] | None = None
     auto_install: bool = True
     auto_install_location: pathlib.Path | None = None
@@ -188,9 +188,11 @@ def set_options(app: sphinx.application.Sphinx):
 
     if config["lua_ls_backend"] is not None:
         domain_config.backend = _t.cast(
-            _t.Literal["emmylua", "luals"],
+            _t.Literal["emmylua", "luals", "disable"],
             _str_choices(
-                "lua_ls_backend", config["lua_ls_backend"], ["luals", "emmylua"]
+                "lua_ls_backend",
+                config["lua_ls_backend"],
+                ["luals", "emmylua", "disable"],
             ),
         )
     else:

@@ -18,7 +18,9 @@ Settings
 .. py:data:: lua_ls_backend
    :type: str
 
-   Controls which lua analyzer is used. Can be either ``"emmylua"`` or ``"luals"``.
+   Controls which lua analyzer is used. Can be either ``"emmylua"``, ``"luals"``, or ``"disable"``.
+   When set to ``"disable"``, no Lua files are analyzed, all language server related settings
+   are ignored, and :doc:`autodoc` does not work.
 
 .. py:data:: lua_ls_auto_install
    :type: bool
