@@ -13,6 +13,20 @@ repos:
         entry: isort --filter-files
         types_or: [python, pyi]
         require_serial: true
+      - id: clk
+        name: changelog keeper
+        language: system
+        entry: clk pre-commit-check
+        require_serial: true
+        types_or: [toml, yaml, markdown]
+      - id: clk-tags
+        name: changelog keeper (check tags)
+        language: system
+        entry: clk pre-commit-check-tag
+        always_run: true
+        pass_filenames: false
+        require_serial: true
+        stages: [pre-push]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:

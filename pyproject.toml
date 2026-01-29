@@ -1,6 +1,6 @@
 [project]
 name = "sphinx-lua-ls"
-authors = [{name = "Tamika Nomara", email = "taminomara@gmail.com"}]
+authors = [{ name = "Tamika Nomara", email = "taminomara@gmail.com" }]
 description = "Automatic documentation generation via EmmyLua/LuaLs"
 dynamic = ["version"]
 readme = "README.md"
@@ -21,23 +21,20 @@ classifiers = [
     "Topic :: Documentation :: Sphinx",
     "Typing :: Typed",
 ]
-dependencies = [
-    "sphinx>=8.0,<10.0",
-    "PyGithub>=1.59,<3.0",
-    "requests~=2.31",
-]
+dependencies = ["sphinx>=8.0,<10.0", "PyGithub>=1.59,<3.0", "requests~=2.31"]
 
 [dependency-groups]
 dev = [
     "pytest-cov==7.0.0",
-    {include-group = "test"},
-    {include-group = "lint"},
-    {include-group = "doc"},
+    { include-group = "test" },
+    { include-group = "lint" },
+    { include-group = "doc" },
 ]
 lint = [
     "black==26.1.0",
     "isort==7.0.0",
     "pre-commit==4.5.1",
+    "cl-keeper==0.0.0-b6",
 ]
 test = [
     "pyright==1.1.408",
@@ -45,13 +42,13 @@ test = [
     "sybil==9.3.0",
     "pytest-regressions==2.9.1",
     "beautifulsoup4==4.14.3",
-    "myst-parser==5.0.0"
+    "myst-parser==5.0.0",
 ]
 doc = [
     "sybil==9.3.0",
     "furo==2025.12.19",
     "sphinx_design==0.7.0",
-    "myst-parser==5.0.0"
+    "myst-parser==5.0.0",
 ]
 
 [project.urls]

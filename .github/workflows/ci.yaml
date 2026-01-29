@@ -126,13 +126,12 @@ jobs:
           ref="${{ github.ref }}";
           version=${ref#refs/tags/v};
           link="https://pypi.org/p/sphinx-lua-ls/${version}";
-          echo "version=${version}" >> $GITHUB_OUTPUT
           echo "link=${link}" >> $GITHUB_OUTPUT
       - name: Parse Changelog
         id: changelog
-        uses: mindsers/changelog-reader-action@v2
+        uses: taminomara/cl-keeper@v0
         with:
-          version: ${{ steps.metadata.outputs.version }}
+          version: ${{ github.ref }}
       - name: Set up python 3.12
         uses: actions/setup-python@v4
         with:
@@ -150,11 +149,11 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          prerelease: ${{ steps.changelog.outputs.status == 'prereleased' }}
-          draft: ${{ steps.changelog.outputs.status == 'unreleased' }}
+          prerelease: ${{ fromJSON(steps.changelog.outputs.is-pre-release) }}
+          draft: ${{ fromJSON(steps.changelog.outputs.is-unreleased) }}
           body: |
             ## Changelog
 
-            ${{ steps.changelog.outputs.changes }}
+            ${{ steps.changelog.outputs.text }}
 
             [See release on PyPi](${{ steps.metadata.outputs.link }})
