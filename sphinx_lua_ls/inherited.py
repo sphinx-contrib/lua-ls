@@ -59,7 +59,7 @@ class InheritedMembersTransform(SphinxTransform):
 
                 bases = [(base, data) for base in data.bases]
                 while bases:
-                    (base, data) = bases.pop()
+                    base, data = bases.pop()
 
                     resolved_base = self.domain._find_obj(
                         data.base_lookup_modname or "",
