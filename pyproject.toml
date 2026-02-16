@@ -40,7 +40,7 @@ test = [
     "pyright==1.1.408",
     "pytest==9.0.2",
     "sybil==9.3.0",
-    "pytest-regressions==2.9.1",
+    "pytest-regressions==2.10.0",
     "beautifulsoup4==4.14.3",
     "myst-parser==5.0.0",
 ]
