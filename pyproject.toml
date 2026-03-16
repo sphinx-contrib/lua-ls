@@ -34,7 +34,7 @@ lint = [
     "black==26.1.0",
     "isort==8.0.1",
     "pre-commit==4.5.1",
-    "cl-keeper==0.0.0-b6",
+    "cl-keeper==1.0.0",
 ]
 test = [
     "pyright==1.1.408",
