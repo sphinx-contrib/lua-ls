@@ -11,19 +11,21 @@ based on `EmmyLua`_ or `LuaLs`_ language servers.
 See an example output: `logging`.
 
 .. toctree::
-   :maxdepth: 1
+    :maxdepth: 1
 
-   installation
-   quickstart
-   directives
-   roles
-   autodoc
-   apidoc
-   settings
-   example
+    installation
+    quickstart
+    directives
+    roles
+    autodoc
+    apidoc
+    settings
+    example
 
 .. toctree::
     :hidden:
     :caption: Links
 
     GitHub <https://github.com/sphinx-contrib/lua-ls/>
+    Issues <https://github.com/sphinx-contrib/lua-ls/issues>
+    Changelog <https://github.com/sphinx-contrib/lua-ls/blob/main/CHANGELOG.md>
