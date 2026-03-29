@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 - Added config option to print debug logs: `lua_ls_verbose`.
+- Improved error messages related to object lookup errors and added a troubleshooting
+  guide.
 
 ## [3.10.1] - 2026-03-29
 
