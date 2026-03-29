@@ -362,38 +362,25 @@ class Object(DocstringMixin):
         return self.__class__.__name__
 
     def __str__(self) -> str:
-        res = ""
+        lines: list[str] = []
+        self._print_children_tree(lines, "")
+        return "\n".join(lines)
 
-        res += self._print_object()
+    def _print_children_tree(self, lines: list[str], prefix: str):
+        items = list(self.children.items())
+        for i, (name, ch) in enumerate(items):
+            is_last = i == len(items) - 1
+            connector = "└── " if is_last else "├── "
+            continuation = "    " if is_last else "│   "
 
-        if self.is_deprecated:
-            res += " (deprecated)"
-        if self.is_async:
-            res += " (async)"
-        if self.is_nodiscard:
-            res += " (nodiscard)"
+            desc = f"{prefix}{connector}"
+            if ch.kind:
+                desc += f"{ch.kind.value} "
+            desc += name
+            lines.append(desc)
 
-        tail = self._print_object_tail()
-
-        for name, ch in self.children.items():
-            first, *rest = str(ch).splitlines()
-            if rest:
-                rest = "\n  " + "\n  ".join(rest)
-            else:
-                rest = ""
-            res += f"\n  {name} {first}{rest}"
-
-        if self.children and tail:
-            res += "\n"
-        res += tail
-
-        return res
-
-    def _print_object(self) -> str:
-        return "{"
-
-    def _print_object_tail(self) -> str:
-        return "}"
+            ch_prefix = prefix + continuation
+            ch._print_children_tree(lines, ch_prefix)
 
     def find(self, path: str) -> Object | None:
         """
@@ -478,13 +465,6 @@ class Data(Object):
         else:
             return None
 
-    def _print_object(self) -> str:
-        lit = f" = {self.lit}" if self.lit else ""
-        return f": {self.type}{lit}"
-
-    def _print_object_tail(self) -> str:
-        return ""
-
 
 @dataclass(kw_only=True, repr=False, eq=False)
 class Table(Object):
@@ -504,12 +484,6 @@ class Table(Object):
             return Kind.Module
         else:
             return None
-
-    def _print_object(self) -> str:
-        return "= table {"
-
-    def _print_object_tail(self) -> str:
-        return "}"
 
 
 @dataclass(kw_only=True, repr=False, eq=False)
@@ -548,19 +522,6 @@ class Function(Object):
         else:
             return None
 
-    def _print_object(self) -> str:
-        params = ", ".join(map(str, self.params))
-        generics = ", ".join(map(str, self.generics))
-        if generics:
-            generics = f"<{generics}>"
-        returns = ", ".join(map(str, self.returns))
-        if returns:
-            returns = " -> " + returns
-        return f"= function{generics}({params}){returns}"
-
-    def _print_object_tail(self) -> str:
-        return ""
-
 
 @dataclass(kw_only=True, repr=False, eq=False)
 class Class(Object):
@@ -595,15 +556,6 @@ class Class(Object):
         else:
             return None
 
-    def _print_object(self) -> str:
-        generics = ", ".join(map(str, self.generics))
-        if generics:
-            generics = f"<{generics}>"
-        return f"= class{generics}({', '.join(self.bases)})"
-
-    def _print_object_tail(self) -> str:
-        return ""
-
 
 @dataclass(kw_only=True, repr=False, eq=False)
 class Alias(Object):
@@ -632,15 +584,6 @@ class Alias(Object):
         else:
             return None
 
-    def _print_object(self) -> str:
-        generics = ", ".join(map(str, self.generics))
-        if generics:
-            generics = f"<{generics}>"
-        return f"= alias{generics}({self.type})"
-
-    def _print_object_tail(self) -> str:
-        return ""
-
 
 @dataclass(kw_only=True, repr=False, eq=False)
 class Enum(Object):
@@ -668,15 +611,6 @@ class Enum(Object):
             return Kind.Module
         else:
             return None
-
-    def _print_object(self) -> str:
-        generics = ", ".join(map(str, self.generics))
-        if generics:
-            generics = f"<{generics}>"
-        return f"= enum{generics}({self.type})"
-
-    def _print_object_tail(self) -> str:
-        return ""
 
 
 class Parser:

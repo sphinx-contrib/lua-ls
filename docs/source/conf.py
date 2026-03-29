@@ -29,6 +29,7 @@ lua_ls_backend = "emmylua"
 lua_ls_class_default_function_name = "__init"
 lua_ls_class_default_force_non_colon = True
 lua_ls_class_default_force_return_self = True
+lua_ls_verbose = True
 
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),

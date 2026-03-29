@@ -36,6 +36,7 @@ def run_lua_ls(app: sphinx.application.Sphinx):
     domain: sphinx_lua_ls.domain.LuaDomain = app.env.get_domain("lua")  # type: ignore
 
     if domain.config.backend == "disable":
+        logger.debug("skipping lua-ls run: backend is 'disabled'")
         return
 
     root_dir = domain.config.project_root
@@ -62,6 +63,9 @@ def run_lua_ls(app: sphinx.application.Sphinx):
                     modified = True
                     break
     if not modified:
+        logger.debug(
+            "skipping lua-ls run: lua files were not modified since previous run"
+        )
         return
 
     cwd = pathlib.Path.cwd()
@@ -129,6 +133,11 @@ def run_lua_ls(app: sphinx.application.Sphinx):
 
     if parser.runtime_version and not domain.config.lua_version:
         domain.config.lua_version = parser.runtime_version
+
+    logger.debug(
+        "Lua analysis finished. Found objects:\n<global namespace>\n%s",
+        domain.objtree,
+    )
 
 
 def run_apidoc(
@@ -210,6 +219,7 @@ def setup(app: sphinx.application.Sphinx):
     app.add_config_value("lua_ls_class_default_force_non_colon", None, rebuild="env")
     app.add_config_value("lua_ls_class_default_force_return_self", None, rebuild="env")
     app.add_config_value("lua_ls_maximum_signature_line_length", 50, rebuild="env")
+    app.add_config_value("lua_ls_verbose", False, rebuild="")
 
     app.add_directive_to_domain(
         "lua", "autoobject", sphinx_lua_ls.autodoc.AutoObjectDirective

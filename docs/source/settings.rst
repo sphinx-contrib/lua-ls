@@ -244,3 +244,10 @@ Settings
    to use Sphinx's global setting ``maximum_signature_line_length``.
    If ``maximum_signature_line_length`` is also ``None``,
    signature wrapping will be disabled.
+
+.. py:data:: lua_ls_verbose
+   :type: bool
+
+   Prints debug logs from sphinx-lua-ls without raising verbosity level
+   of other Sphinx loggers. Set to ``True`` to see object tree discovered
+   by lua analyzer.

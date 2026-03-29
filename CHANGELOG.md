@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Added config option to print debug logs: `lua_ls_verbose`.
+
 ## [3.10.1] - 2026-03-29
 
 - Fiexd broken cross-references on the search page.

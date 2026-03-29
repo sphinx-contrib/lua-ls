@@ -3,6 +3,7 @@ from __future__ import annotations
 import dataclasses
 import pathlib
 import re
+import sys
 import typing as _t
 from dataclasses import dataclass
 
@@ -41,6 +42,7 @@ class LuaDomainConfig:
     class_default_force_non_colon: bool = False
     class_default_force_return_self: bool = False
     maximum_signature_line_length: int | None = 50
+    verbose: bool = False
 
 
 def _type(name: str, value, types: _t.Type[T] | tuple[_t.Type[T], ...]) -> T:
@@ -325,6 +327,19 @@ def set_options(app: sphinx.application.Sphinx):
             config["maximum_signature_line_length"],
             (int, type(None)),
         )
+
+    if config["lua_ls_verbose"] is not None:
+        domain_config.verbose = _type("lua_ls_verbose", config["lua_ls_verbose"], bool)
+        if domain_config.verbose:
+            app.verbosity = max(app.verbosity, 1)
+            root_logger = logging.getLogger("sphinx_lua_ls")
+            root_logger.logger.propagate = False
+            handler = logging.NewLineStreamHandler(
+                logging.SafeEncodingWriter(sys.stdout)
+            )
+            handler.setFormatter(logging.ColorizeFormatter())
+            root_logger.logger.addHandler(handler)
+            root_logger.setLevel("DEBUG")
 
     domain = _t.cast(sphinx_lua_ls.domain.LuaDomain, app.env.get_domain("lua"))
     domain.config = domain_config
