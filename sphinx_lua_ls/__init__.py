@@ -12,6 +12,7 @@ import sphinx.builders.html
 import sphinx.domains
 import sphinx.errors
 from sphinx.util import logging
+from sphinx.util.console import get_terminal_width
 from sphinx.util.display import progress_message
 from sphinx.util.fileutil import copy_asset_file
 
@@ -134,10 +135,11 @@ def run_lua_ls(app: sphinx.application.Sphinx):
     if parser.runtime_version and not domain.config.lua_version:
         domain.config.lua_version = parser.runtime_version
 
-    logger.debug(
-        "Lua analysis finished. Found objects:\n<global namespace>\n%s",
-        domain.objtree,
-    )
+    logger.debug("Lua analysis finished. Found objects:")
+    logger.debug("-" * get_terminal_width())
+    objtree_s = str(domain.objtree)
+    logger.debug("%s", "<globals>\n" + objtree_s if objtree_s else "<empty>")
+    logger.debug("-" * get_terminal_width())
 
 
 def run_apidoc(

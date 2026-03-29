@@ -145,9 +145,14 @@ def _generate(
     is_global: bool = False,
     parent_modname: str | None = None,
 ):
-    obj = objtree.find(fullname)
+    obj, modname, classname, objname = objtree.find_path(fullname)
     if not obj:
-        raise sphinx.errors.ConfigError(f"can't find module {fullname}")
+        parent = ".".join(filter(None, [modname, classname])) or "<global namespace>"
+        msg = f"unknown lua object {fullname}:\n"
+        msg += f"  {parent} has no item {objname!r}\n"
+        msg += "Hint: set `lua_ls_verbose = True` in conf.py to see all objects exported by lua analyzer.\n"
+        msg += "Hint: see troubleshooting guide at https://sphinx-lua-ls.readthedocs.io/en/latest/troubleshooring.html"
+        raise sphinx.errors.ConfigError(msg)
 
     autodoc_options = options.copy()
     for name, value in obj.parsed_options.items():

@@ -1099,8 +1099,6 @@ class AutoObjectDirective(AutodocUtilsMixin):
             raise self.error("got an empty object name")
 
         found = self.get_root(name)
-        if not found:
-            raise self.error(f"unknown lua object {name}")
 
         root, modname, classname, objname = found
 
@@ -1131,7 +1129,7 @@ class AutoObjectDirective(AutodocUtilsMixin):
     def get_signatures(self) -> list[str]:
         return sphinx_lua_ls.domain.LuaObject.get_signatures(self)  # type: ignore
 
-    def get_root(self, name: str) -> tuple[Object, str, str, str] | None:
+    def get_root(self, name: str) -> tuple[Object, str, str, str]:
         modname = self.options.get("module", self.env.ref_context.get("lua:module"))
         if "module" in self.options:
             classname = ""
@@ -1144,11 +1142,25 @@ class AutoObjectDirective(AutodocUtilsMixin):
             ".".join(filter(None, [name])),
         ]
 
-        for candidate in candidates:
-            if found := self.objtree.find_path(candidate):
-                return found
+        attempts: list[tuple[str, str, str, str]] = []
 
-        return None
+        for candidate in candidates:
+            obj, modname, classname, objname = self.objtree.find_path(candidate)
+            if obj:
+                return obj, modname, classname, objname
+            else:
+                attempts.append((candidate, modname, classname, objname))
+
+        msg = f"unknown lua object {name}:\n"
+        for candidate, modname, classname, objname in attempts:
+            parent = (
+                ".".join(filter(None, [modname, classname])) or "<global namespace>"
+            )
+            msg += f"  Trying as {candidate}: {parent} has no item {objname!r}\n"
+        msg += "Hint: set `lua_ls_verbose = True` in conf.py to see all objects exported by lua analyzer.\n"
+        msg += "Hint: see troubleshooting guide at https://sphinx-lua-ls.readthedocs.io/en/latest/troubleshooring.html"
+
+        raise self.error(msg)
 
 
 class AutoFunctionDirective(AutoObjectDirective):

@@ -400,7 +400,7 @@ class Object(DocstringMixin):
             root = root.children[name]
         return root
 
-    def find_path(self, path: str) -> tuple[Object, str, str, str] | None:
+    def find_path(self, path: str) -> tuple[Object | None, str, str, str]:
         """
         Find an object and return a path to it.
 
@@ -420,7 +420,7 @@ class Object(DocstringMixin):
 
         for name in path.split("."):
             if name not in root.children:
-                return None
+                return None, ".".join(modname), ".".join(classname), name
 
             root = root.children[name]
 

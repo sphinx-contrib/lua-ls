@@ -21,6 +21,7 @@ See an example output: `logging`.
     apidoc
     settings
     example
+    troubleshooring
 
 .. toctree::
     :hidden:
