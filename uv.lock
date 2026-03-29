@@ -1039,17 +1039,16 @@ dev = [
     { name = "pytest-cov" },
     { name = "pytest-regressions" },
     { name = "ruff" },
+    { name = "sphinx-autobuild" },
     { name = "sphinx-design" },
     { name = "sybil" },
 ]
 doc = [
     { name = "furo" },
     { name = "myst-parser" },
+    { name = "sphinx-autobuild" },
     { name = "sphinx-design" },
     { name = "sybil" },
-]
-docs = [
-    { name = "sphinx-autobuild" },
 ]
 lint = [
     { name = "cl-keeper" },
@@ -1084,16 +1083,17 @@ dev = [
     { name = "pytest-cov", specifier = "==7.1.0" },
     { name = "pytest-regressions", specifier = "==2.10.0" },
     { name = "ruff", specifier = "==0.15.7" },
+    { name = "sphinx-autobuild", specifier = "==2025.8.25" },
     { name = "sphinx-design", specifier = "==0.7.0" },
     { name = "sybil", specifier = "==9.3.0" },
 ]
 doc = [
     { name = "furo", specifier = "==2025.12.19" },
     { name = "myst-parser", specifier = "==5.0.0" },
+    { name = "sphinx-autobuild", specifier = "==2025.8.25" },
     { name = "sphinx-design", specifier = "==0.7.0" },
     { name = "sybil", specifier = "==9.3.0" },
 ]
-docs = [{ name = "sphinx-autobuild", specifier = ">=2025.8.25" }]
 lint = [
     { name = "cl-keeper", specifier = "==1.0.0" },
     { name = "prek", specifier = "==0.3.6" },

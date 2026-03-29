@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Fiexd broken cross-references on the search page.
+
 ## [3.10.0] - 2026-01-29
 
 - Added option to disable running lua-ls (`lua_ls_backend = "disable"`) for cases when

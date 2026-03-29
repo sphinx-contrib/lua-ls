@@ -1460,7 +1460,7 @@ class LuaDomain(Domain):
 
     def get_objects(self) -> Iterator[tuple[str, str, str, str, str, int]]:
         for refname, data in self.objects.items():
-            yield (refname, refname, data.objtype, data.docname, refname, 1)
+            yield (refname, refname, data.objtype, data.docname, data.id, 1)
 
     def get_full_qualified_name(self, node: nodes.Element) -> str | None:
         modname = node.get("lua:module")
