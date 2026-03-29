@@ -1,0 +1,40 @@
+requires = ["tox>=4"]
+env_list = [
+    "3.14",
+    "3.13",
+    "3.12",
+    "type",
+    "lint",
+]
+depends = []
+
+[env_run_base]
+description = "Run tests under {base_python}"
+dependency_groups = ["test"]
+commands = [
+    [
+        "uv",
+        "run",
+        "--active",
+        "--no-sync",
+        "pytest",
+        "--color=yes",
+        { replace = "posargs", default = [
+        ], extend = true },
+    ],
+]
+pass_env = ["PYTEST*", "COVERAGE*", "LUA_LS_CACHE_PATH"]
+package = "uv"
+
+[env.type]
+description = "Run type check"
+dependency_groups = ["test"]
+commands = [["pyright"]]
+base_python = ["3.14"]
+
+[env.lint]
+description = "Run pre-commit hooks"
+dependency_groups = ["lint"]
+skip_install = true
+commands = [["prek", "run", "--all-files", "--color=always"]]
+depends = []

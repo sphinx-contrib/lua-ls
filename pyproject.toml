@@ -42,6 +42,8 @@ test = [
     "pytest-regressions==2.10.0",
     "beautifulsoup4==4.14.3",
     "myst-parser==5.0.0",
+    "tox==4.34.1",
+    "tox-uv==1.29.0",
 ]
 doc = [
     "sybil==9.3.0",

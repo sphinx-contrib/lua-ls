@@ -2,53 +2,82 @@
 
 ## Set up your environment
 
-1. Clone the repository.
+We use [`uv`] and [`poe`] to run tasks, but it is possible to use pure pip as well.
 
-2. Create a virtual environment with python `3.12` or newer.
+[`uv`]: https://docs.astral.sh/uv/
+[`poe`]: https://poethepoet.natn.io/index.html
 
-3. Install Sphinx-LuaLs in development mode, and install dev dependencies:
+### Using pip
+
+1. Create a virtual environment with python `3.12` or newer.
+
+2. Make sure your pip is up to date:
 
    ```shell
-   # Using UV
-   uv sync
-
-   # Using Pip
-   pip install -e . --group dev
-   pip install -U sphinx
+   pip install -U pip
    ```
 
-   > *Note:* our tests run with Sphinx 9, but some dependencies are not yet updated
-   > for it; that's why you have to update Sphinx after installing it.
+2. Install package in development mode, and install dev dependencies:
 
-4. Install pre-commit hooks:
+   ```shell
+   pip install -e . --group dev
+   ```
+
+3. Install pre-commit hooks:
 
    ```shell
    prek install
    ```
 
+4. [Install `poe`], either globally or in virtual environment:
+
+   ```shell
+   pip install poethepoet
+   ```
+
+[Install `poe`]: https://poethepoet.natn.io/installation.html
+
 5. If you're not on linux, install [EmmyLua Doc Cli].
 
 [EmmyLua Doc Cli]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/?tab=readme-ov-file#-installation
 
+### Using uv
+
+1. Sync your virtual environment:
+
+   ```shell
+   uv sync
+   ```
+
+2. Install pre-commit hooks:
+
+   ```shell
+   uv run prek install
+   ```
+
+3. [Install `poe`] if you don't have it already:
+
+   ```shell
+   uv tool install poethepoet
+   ```
+
+5. If you're not on linux, install [EmmyLua Doc Cli].
+
+
 ## Run tests
 
-To run tests, simply run `pytest` and `pyright`:
+We use `poe` for most of the tasks:
 
 ```shell
-pytest  # Run unit tests.
-pyright  # Run type check.
+poe lint  # Lint and fix code style.
+poe test  # Run tests.
+poe test-all  # Run tests for all pythons.
 ```
 
-To fix code style, you can manually run pre-commit hooks:
+You can see all commands in `poe`'s help:
 
 ```shell
-prek run --all-files  # Fix code style.
-```
-
-To regenerate data for regression tests, run
-
-```shell
-pytest --regen-all
+poe --help
 ```
 
 
@@ -66,16 +95,11 @@ Sphinx-LuaLs will download the latest version of Lua Language Server for you.
 
 ## Release
 
-1. Update `changelog.md`. Make sure to update links at the end of the file.
+1. Make sure that "Unreleased" section in `changelog.md` is up to date.
 
-   Changelog *must* have a section for the new release, otherwise the build
-   will fail.
+2. Run `poe release auto` to bump version in changelog and create a release tag.
 
 2. Push a git tag. You'll need a repository admin role to do so.
-
-   All tags should start with prefix `v`, and follow semantic versioning guidelines.
-   This, among other things, means that tags for beta-, post-, etc. releases
-   should have form `v1.0.0-beta0` instead of Python's `v1.0.0b0`.
 
 3. From here, release happens automatically. PyPi package will be uploaded from
    CI job, and documentation will be updated by Read the Docs build.
