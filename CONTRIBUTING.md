@@ -97,9 +97,10 @@ Sphinx-LuaLs will download the latest version of Lua Language Server for you.
 
 1. Make sure that "Unreleased" section in `changelog.md` is up to date.
 
-2. Run `poe release auto` to bump version in changelog and create a release tag.
+2. Run `poe release major|minor|patch` to bump version in changelog
+   and create a release tag.
 
-2. Push a git tag. You'll need a repository admin role to do so.
+3. Push a git tag. You'll need a repository admin role to do so.
 
-3. From here, release happens automatically. PyPi package will be uploaded from
+4. From here, release happens automatically. PyPi package will be uploaded from
    CI job, and documentation will be updated by Read the Docs build.
