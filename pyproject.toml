@@ -33,7 +33,7 @@ dev = [
 lint = [
     "cl-keeper==1.0.0",
     "prek==0.3.6",
-    "ruff==0.15.7",
+    "ruff==0.15.8",
 ]
 test = [
     "pyright==1.1.408",
