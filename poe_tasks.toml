@@ -1,0 +1,23 @@
+[executor]
+type = "uv"
+
+[tasks.lint]
+help = "Run pre-commit linters"
+cmd = "prek run --all-files"
+
+[tasks.test]
+help = "Run tests"
+cmd = "pytest"
+
+[tasks.doc]
+help = "Build HTML docs"
+cmd = "sphinx-build -b html docs/source docs/build/html -d docs/build/doctrees -j 12 -n"
+
+[tasks.doc-watch]
+help = "Start documentation server and rebuild HTML docs on every change"
+cmd = "sphinx-autobuild docs/source docs/build/html -d docs/build/doctrees --watch . -j 12 -n"
+
+[tasks.release]
+help = "Bump version, create release commit and tag"
+cmd = "clk bump --commit"
+use_exec = true

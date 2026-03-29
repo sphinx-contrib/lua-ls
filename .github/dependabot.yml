@@ -24,3 +24,11 @@ updates:
           - "black"
           - "isort"
           - "pre-commit"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      gh-actions:
+        patterns:
+          - "*"

@@ -3,6 +3,8 @@ Wrapper around the Lua-LS executable; able to download lua-ls if it's not instal
 
 """
 
+from __future__ import annotations
+
 import datetime
 import json
 import math
@@ -257,7 +259,7 @@ class DefaultProgressReporter(ProgressReporter):
             self.progress(f"installation failed: {red(exc_val)}", 0, 0, 0)
             self.write("\n")
         elif self._prev_len > 0:
-            self.progress(f"installed", 0, 0, 0)
+            self.progress("installed", 0, 0, 0)
             self.write("\n")
 
     def format_desc(self, desc: str) -> str:
@@ -375,7 +377,6 @@ def resolve(
     if retry is None:
         retry = urllib3.Retry(10, backoff_factor=0.1)
 
-    print(min_version, max_version, skip_versions)
     if min_version is None:
         if backend == "luals":
             min_version = "3.0.0"
@@ -631,7 +632,7 @@ def _install_lua_ls(
         ("win32", "amd64"): "-win32-x64.zip",
     }
 
-    release_name = release_names.get((platform, machine), None)
+    release_name = release_names.get((platform, machine))
     if not install or not release_name:
         if system_bin_path:
             version = _make_version_message(min_version, max_version, skip_versions)
@@ -643,9 +644,9 @@ def _install_lua_ls(
             )
         else:
             raise LuaLsError(
-                f"lua-language-server is not installed on your system; "
-                f"see installation instructions "
-                f"at https://lua_ls.github.io/#other-install"
+                "lua-language-server is not installed on your system; "
+                "see installation instructions "
+                "at https://lua_ls.github.io/#other-install"
             )
 
     # Check cached lua-ls
@@ -691,7 +692,7 @@ def _install_lua_ls(
                 machine,
             )
 
-            reporter.progress(f"processing lua-language-server", 0, 0, 0)
+            reporter.progress("processing lua-language-server", 0, 0, 0)
 
             _logger.debug("unpacking lua-language-server", type="lua-ls")
 
@@ -727,8 +728,7 @@ def _install_lua_ls(
                 )
     elif not bin_path.exists():
         raise LuaLsError(
-            f"downloaded latest lua-language-server is broken: "
-            f"can't find {bin_path}",
+            f"downloaded latest lua-language-server is broken: can't find {bin_path}",
         )
 
     return bin_path, path
@@ -758,7 +758,7 @@ def _install_emmylua(
         ("win32", "amd64"): "-win32-x64.zip",
     }
 
-    release_name = release_names.get((platform, machine), None)
+    release_name = release_names.get((platform, machine))
     if not install or not release_name:
         if system_bin_path:
             version = _make_version_message(min_version, max_version, skip_versions)
@@ -769,9 +769,9 @@ def _install_emmylua(
             )
         else:
             raise LuaLsError(
-                f"emmylua_doc_cli is not installed on your system; "
-                f"see installation instructions "
-                f"at https://github.com/EmmyLuaLs/emmylua-analyzer-rust?tab=readme-ov-file#-installation"
+                "emmylua_doc_cli is not installed on your system; "
+                "see installation instructions "
+                "at https://github.com/EmmyLuaLs/emmylua-analyzer-rust?tab=readme-ov-file#-installation"
             )
 
     # Check cached lua-ls
@@ -795,8 +795,8 @@ def _install_emmylua(
 
     api = github.Github(retry=retry, timeout=timeout)
 
-    filter = lambda name: name.startswith("emmylua_doc_cli") and name.endswith(
-        release_name
+    filter = lambda name: (
+        name.startswith("emmylua_doc_cli") and name.endswith(release_name)
     )
 
     with tempfile.TemporaryDirectory() as tmp_dir_s:
@@ -819,7 +819,7 @@ def _install_emmylua(
                 machine,
             )
 
-            reporter.progress(f"processing emmylua_doc_cli", 0, 0, 0)
+            reporter.progress("processing emmylua_doc_cli", 0, 0, 0)
 
             _logger.debug("unpacking emmylua_doc_cli", type="lua-ls")
 
@@ -855,7 +855,7 @@ def _install_emmylua(
                 )
     elif not bin_path.exists():
         raise LuaLsError(
-            f"downloaded latest emmylua_doc_cli is broken: " f"can't find {bin_path}",
+            f"downloaded latest emmylua_doc_cli is broken: can't find {bin_path}",
         )
 
     return bin_path, path

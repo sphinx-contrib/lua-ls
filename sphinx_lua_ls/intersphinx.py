@@ -3,6 +3,8 @@ Linking to standard lua library.
 
 """
 
+from __future__ import annotations
+
 import typing as _t
 
 import docutils.nodes
@@ -259,8 +261,8 @@ def resolve_std_reference(
     node: sphinx.addnodes.pending_xref,
     contnode: docutils.nodes.Node,
 ):
-    if node["refdomain"] == "lua" or node["reftype"] == "any":
-        if target := targets.get(node["reftarget"], None):
+    if node["refdomain"] == "lua" or node["reftype"] == "any":  # noqa: SIM102
+        if target := targets.get(node["reftarget"]):
             versions, anchor = target
             version = (
                 _t.cast(
@@ -275,3 +277,5 @@ def resolve_std_reference(
                 ref = docutils.nodes.reference("", "", contnode)
                 ref["refuri"] = uri
                 return ref
+
+    return None

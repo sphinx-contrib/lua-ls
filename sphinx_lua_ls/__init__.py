@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import fnmatch
 import pathlib
 import re
@@ -24,7 +26,7 @@ import sphinx_lua_ls.lua_ls
 import sphinx_lua_ls.nodes
 import sphinx_lua_ls.objtree
 import sphinx_lua_ls.utils
-from sphinx_lua_ls._version import __version__, __version_tuple__
+from sphinx_lua_ls._version import __version__, __version_tuple__  # noqa: F401
 from sphinx_lua_ls.pygments import LuaLexer
 
 logger = logging.getLogger("sphinx_lua_ls")
@@ -74,7 +76,7 @@ def run_lua_ls(app: sphinx.application.Sphinx):
             install=domain.config.auto_install,
             cache_path=domain.config.auto_install_location,
         )
-    except sphinx_lua_ls.lua_ls.LuaLsError as e:
+    except sphinx_lua_ls.lua_ls.LuaLsError:
         raise
     except Exception as e:
         raise sphinx.errors.ExtensionError(str(e)) from e
@@ -181,6 +183,8 @@ def suppress_auto_ref_warnings(
 ):
     if node["refdomain"] == "lua" and node["reftype"] == "_auto":
         return True
+    else:
+        return None
 
 
 def setup(app: sphinx.application.Sphinx):

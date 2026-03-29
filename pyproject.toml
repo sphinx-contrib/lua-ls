@@ -31,10 +31,9 @@ dev = [
     { include-group = "doc" },
 ]
 lint = [
-    "black==26.3.0",
-    "isort==8.0.1",
-    "pre-commit==4.5.1",
     "cl-keeper==1.0.0",
+    "prek==0.3.6",
+    "ruff==0.15.7",
 ]
 test = [
     "pyright==1.1.408",
@@ -89,6 +88,43 @@ reportUnnecessaryIsInstance = "none"
 reportConstantRedefinition = "none"
 reportRedeclaration = "none"
 
-[tool.isort]
-profile = "black"
-skip_gitignore = true
+[tool.ruff]
+exclude = ["examples/docs/*", "test/roots/*"]
+target-version = "py312"
+
+[tool.ruff.lint]
+extend-select = ["I", "INP", "T20", "PT", "RET", "SIM", "SLOT", "RUF022"]
+ignore = [
+    "E402",   # Module level import not at top of file
+    "E722",   # Do not use bare `except`
+    "E741",   # Ambiguous variable name
+    "E731",   # Do not assign a `lambda` expression, use a `def`
+    "PT015",  # Assertion is always `False`
+    "PT011",  # Too broad error type
+    "PT012",  # `pytest.raises()` block should contain a single simple statement
+    "PT017",  # Found assertion on exception `e` in `except` block
+    "RET505", # Unnecessary `else` after `return` statement
+    "RET506", # Unnecessary `else` after `raise` statement
+    "RET507", # Unnecessary `else` after `continue` statement
+    "RET508", # Unnecessary `else` after `break` statement
+    "SIM103", # Return the negated condition directly
+    "SIM105", # Use `contextlib.suppress` instead of `try`-`except`-`pass`
+    "SIM108", # Use ternary operator instead of `if`-`else`-block
+    "SIM114", # Combine `if` branches using logical `or` operator
+    "SIM118", # Use `key in dict` instead of `key in dict.keys()`
+]
+extend-safe-fixes = [
+    "RUF022", # Sort `__all__`.
+    "PT006",  # Rewrite arguments for `pytest.mark.parametrize`.
+]
+future-annotations = true
+
+[tool.ruff.lint.per-file-ignores]
+"test/**/*" = ["T20", "I002", "SIM102", "SIM117"]
+"docs/**/*" = ["T20", "I002", "INP001"]
+
+[tool.ruff.lint.isort]
+required-imports = ["from __future__ import annotations"]
+
+[tool.ruff.format]
+docstring-code-format = true

@@ -54,7 +54,7 @@ def test_intersphinx(app, ver):
 @pytest.mark.sphinx("html", testroot="autodoc")
 @pytest.mark.test_params(shared_result="test_autodoc_regression")
 @pytest.mark.parametrize(
-    "src,messages",
+    ("src", "messages"),
     [
         ("src/annotations.html", []),
         ("src/autoindex.html", []),
@@ -284,7 +284,7 @@ def test_apidoc(app, name, data_regression, file_regression):
 @pytest.mark.sphinx("html", testroot="autodoc-disabled")
 @pytest.mark.test_params(shared_result="test_autodoc_disabled")
 @pytest.mark.parametrize(
-    "src,messages",
+    ("src", "messages"),
     [
         (
             "index.html",

@@ -4,7 +4,7 @@ from sphinx_lua_ls.lua_ls import _should_skip
 
 
 @pytest.mark.parametrize(
-    "version,skips,expected",
+    ("version", "skips", "expected"),
     [
         (
             (1, 0, 0),

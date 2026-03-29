@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import os
 import pathlib
 import subprocess
@@ -22,7 +24,8 @@ _ENV.filters["h2"] = lambda title: f"{title}\n{'-' * len(title)}"  # type: ignor
 _ENV.filters["h3"] = lambda title: f"{title}\n{'~' * len(title)}"  # type: ignore
 _ENV.filters["mangle"] = lambda name: _mangle_filename(name)  # type: ignore
 
-_TEMPLATE_RST = _ENV.from_string("""{{ title | h1 }}
+_TEMPLATE_RST = _ENV.from_string(
+    """{{ title | h1 }}
 
 .. lua:currentmodule:: {{ parent_modname }}
 
@@ -38,9 +41,11 @@ _TEMPLATE_RST = _ENV.from_string("""{{ title | h1 }}
    {{ child_fullname | mangle }}.rst
    {% endfor %}
 {% endif %}
-""".lstrip())
+""".lstrip()
+)
 
-_TEMPLATE_MD = _ENV.from_string("""# {{ title }}
+_TEMPLATE_MD = _ENV.from_string(
+    """# {{ title }}
 
 ```{lua:currentmodule} {{ parent_modname }}
 ```
@@ -59,7 +64,8 @@ _TEMPLATE_MD = _ENV.from_string("""# {{ title }}
 {% endfor %}
 ```
 {% endif %}
-""".lstrip())
+""".lstrip()
+)
 
 
 def generate(

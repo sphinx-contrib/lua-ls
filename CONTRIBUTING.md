@@ -9,6 +9,10 @@
 3. Install Sphinx-LuaLs in development mode, and install dev dependencies:
 
    ```shell
+   # Using UV
+   uv sync
+
+   # Using Pip
    pip install -e . --group dev
    pip install -U sphinx
    ```
@@ -19,7 +23,7 @@
 4. Install pre-commit hooks:
 
    ```shell
-   pre-commit install
+   prek install
    ```
 
 5. If you're not on linux, install [EmmyLua Doc Cli].
@@ -38,7 +42,7 @@ pyright  # Run type check.
 To fix code style, you can manually run pre-commit hooks:
 
 ```shell
-pre-commit run -a  # Fix code style.
+prek run --all-files  # Fix code style.
 ```
 
 To regenerate data for regression tests, run

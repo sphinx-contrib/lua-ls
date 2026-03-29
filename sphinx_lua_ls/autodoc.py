@@ -573,6 +573,8 @@ class AutodocUtilsMixin(sphinx_lua_ls.domain.LuaContextManagerMixin):
         if classname:
             basepath = ".".join(filter(None, [modname, classname]))
             return self.objtree.find(basepath)
+        else:
+            return None
 
 
 class AutodocDirectiveMixin(AutodocUtilsMixin):
@@ -603,13 +605,13 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
                 and fullname
                 and nodes
                 and isinstance(nodes[0], docutils.nodes.paragraph)
+                and fullname in self.lua_domain.objects
             ):
-                if fullname in self.lua_domain.objects:
-                    data = self.lua_domain.objects[fullname]
-                    if not data.synopsis:
-                        self.lua_domain.objects[fullname] = dataclasses.replace(
-                            data, synopsis=nodes[0].astext()
-                        )
+                data = self.lua_domain.objects[fullname]
+                if not data.synopsis:
+                    self.lua_domain.objects[fullname] = dataclasses.replace(
+                        data, synopsis=nodes[0].astext()
+                    )
 
             content_node += nodes
 
@@ -668,7 +670,7 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
                     docutils.nodes.strong("", "Require: "),
                     docutils.nodes.literal(
                         "",
-                        f"{require_function_name}" f'("{require_path}"): ',
+                        f'{require_function_name}("{require_path}"): ',
                         *ref_nodes,
                         *warn_nodes,
                     ),
@@ -680,7 +682,7 @@ class AutodocDirectiveMixin(AutodocUtilsMixin):
                     docutils.nodes.strong("", "Require: "),
                     docutils.nodes.literal(
                         "",
-                        f"{require_function_name}" f'("{require_path}")',
+                        f'{require_function_name}("{require_path}")',
                     ),
                 )
 
@@ -928,10 +930,13 @@ class LuaClass(AutodocObjectMixin, sphinx_lua_ls.domain.LuaClass):
             assert self.constructor_sig
             i = int(sig)  # What a dirty hack =(
             overload = self.constructor_sig.overloads[i]
-            _, (
-                generics,
-                params,
-                returns,
+            (
+                _,
+                (
+                    generics,
+                    params,
+                    returns,
+                ),
             ) = sphinx_lua_ls.domain.LuaFunction.parse_function_signature(overload)
             return self.arguments[0], (generics, None, params, returns)
 
@@ -1091,7 +1096,7 @@ class AutoObjectDirective(AutodocUtilsMixin):
             name = sig_name
 
         if not name:
-            raise self.error(f"got an empty object name")
+            raise self.error("got an empty object name")
 
         found = self.get_root(name)
         if not found:
@@ -1142,6 +1147,8 @@ class AutoObjectDirective(AutodocUtilsMixin):
         for candidate in candidates:
             if found := self.objtree.find_path(candidate):
                 return found
+
+        return None
 
 
 class AutoFunctionDirective(AutoObjectDirective):

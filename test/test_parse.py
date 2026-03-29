@@ -4,7 +4,7 @@ from sphinx_lua_ls import utils
 
 
 @pytest.mark.parametrize(
-    "sig, expected",
+    ("sig", "expected"),
     [
         ("", ("", "")),
         ("    ", ("", "")),
@@ -24,7 +24,7 @@ def test_separate_paren_prefix(sig, expected):
 
 
 @pytest.mark.parametrize(
-    "sig, expected",
+    ("sig", "expected"),
     [
         ("", []),
         ("   ", []),
@@ -44,7 +44,7 @@ def test_separate_sig(sig, expected):
 
 
 @pytest.mark.parametrize(
-    "sig, expected",
+    ("sig", "expected"),
     [
         ("", []),
         ("    ", []),

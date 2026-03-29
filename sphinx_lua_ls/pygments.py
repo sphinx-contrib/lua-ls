@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 from pygments.lexer import bygroups, inherit
 from pygments.lexers.scripting import LuaLexer as _LuaLexer  # type: ignore
-from pygments.token import *  # type: ignore
+from pygments.token import Comment, Keyword
 
 
 class LuaLexer(_LuaLexer):

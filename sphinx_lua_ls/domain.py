@@ -7,6 +7,8 @@ See the original code here: https://github.com/boolangery/sphinx-luadomain
 
 """
 
+from __future__ import annotations
+
 import dataclasses
 import typing as _t
 from collections.abc import Set
@@ -1422,6 +1424,8 @@ class LuaDomain(Domain):
                 contnode,
                 name,
             )
+
+        return None
 
     def resolve_any_xref(
         self,
