@@ -5,3 +5,5 @@ extra_change_categories_map:
   '(?i)migrating': "migrating"
 extra_change_categories:
   migrating: ""
+severity:
+  ReleaseHasNoChangeCategories: none
