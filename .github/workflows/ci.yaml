@@ -132,7 +132,7 @@ jobs:
         with:
           attestations: false
       - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           prerelease: ${{ fromJSON(steps.changelog.outputs.is-pre-release) }}
           draft: ${{ fromJSON(steps.changelog.outputs.is-unreleased) }}
