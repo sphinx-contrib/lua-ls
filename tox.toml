@@ -5,6 +5,8 @@ env_list = [
     "3.12",
     "type",
     "lint",
+    "coverage-clean",
+    "coverage-combine",
 ]
 depends = []
 
@@ -19,16 +21,21 @@ commands = [
         "--no-sync",
         "pytest",
         "--color=yes",
+        "--cov",
+        "--cov-append",
         { replace = "posargs", default = [
         ], extend = true },
     ],
 ]
 pass_env = ["PYTEST*", "COVERAGE*", "LUA_LS_CACHE_PATH"]
+depends = ["coverage-clean"]
 package = "uv"
+set_env = { COVERAGE_FILE = "{env:COVERAGE_FILE:.coverage}.{envname}" }
 
 [env.type]
 description = "Run type check"
 dependency_groups = ["test"]
+skip_install = true
 commands = [["pyright"]]
 base_python = ["3.14"]
 
@@ -38,3 +45,19 @@ dependency_groups = ["lint"]
 skip_install = true
 commands = [["prek", "run", "--all-files", "--color=always"]]
 depends = []
+
+[env.coverage-clean]
+description = "Delete coverage data"
+dependency_groups = ["test"]
+skip_install = true
+commands = [["coverage", "erase"]]
+depends = []
+set_env = { COVERAGE_FILE = "{env:COVERAGE_FILE:.coverage}" }
+
+[env.coverage-combine]
+description = "Combine coverage data"
+dependency_groups = ["test"]
+skip_install = true
+commands = [["coverage", "combine"]]
+depends = ["3.14", "3.13", "3.12"]
+set_env = { COVERAGE_FILE = "{env:COVERAGE_FILE:.coverage}" }

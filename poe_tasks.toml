@@ -1,31 +1,60 @@
 [executor]
 type = "uv"
+no-group = ["dev"]
 
 [tasks.lint]
 help = "Run pre-commit linters"
 cmd = "prek run --all-files"
+executor = { group = "lint" }
 
 [tasks.test]
 help = "Run tests"
-cmd = "tox -e 3.14"
+cmd = "tox -e 3.14,coverage-combine --"
+executor = { group = "ci" }
 
 [tasks.test-all]
 help = "Run tests for all pythons"
 cmd = "tox p --"
+executor = { group = "ci" }
 
-[tasks.doc]
-help = "Build HTML docs"
-cmd = "sphinx-build -b html docs/source docs/build/html -d docs/build/doctrees -j 12 -n"
+[tasks.cov-clear]
+help = "Erase coverage data (use this if you stop tests mid-flight)"
+cmd = "coverage erase"
+executor = { group = "test" }
 
-[tasks.doc-watch]
-help = "Start documentation server and rebuild HTML docs on every change"
-cmd = "sphinx-autobuild docs/source docs/build/html -d docs/build/doctrees --watch . -j 12 -n"
+[tasks._cov-html]
+cmd = "coverage html -d htmlcov"
+executor = { group = "test" }
 
-[tasks.release]
-help = "Bump version, create release commit and tag"
-cmd = "clk bump --commit"
-use_exec = true
+[tasks._cov-html-serve]
+cmd = "python -m http.server -b localhost 8081"
+cwd = "htmlcov"
+
+[tasks.test-cov]
+help = "Run tests with coverage and serve HTML report on localhost:8081"
+sequence = ["test", "_cov-html", "_cov-html-serve"]
+
+[tasks.test-cov-all]
+help = "Run tests for all pythons with coverage and serve HTML report on localhost:8081"
+sequence = ["test-all", "_cov-html", "_cov-html-serve"]
 
 [tasks.ci]
 help = "For CI job"
 cmd = "tox --colored yes p --skip-env lint --"
+executor = { group = "ci" }
+
+[tasks.doc]
+help = "Build HTML docs"
+cmd = "sphinx-build -b html docs/source docs/build/html -d docs/build/doctrees -j 12 -n"
+executor = { group = "doc" }
+
+[tasks.doc-watch]
+help = "Start documentation server and rebuild HTML docs on every change"
+cmd = "sphinx-autobuild docs/source docs/build/html -d docs/build/doctrees --watch . -j 12 -n"
+executor = { group = "doc" }
+
+[tasks.release]
+help = "Bump version, create release commit and tag"
+cmd = "uvx --from cl-keeper clk bump --commit"
+use_exec = true
+executor = { type = "simple" }

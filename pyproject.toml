@@ -12,6 +12,7 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Intended Audience :: Developers",
     "Framework :: Sphinx",
     "Framework :: Sphinx :: Domain",
@@ -25,32 +26,35 @@ dependencies = ["sphinx>=8.0,<10.0", "PyGithub>=1.59,<3.0", "requests~=2.31"]
 
 [dependency-groups]
 dev = [
-    "pytest-cov==7.1.0",
-    { include-group = "test" },
-    { include-group = "lint" },
+    { include-group = "ci" },
     { include-group = "doc" },
+    { include-group = "lint" },
+    { include-group = "test" },
+]
+test = [
+    "beautifulsoup4==4.14.3",
+    "myst-parser==5.0.0",
+    "pyright==1.1.409",
+    "pytest-cov==7.0.0",
+    "pytest-regressions==2.10.0",
+    "pytest==9.0.3",
+    "sybil==10.0.1",
+]
+doc = [
+    "furo==2025.12.19",
+    "myst-parser==5.0.0",
+    "sphinx-autobuild==2025.8.25",
+    "sphinx_design==0.7.0",
+    "sybil==10.0.1",
 ]
 lint = [
-    "cl-keeper==1.0.0",
     "prek==0.3.9",
     "ruff==0.15.12",
 ]
-test = [
-    "pyright==1.1.409",
-    "pytest==9.0.3",
-    "sybil==10.0.1",
-    "pytest-regressions==2.10.0",
-    "beautifulsoup4==4.14.3",
-    "myst-parser==5.0.0",
+ci = [
+    "pytest-cov==7.0.0",
     "tox==4.34.1",
     "tox-uv==1.29.0",
-]
-doc = [
-    "sybil==10.0.1",
-    "furo==2025.12.19",
-    "sphinx_design==0.7.0",
-    "myst-parser==5.0.0",
-    "sphinx-autobuild==2025.8.25",
 ]
 
 [project.urls]
@@ -65,22 +69,19 @@ requires = ["setuptools>=60", "setuptools_scm[toml]>=8", "wheel>=0.40"]
 [tool.setuptools_scm]
 write_to = "sphinx_lua_ls/_version.py"
 
-[tool.pytest.ini_options]
-minversion = "7.0"
-addopts = ["--strict-markers", "-p no:doctest"]
-testpaths = ["test", "sphinx_lua_ls", "docs"]
-
 [tool.pyright]
 include = ["sphinx_lua_ls"]
-exclude = ["**/__pycache__"]
+exclude = [
+    "**/__pycache__",
+    "sphinx_lua_ls/_version.py",
+    "examples/docs/*",
+    "test/roots/*",
+    "mre-sphinx-lua/*",
+]
 typeCheckingMode = "strict"
-pythonVersion = "3.12"
+pythonVersion = "3.14"
 pythonPlatform = "All"
 
-# deprecateTypingAliases = true
-reportUnnecessaryTypeIgnoreComment = "warning"
-reportUnusedFunction = "none"
-reportPrivateUsage = "none"
 reportMissingParameterType = "none"
 reportUnknownParameterType = "none"
 reportUnknownVariableType = "none"
@@ -88,11 +89,16 @@ reportUnknownMemberType = "none"
 reportUnknownArgumentType = "none"
 reportUnknownLambdaType = "none"
 reportUnnecessaryIsInstance = "none"
+reportUnnecessaryTypeIgnoreComment = "warning"
+reportPrivateUsage = "none"
+reportUnusedFunction = "none"
 reportConstantRedefinition = "none"
 reportRedeclaration = "none"
+reportDeprecated = "none"
+deprecateTypingAliases = true
 
 [tool.ruff]
-exclude = ["examples/docs/*", "test/roots/*"]
+exclude = ["examples/docs/*", "test/roots/*", "mre-sphinx-lua/*"]
 target-version = "py312"
 
 [tool.ruff.lint]
@@ -131,3 +137,6 @@ required-imports = ["from __future__ import annotations"]
 
 [tool.ruff.format]
 docstring-code-format = true
+
+[tool.uv]
+default-groups = ["dev"]
