@@ -35,7 +35,6 @@ set_env = { COVERAGE_FILE = "{env:COVERAGE_FILE:.coverage}.{envname}" }
 [env.type]
 description = "Run type check"
 dependency_groups = ["test"]
-skip_install = true
 commands = [["pyright"]]
 base_python = ["3.14"]
 
