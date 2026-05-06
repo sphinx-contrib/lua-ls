@@ -1,4 +1,4 @@
-name: Test package
+name: test
 on:
   push:
     branches:
@@ -8,7 +8,10 @@ on:
   pull_request:
     branches:
       - main
+
 jobs:
+  # Downloads LuaLs and EmmyLua binaries for all OSes and uploads them as an
+  # artifact so that the test job can re-use them without re-downloading.
   prepare:
     name: Download LuaLs
     runs-on: ubuntu-latest
@@ -44,6 +47,10 @@ jobs:
           path: ~/lua_ls_release
           include-hidden-files: true
           retention-days: 3
+
+  # Runs main tests for the package.
+  #
+  # Runs on all events except when closing a pull request.
   test:
     name: Test package
     needs:
@@ -81,25 +88,28 @@ jobs:
           path: ~/lua_ls_release
       - name: Test package
         if: ${{ matrix.type == 'test' }}
-        run: poe ci
+        run: |
+          poe ci
         env:
           LUA_LS_CACHE_PATH: ~/lua_ls_release/${{ matrix.os }}
       # Lint
       - name: Check code style
         if: ${{ matrix.type == 'code style' }}
-        run: poe lint --color always
-  publish_to_pypi:
-    name: Publish package to PyPi
-    needs:
-      - test
+        run: |
+          poe lint --color always
+
+  # Builds python packages.
+  #
+  # Only runs on tag pushes.
+  build:
+    name: Build package
     if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/sphinx-lua-ls
-    permissions:
-      contents: write
-      id-token: write
+    outputs:
+      link: ${{ steps.metadata.outputs.link }}
+      is-pre-release: ${{ steps.changelog.outputs.is-pre-release }}
+      is-unreleased: ${{ steps.changelog.outputs.is-unreleased }}
+      changelog-text: ${{ steps.changelog.outputs.text }}
     steps:
       - name: Checkout source
         uses: actions/checkout@v6
@@ -110,23 +120,46 @@ jobs:
         run: |
           ref="${{ github.ref }}";
           version=${ref#refs/tags/v};
-          link="https://pypi.org/p/sphinx-lua-ls/${version}";
+          link="https://pypi.org/p/sphinx-lua-ls/${version}/";
           echo "link=${link}" >> $GITHUB_OUTPUT
       - name: Parse Changelog
         id: changelog
         uses: taminomara/cl-keeper@v1
         with:
           version: ${{ github.ref }}
-      - name: Set up python 3.12
-        uses: actions/setup-python@v6
-        with:
-          python-version: 3.12
-      - name: Install build
-        run: |
-          pip install build
+      - name: Install UV
+        uses: astral-sh/setup-uv@v7
       - name: Build project
         run: |
-          python3 -m build .
+          uv build
+      - name: Upload the build artifact
+        uses: actions/upload-artifact@v7
+        with:
+          name: python-package-distributions
+          path: dist/
+
+  # Publishes python packages.
+  #
+  # Only runs on tag pushes.
+  publish_to_pypi:
+    name: Publish package to PyPi
+    needs:
+      - test
+      - build
+    if: ${{ github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags') }}
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/sphinx-lua-ls
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - name: Download build artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: python-package-distributions
+          path: dist/
       - name: Publish to pypi
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
@@ -134,11 +167,11 @@ jobs:
       - name: Create GitHub release
         uses: softprops/action-gh-release@v3
         with:
-          prerelease: ${{ fromJSON(steps.changelog.outputs.is-pre-release) }}
-          draft: ${{ fromJSON(steps.changelog.outputs.is-unreleased) }}
+          prerelease: ${{ fromJSON(needs.build.outputs.is-pre-release) }}
+          draft: ${{ fromJSON(needs.build.outputs.is-unreleased) }}
           body: |
             ## Changelog
 
-            ${{ steps.changelog.outputs.text }}
+            ${{ needs.build.outputs.changelog-text }}
 
-            [See release on PyPi](${{ steps.metadata.outputs.link }})
+            [See release on PyPi](${{ needs.build.outputs.link }})
