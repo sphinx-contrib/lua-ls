@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [3.12.0] - 2026-05-12
+
+- Bumped dependencies.
+- Hardened build and publishing process to lower risk of supply-chain attacks.
+
 ## [3.11.0] - 2026-03-29
 
 - Added config option to print debug logs: `lua_ls_verbose`.
@@ -284,6 +289,7 @@ Initial release.
 [3.10.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.9.0...v3.10.0
 [3.10.1]: https://github.com/sphinx-contrib/lua-ls/compare/v3.10.0...v3.10.1
 [3.11.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.10.1...v3.11.0
+[3.12.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.11.0...v3.12.0
 [3.2.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.1.0...v3.2.0
 [3.3.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.2.0...v3.3.0
 [3.4.0]: https://github.com/sphinx-contrib/lua-ls/compare/v3.3.0...v3.4.0
@@ -299,4 +305,4 @@ Initial release.
 [@pieterlexis]: https://github.com/pieterlexis
 [emmylua]: https://github.com/EmmyLuaLs/emmylua-analyzer-rust/
 [luals#3301]: https://github.com/LuaLS/lua-language-server/issues/3301
-[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.11.0...HEAD
+[unreleased]: https://github.com/sphinx-contrib/lua-ls/compare/v3.12.0...HEAD
