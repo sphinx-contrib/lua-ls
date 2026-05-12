@@ -10,20 +10,30 @@ updates:
           - "beautifulsoup4"
           - "furo"
           - "myst-parser"
+          - "PyGithub"
           - "pyright"
-          - "pytest_image_diff"
           - "pytest-cov"
           - "pytest-regressions"
           - "pytest"
-          - "reportlab"
+          - "requests"
           - "sphinx_design"
-          - "svglib"
+          - "sphinx-autobuild"
+          - "sphinx"
           - "sybil"
+          - "tox"
+          - "tox-uv"
       style:
         patterns:
-          - "black"
-          - "isort"
-          - "pre-commit"
+          - "prek"
+          - "ruff"
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      pre-commit:
+        patterns:
+          - "*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

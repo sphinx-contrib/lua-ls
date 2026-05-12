@@ -1,0 +1,4 @@
+[pytest]
+minversion = "9.0"
+addopts = ["--strict-markers", "-p no:doctest"]
+testpaths = ["test", "sphinx_lua_ls", "docs"]

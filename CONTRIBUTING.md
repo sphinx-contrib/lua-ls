@@ -9,7 +9,8 @@ We use [`uv`] and [`poe`] to run tasks, but it is possible to use pure pip as we
 
 ### Using pip
 
-1. Create a virtual environment with python `3.12` or newer.
+1. Create a virtual environment with python `3.13` or newer
+   (some of dev tools don't work with older pythons).
 
 2. Make sure your pip is up to date:
 
@@ -61,10 +62,10 @@ We use [`uv`] and [`poe`] to run tasks, but it is possible to use pure pip as we
    uv tool install poethepoet
    ```
 
-5. If you're not on linux, install [EmmyLua Doc Cli].
+4. If you're not on linux, install [EmmyLua Doc Cli].
 
 
-## Run tests
+## Run commands
 
 We use `poe` for most of the tasks:
 
@@ -83,11 +84,11 @@ poe --help
 
 ## Build docs
 
-Just run `sphinx` as usual, nothing special is required:
+To build docs, just use `poe`:
 
 ```shell
-cd docs/
-make html
+poe doc  # Build HTML.
+poe doc-watch  # Run sphinx-autobuild.
 ```
 
 Sphinx-LuaLs will download the latest version of Lua Language Server for you.
@@ -95,7 +96,7 @@ Sphinx-LuaLs will download the latest version of Lua Language Server for you.
 
 ## Release
 
-1. Make sure that "Unreleased" section in `changelog.md` is up to date.
+1. Make sure that "Unreleased" section in `CHANGELOG.md` is up to date.
 
 2. Run `poe release major|minor|patch` to bump version in changelog
    and create a release tag.

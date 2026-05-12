@@ -4,26 +4,26 @@ repos:
       - id: ruff-check
         name: ruff check
         language: system
-        entry: scripts/resolve_venv.sh ruff check --force-exclude
+        entry: uv run --no-sync ruff check --force-exclude
         types_or: [python, pyi]
         require_serial: true
       - id: ruff-format
         name: ruff format
         language: system
-        entry: scripts/resolve_venv.sh ruff format --force-exclude
+        entry: uv run --no-sync ruff format --force-exclude
         types_or: [python, pyi]
         require_serial: true
+  - repo: https://github.com/taminomara/cl-keeper
+    rev: v1.0.0
+    hooks:
       - id: clk
-        name: changelog keeper
-        language: system
-        entry: scripts/resolve_venv.sh clk pre-commit-check
-        require_serial: true
-        types_or: [toml, yaml, markdown]
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
     hooks:
       - id: trailing-whitespace
+        exclude: "^(test/roots/.*|mre-sphinx-lua/.*)$"
       - id: end-of-file-fixer
+        exclude: "^(test/roots/.*|mre-sphinx-lua/.*)$"
       - id: fix-byte-order-marker
       - id: mixed-line-ending
         args: [--fix=lf]
@@ -33,6 +33,7 @@ repos:
       - id: check-json
       - id: check-merge-conflict
       - id: check-shebang-scripts-are-executable
+      - id: check-executables-have-shebangs
       - id: check-symlinks
       - id: destroyed-symlinks
       - id: check-vcs-permalinks

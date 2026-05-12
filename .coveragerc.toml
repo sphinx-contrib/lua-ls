@@ -1,0 +1,22 @@
+[run]
+relative_files = true
+
+[report]
+include = ["sphinx_lua_ls/**/*.py"]
+omit = [
+    "sphinx_lua_ls/_version.py",
+    "test/**/*.py",
+]
+exclude_also = [
+    "def __repr__",
+    "def __rich_repr__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if (|_t\\.|typing\\.)TYPE_CHECKING:",
+    "@(abc\\.)?abstractmethod",
+    "except ImportError:",
+    "assert False",
+]
+
+[html]
+title = "Sphinx-LuaLs Coverage Report"
