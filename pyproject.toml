@@ -54,7 +54,7 @@ lint = [
 ci = [
     "pytest-cov==7.0.0",
     "tox==4.34.1",
-    "tox-uv==1.29.0",
+    "tox-uv==1.35.2",
 ]
 
 [project.urls]
