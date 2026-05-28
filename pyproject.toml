@@ -36,7 +36,7 @@ test = [
     "myst-parser==5.1.0",
     "pyright==1.1.409",
     "pytest-cov==7.1.0",
-    "pytest-regressions==2.10.0",
+    "pytest-regressions==2.11.0",
     "pytest==9.0.3",
     "sybil==10.0.1",
 ]
@@ -53,7 +53,7 @@ lint = [
 ]
 ci = [
     "pytest-cov==7.1.0",
-    "tox==4.54.0",
+    "tox==4.55.0",
     "tox-uv==1.35.2",
 ]
 
