@@ -37,15 +37,15 @@ test = [
     "pyright==1.1.410",
     "pytest-cov==7.1.0",
     "pytest-regressions==2.11.0",
-    "pytest==9.0.3",
-    "sybil==10.0.1",
+    "pytest==9.1.0",
+    "sybil==10.1.0",
 ]
 doc = [
     "furo==2025.12.19",
     "myst-parser==5.1.0",
     "sphinx-autobuild==2025.8.25",
     "sphinx_design==0.7.0",
-    "sybil==10.0.1",
+    "sybil==10.1.0",
 ]
 lint = [
     "prek==0.4.5",
