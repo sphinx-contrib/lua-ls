@@ -33,16 +33,16 @@ dev = [
 ]
 test = [
     "beautifulsoup4==4.15.0",
-    "myst-parser==5.1.0",
-    "pyright==1.1.411",
+    "myst-parser==5.2.0",
+    "pyright==1.1.414",
     "pytest-cov==7.1.0",
     "pytest-regressions==2.11.0",
-    "pytest==9.1.1",
+    "pytest==9.2.0",
     "sybil==10.1.0",
 ]
 doc = [
     "furo==2025.12.19",
-    "myst-parser==5.1.0",
+    "myst-parser==5.2.0",
     "sphinx-autobuild==2025.8.25",
     "sphinx_design==0.7.0",
     "sybil==10.1.0",
@@ -53,8 +53,8 @@ lint = [
 ]
 ci = [
     "pytest-cov==7.1.0",
-    "tox==4.58.0",
-    "tox-uv==1.36.0",
+    "tox==4.67.13",
+    "tox-uv==1.37.7",
 ]
 
 [project.urls]
