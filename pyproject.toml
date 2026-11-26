@@ -38,14 +38,14 @@ test = [
     "pytest-cov==7.1.0",
     "pytest-regressions==2.11.0",
     "pytest==9.2.0",
-    "sybil==10.1.0",
+    "sybil==10.2.0",
 ]
 doc = [
     "furo==2025.12.19",
     "myst-parser==5.2.0",
     "sphinx-autobuild==2025.8.25",
     "sphinx_design==0.8.0",
-    "sybil==10.1.0",
+    "sybil==10.2.0",
 ]
 lint = [
     "prek==0.4.6",
@@ -53,8 +53,8 @@ lint = [
 ]
 ci = [
     "pytest-cov==7.1.0",
-    "tox==4.67.13",
-    "tox-uv==1.37.7",
+    "tox==4.67.15",
+    "tox-uv==1.37.9",
 ]
 
 [project.urls]
